@@ -33,13 +33,14 @@ class Vehicle(models.Model):
     
     AVAILABILITY_CHOICES = [('available', 'Available'),('booked', 'Booked'),('maintenance', 'Maintenance'),]
     
+    
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, limit_choices_to={'role': 'rental_owner'})
 
+    name = models.CharField(max_length=100)
+    
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
     vehicle_type = models.ForeignKey(VehicleType, on_delete=models.CASCADE)
-
-    name = models.CharField(max_length=100)
 
     transmission_type = models.CharField(max_length=10, choices=TRANSMISSION_CHOICES)
     

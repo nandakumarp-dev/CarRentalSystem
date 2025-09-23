@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - Car Rental</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 240px;
+      background: #343a40;
+      color: white;
+    }
+    .sidebar a {
+      color: #ddd;
+      text-decoration: none;
+      padding: 12px 20px;
+      display: block;
+    }
+    .sidebar a:hover {
+      background: #495057;
+      color: #fff;
+    }
+    .content {
+      margin-left: 240px;
+      padding: 20px;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        position: relative;
+        height: auto;
+        width: 100%;
+      }
+      .content {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar d-flex flex-column">
+    <h4 class="text-center py-3 border-bottom">CarRental</h4>
+    <a href="#">🏠 Dashboard</a>
+    <a href="#">🚘 Browse Cars</a>
+    <a href="#">📑 My Bookings</a>
+    <a href="#">👤 Profile</a>
+    <a href="#">🚪 Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4 rounded">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="#">User Dashboard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="topNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle fw-semibold" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                John Doe
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Search / Filter -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <form class="row g-3">
+          <div class="col-md-4">
+            <input type="text" class="form-control" placeholder="Search by model name">
+          </div>
+          <div class="col-md-3">
+            <select class="form-select">
+              <option selected disabled>Filter by Brand</option>
+              <option>Toyota</option>
+              <option>Honda</option>
+              <option>BMW</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select">
+              <option selected disabled>Transmission</option>
+              <option>Automatic</option>
+              <option>Manual</option>
+            </select>
+          </div>
+          <div class="col-md-2 d-grid">
+            <button class="btn btn-primary">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Available Cars -->
+    <h4 class="mb-3">Available Cars</h4>
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img src="https://source.unsplash.com/400x200/?car" class="card-img-top" alt="Car">
+          <div class="card-body">
+            <h5 class="card-title">Toyota Corolla</h5>
+            <p class="card-text text-muted">Sedan • Automatic • $50/day</p>
+            <a href="#" class="btn btn-sm btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img src="https://source.unsplash.com/400x200/?suv" class="card-img-top" alt="Car">
+          <div class="card-body">
+            <h5 class="card-title">Honda CR-V</h5>
+            <p class="card-text text-muted">SUV • Manual • $65/day</p>
+            <a href="#" class="btn btn-sm btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Bookings -->
+    <h4 class="mb-3">My Bookings</h4>
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped align-middle">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Car</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Toyota Corolla</td>
+                <td>2025-09-20</td>
+                <td>2025-09-23</td>
+                <td><span class="badge bg-success">Confirmed</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Honda CR-V</td>
+                <td>2025-09-10</td>
+                <td>2025-09-12</td>
+                <td><span class="badge bg-warning text-dark">Pending</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
