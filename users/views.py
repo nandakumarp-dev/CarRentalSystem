@@ -3,14 +3,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.shortcuts import redirect
 from .forms import SignUpForm
 
 class HomeView(TemplateView):
-    template_name = 'users/home.html'  # Added 'users/' prefix
+    template_name = 'users/home.html'
 
 class SignUpView(CreateView):
     form_class = SignUpForm
-    template_name = 'users/signup.html'  # Added 'users/' prefix
+    template_name = 'users/signup.html'
     success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
@@ -29,11 +30,15 @@ class CustomLogoutView(LogoutView):
     next_page = 'users:home'
     
     def dispatch(self, request, *args, **kwargs):
-        messages.success(request, "You have been successfully logged out.")
-        return super().dispatch(request, *args, **kwargs)
+        # Store username for message before logout
+        username = request.user.username
+        response = super().dispatch(request, *args, **kwargs)
+        # Add message after logout process
+        messages.success(request, f"You have been successfully logged out. Goodbye, {username}!")
+        return response
 
 class CustomerDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/customer_dashboard.html'  # Added 'users/' prefix
+    template_name = 'users/customer_dashboard.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,7 +46,7 @@ class CustomerDashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 class OwnerDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/owner_dashboard.html'  # Added 'users/' prefix
+    template_name = 'users/owner_dashboard.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

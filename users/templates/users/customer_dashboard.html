@@ -1,3 +1,4 @@
+
 {% extends 'users/base.html' %}
 
 {% block title %}Customer Dashboard{% endblock %}
@@ -9,35 +10,49 @@
             <div class="card-body">
                 <h5>Customer Menu</h5>
                 <div class="list-group">
-    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-    <a href="#" class="list-group-item list-group-item-action">Browse Cars</a>
-    <a href="#" class="list-group-item list-group-item-action">My Favorites</a>
-    <a href="#" class="list-group-item list-group-item-action">Rental History</a>
-</div>
-
-<!-- Update cards content -->
-<div class="card bg-primary text-white">
-    <div class="card-body">
-        <h5>Cars Viewed</h5>
-        <h3>12</h3>
-    </div>
-</div>
-<div class="card bg-success text-white">
-    <div class="card-body">
-        <h5>Favorite Cars</h5>
-        <h3>5</h3>
-    </div>
-</div>
+                    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+                    <a href="#" class="list-group-item list-group-item-action">Browse Cars</a>
+                    <a href="#" class="list-group-item list-group-item-action">My Favorites</a>
+                    <a href="#" class="list-group-item list-group-item-action">Rental History</a>
+                </div>
             </div>
         </div>
         
-        <div class="card">
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Quick Stats</h5>
+                <div class="card bg-primary text-white mb-2">
+                    <div class="card-body">
+                        <h6>Cars Viewed</h6>
+                        <h4>12</h4>
+                    </div>
+                </div>
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <h6>Favorite Cars</h6>
+                        <h4>5</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
             <div class="card-body">
                 <h5>Your Profile</h5>
                 <p><strong>Name:</strong> {{ user.get_full_name }}</p>
                 <p><strong>Email:</strong> {{ user.email }}</p>
                 <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
                 <p><strong>Member since:</strong> {{ user.date_joined|date:"M Y" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body">
+                <h3>Welcome to Your Dashboard</h3>
+                <p>Here you can manage your car rentals, view history, and find new vehicles.</p>
+                <!-- Add main dashboard content here -->
             </div>
         </div>
     </div>
