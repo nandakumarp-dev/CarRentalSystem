@@ -1,15 +1,19 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin 
-from .models import Profile
+from django.contrib.auth.admin import UserAdmin
+from .models import User, Customer, CarOwner
 
-# Register your models here.
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'account_type', 'first_name', 'last_name', 'is_staff')
+    list_filter = ('account_type', 'is_staff', 'is_superuser')
+    fieldsets = UserAdmin.fieldsets + (
+        ('Custom Fields', {'fields': ('account_type', 'phone_number')}),
+    )
 
-@admin.register(Profile)
-class ProfileAdmin(UserAdmin):
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('user', 'date_of_birth')
 
-    list_display = ('username','email','first_name','last_name', 'role', 'is_staff')
-    list_filter = ('role', 'is_staff', 'is_superuser')
-
-
-
-
+@admin.register(CarOwner)
+class RentalOwnerAdmin(admin.ModelAdmin):
+    list_display = ('user', 'company_name', 'verified')

@@ -1,0 +1,48 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5>Owner Menu</h5>
+                <div class="list-group">
+    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+    <a href="#" class="list-group-item list-group-item-action">Add Car</a>
+    <a href="#" class="list-group-item list-group-item-action">My Cars</a>
+    <a href="#" class="list-group-item list-group-item-action">Rentals</a>
+</div>
+
+<!-- Update cards content -->
+<div class="card bg-primary text-white">
+    <div class="card-body">
+        <h5>Total Cars</h5>
+        <h3>8</h3>
+    </div>
+</div>
+<div class="card bg-success text-white">
+    <div class="card-body">
+        <h5>Active Rentals</h5>
+        <h3>12</h3>
+    </div>
+</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h5>Your Profile</h5>
+                <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
+                {% if owner %}
+                    <p><strong>Company:</strong> {{ owner.company_name|default:"Not set" }}</p>
+                    <p><strong>Status:</strong> {{ owner.verified|yesno:"Verified,Not Verified" }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

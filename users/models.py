@@ -1,33 +1,20 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Create your models here.
-
-from django.contrib.auth.models import AbstractUser
-
-class RoleChoice(models.TextChoices):
-
-    SUPER_ADMIN = 'super_admin', 'Super Admin'
-
-    RENTAL_OWNER = 'rental_owner', 'Rental Owner'
-
-    CUSTOMER = 'customer', 'Customer'
-
-class Profile(AbstractUser):
-
-    role = models.CharField(max_length=15,choices=RoleChoice.choices,default=RoleChoice.CUSTOMER)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.role})'
+class User(AbstractUser):
+    ACCOUNT_TYPES = (
+        ('customer', 'Customer'),
+        ('owner', 'Rental Owner'),
+    )
     
-    class Meta:
+    account_type = models.CharField(max_length=10, choices=ACCOUNT_TYPES, default='customer')
+    phone_number = models.CharField(max_length=15, blank=True)
 
-        verbose_name = 'Profile'
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_of_birth = models.DateField(null=True, blank=True)
 
-        verbose_name_plural = 'Profiles'
-
-
-
-
-
-
-
+class CarOwner(models.Model):  # Instead of RentalOwner
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=100, blank=True)
+    verified = models.BooleanField(default=False)

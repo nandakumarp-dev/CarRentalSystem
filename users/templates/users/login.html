@@ -1,0 +1,40 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Login - Rental System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Login</h2>
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger">Invalid username or password.</div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                    
+                    <div class="text-center">
+                        <p>Don't have an account? <a href="{% url 'users:signup' %}">Sign up here</a></p>
+                        <a href="{% url 'users:home' %}">← Back to Home</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
