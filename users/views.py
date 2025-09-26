@@ -3,7 +3,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from django.shortcuts import redirect
 from .forms import SignUpForm
 
 class HomeView(TemplateView):
@@ -30,10 +29,10 @@ class CustomLogoutView(LogoutView):
     next_page = 'users:home'
     
     def dispatch(self, request, *args, **kwargs):
-        # Store username for message before logout
+        
         username = request.user.username
         response = super().dispatch(request, *args, **kwargs)
-        # Add message after logout process
+       
         messages.success(request, f"You have been successfully logged out. Goodbye, {username}!")
         return response
 
