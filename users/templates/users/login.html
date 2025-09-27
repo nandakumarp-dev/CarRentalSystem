@@ -3,9 +3,9 @@
 {% block title %}Login - Rental System{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center fade-in">
     <div class="col-md-5">
-        <div class="card">
+        <div class="card card-3d">
             <div class="card-body">
                 <h2 class="text-center mb-4">Login</h2>
                 
@@ -26,6 +26,11 @@
                         <input type="password" class="form-control" name="password" required>
                     </div>
                     
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
                     
                     <div class="text-center">
@@ -37,4 +42,11 @@
         </div>
     </div>
 </div>
+
+<style>
+    .form-check-input:checked {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+</style>
 {% endblock %}

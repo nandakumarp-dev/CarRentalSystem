@@ -1,44 +1,47 @@
-
 {% extends 'users/base.html' %}
 
 {% block title %}Customer Dashboard{% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row fade-in">
     <div class="col-md-3">
-        <div class="card">
+        <div class="card card-3d mb-4">
             <div class="card-body">
-                <h5>Customer Menu</h5>
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                    <a href="#" class="list-group-item list-group-item-action">Browse Cars</a>
-                    <a href="#" class="list-group-item list-group-item-action">My Favorites</a>
-                    <a href="#" class="list-group-item list-group-item-action">Rental History</a>
+                <h5 class="card-title">Customer Menu</h5>
+                <div class="list-group dashboard-menu">
+                    <a href="#" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-search me-2"></i>Browse Cars
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i>My Favorites
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-history me-2"></i>Rental History
+                    </a>
                 </div>
             </div>
         </div>
         
-        <div class="card mt-3">
+        <div class="card card-3d mb-4">
             <div class="card-body">
-                <h5>Quick Stats</h5>
-                <div class="card bg-primary text-white mb-2">
-                    <div class="card-body">
-                        <h6>Cars Viewed</h6>
-                        <h4>12</h4>
-                    </div>
+                <h5 class="card-title">Quick Stats</h5>
+                <div class="stat-card bg-primary mb-3">
+                    <h6>Cars Viewed</h6>
+                    <h4>12</h4>
                 </div>
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <h6>Favorite Cars</h6>
-                        <h4>5</h4>
-                    </div>
+                <div class="stat-card bg-success">
+                    <h6>Favorite Cars</h6>
+                    <h4>5</h4>
                 </div>
             </div>
         </div>
         
-        <div class="card mt-3">
+        <div class="card card-3d">
             <div class="card-body">
-                <h5>Your Profile</h5>
+                <h5 class="card-title">Your Profile</h5>
                 <p><strong>Name:</strong> {{ user.get_full_name }}</p>
                 <p><strong>Email:</strong> {{ user.email }}</p>
                 <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
@@ -48,17 +51,148 @@
     </div>
     
     <div class="col-md-9">
-        <div class="card">
+        <div class="card card-3d mb-4">
             <div class="card-body">
-                <h3>Welcome to Your Dashboard</h3>
+                <h3 class="card-title">Welcome to Your Dashboard</h3>
                 <p>Here you can manage your car rentals, view history, and find new vehicles.</p>
                 
-
-                <!-- Can add more content here  -->
-
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6><i class="fas fa-clock me-2 text-warning"></i>Current Rentals</h6>
+                                <h4>2 Active</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6><i class="fas fa-star me-2 text-warning"></i>Loyalty Points</h6>
+                                <h4>1,250 Points</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
+                <div class="mt-4">
+                    <h5>Recommended for You</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-car text-primary mb-2"></i>
+                                    <h6>Economy Sedan</h6>
+                                    <small>Perfect for city driving</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-car text-primary mb-2"></i>
+                                    <h6>SUV</h6>
+                                    <small>Great for family trips</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-car text-primary mb-2"></i>
+                                    <h6>Luxury Car</h6>
+                                    <small>For special occasions</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .dashboard-menu .list-group-item {
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(5px);
+    }
+    
+    .dashboard-menu .list-group-item:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateX(5px);
+    }
+    
+    .dashboard-menu .list-group-item.active {
+        background: var(--primary);
+        color: white;
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+    }
+    
+    .stat-card {
+        border-radius: 15px;
+        color: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .stat-card h6 {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 5px;
+    }
+    
+    .stat-card h4 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    @keyframes slideInLeft {
+        from { transform: translateX(-50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideInRight {
+        from { transform: translateX(50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes bounceIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        70% { transform: scale(1.05); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .slide-in-left { animation: slideInLeft 0.8s ease; }
+    .slide-in-right { animation: slideInRight 0.8s ease; }
+    .bounce-in { animation: bounceIn 0.8s ease; }
+</style>
 {% endblock %}

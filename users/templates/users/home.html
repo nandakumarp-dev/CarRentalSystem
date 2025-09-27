@@ -1,27 +1,27 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 text-center">
-        <h1 class="mb-4">Find Your Perfect Car Rental</h1>
-<p class="lead mb-4">Simple, fast, and reliable car rental solutions</p>
+<div class="row justify-content-center fade-in">
+    <div class="col-md-10 text-center">
+        <h1 class="mb-4 display-4 fw-bold">Find Your Perfect Car Rental</h1>
+        <p class="lead mb-4">Simple, fast, and reliable car rental solutions for every journey</p>
         
         {% if user.is_authenticated %}
-            <div class="card">
-                <div class="card-body">
+            <div class="card card-3d bounce-in mb-5">
+                <div class="card-body py-5">
                     <h3>Welcome back, {{ user.username }}!</h3>
                     <p>You are logged in as <strong>{{ user.get_account_type_display }}</strong></p>
                     {% if user.account_type == 'customer' %}
-    <a href="{% url 'users:customer_dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
-{% else %}
-    <a href="{% url 'users:owner_dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
-{% endif %}
-                    <a href="{% url 'users:logout' %}" class="btn btn-outline-secondary btn-lg">Logout</a>
+                        <a href="{% url 'users:customer_dashboard' %}" class="btn btn-primary btn-lg me-3">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'users:owner_dashboard' %}" class="btn btn-primary btn-lg me-3">Go to Dashboard</a>
+                    {% endif %}
+                    <a href="{% url 'users:logout' %}" class="btn btn-outline-primary btn-lg">Logout</a>
                 </div>
             </div>
         {% else %}
-            <div class="card">
-                <div class="card-body">
+            <div class="card card-3d bounce-in mb-5">
+                <div class="card-body py-5">
                     <h3>Get Started</h3>
                     <p>Join thousands of users finding their perfect rental match</p>
                     <a href="{% url 'users:signup' %}" class="btn btn-primary btn-lg me-2">Sign Up</a>
@@ -31,22 +31,26 @@
         {% endif %}
 
         <div class="row mt-5">
-            <div class="col-md-6">
-    <div class="card">
-        <div class="card-body">
-            <h5>Customer</h5>
-            <p>Looking to rent cars? Sign up as a customer to browse available vehicles.</p>
-        </div>
-    </div>
-</div>
-<div class="col-md-6">
-    <div class="card">
-        <div class="card-body">
-            <h5>Car Owner</h5>
-            <p>Have cars to rent? Sign up as an owner to list your vehicles.</p>
-        </div>
-    </div>
-</div>
+            <div class="col-md-6 mb-4">
+                <div class="card card-3d h-100 slide-in-left">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-user-tie display-4 text-primary mb-3"></i>
+                        <h5>Customer</h5>
+                        <p>Looking to rent cars? Sign up as a customer to browse available vehicles, compare prices, and book your perfect ride.</p>
+                        <a href="{% url 'users:signup' %}" class="btn btn-outline-primary mt-3">Sign Up as Customer</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card card-3d h-100 slide-in-right">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-car display-4 text-primary mb-3"></i>
+                        <h5>Car Owner</h5>
+                        <p>Have cars to rent? Sign up as an owner to list your vehicles, manage bookings, and earn extra income.</p>
+                        <a href="{% url 'users:signup' %}" class="btn btn-outline-primary mt-3">Sign Up as Owner</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
