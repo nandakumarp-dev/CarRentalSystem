@@ -9,22 +9,22 @@
             <div class="card-body">
                 <h5 class="card-title">Owner Menu</h5>
                 <div class="list-group dashboard-menu">
-                    <a href="#" class="list-group-item list-group-item-action active">
+                    <a href="/rentals/owner/dashboard/" class="list-group-item list-group-item-action active">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="/rentals/owner/cars/add/" class="list-group-item list-group-item-action">
                         <i class="fas fa-plus-circle me-2"></i>Add Car
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="/rentals/owner/cars/" class="list-group-item list-group-item-action">
                         <i class="fas fa-car me-2"></i>My Cars
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="/rentals/owner/rentals/" class="list-group-item list-group-item-action">
                         <i class="fas fa-receipt me-2"></i>Rentals
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="/rentals/owner/analytics/" class="list-group-item list-group-item-action">
                         <i class="fas fa-chart-line me-2"></i>Analytics
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="/rentals/owner/settings/" class="list-group-item list-group-item-action">
                         <i class="fas fa-cog me-2"></i>Settings
                     </a>
                 </div>
@@ -36,15 +36,15 @@
                 <h5 class="card-title">Quick Stats</h5>
                 <div class="stat-card bg-primary mb-3">
                     <h6>Total Cars</h6>
-                    <h4>8</h4>
+                    <h4>{{ total_cars|default:"0" }}</h4>
                 </div>
                 <div class="stat-card bg-success mb-3">
                     <h6>Active Rentals</h6>
-                    <h4>12</h4>
+                    <h4>{{ active_rentals|default:"0" }}</h4>
                 </div>
                 <div class="stat-card bg-warning">
                     <h6>Pending Requests</h6>
-                    <h4>3</h4>
+                    <h4>{{ pending_requests|default:"0" }}</h4>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                     </p>
                 {% endif %}
                 <div class="mt-3">
-                    <a href="#" class="btn btn-outline-primary btn-sm w-100">Edit Profile</a>
+                    <a href="/rentals/owner/settings/" class="btn btn-outline-primary btn-sm w-100">Edit Profile</a>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h6><i class="fas fa-dollar-sign me-2 text-success"></i>Monthly Earnings</h6>
-                                <h4>$2,850</h4>
+                                <h4>${{ monthly_earnings|default:"0" }}</h4>
                             </div>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h6><i class="fas fa-car me-2 text-primary"></i>Cars Available</h6>
-                                <h4>5 Available</h4>
+                                <h4>{{ available_cars|default:"0" }} Available</h4>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h6><i class="fas fa-star me-2 text-warning"></i>Customer Rating</h6>
-                                <h4>4.8/5</h4>
+                                <h4>{{ avg_rating|default:"0" }}/5</h4>
                             </div>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h6><i class="fas fa-calendar me-2 text-info"></i>This Month</h6>
-                                <h4>15 Bookings</h4>
+                                <h4>{{ monthly_bookings|default:"0" }} Bookings</h4>
                             </div>
                         </div>
                     </div>
@@ -115,30 +115,20 @@
                     <div class="col-md-6">
                         <h5>Recent Activity</h5>
                         <div class="list-group">
+                            {% for activity in recent_activities %}
                             <a href="#" class="list-group-item list-group-item-action">
                                 <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">New booking request</h6>
-                                    <small>2 hours ago</small>
+                                    <h6 class="mb-1">{{ activity.title }}</h6>
+                                    <small>{{ activity.time }}</small>
                                 </div>
-                                <p class="mb-1">Toyota Camry - 3 days rental</p>
-                                <small class="text-success">Pending approval</small>
+                                <p class="mb-1">{{ activity.description }}</p>
+                                <small class="text-{{ activity.status_color }}">{{ activity.status_text }}</small>
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">Rental completed</h6>
-                                    <small>1 day ago</small>
-                                </div>
-                                <p class="mb-1">Honda Civic - 5 days rental</p>
-                                <small class="text-primary">$250 received</small>
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">Payment received</h6>
-                                    <small>2 days ago</small>
-                                </div>
-                                <p class="mb-1">$350 for BMW X5 rental</p>
-                                <small class="text-success">Completed</small>
-                            </a>
+                            {% empty %}
+                            <div class="list-group-item">
+                                <p class="mb-1 text-muted">No recent activity</p>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                     
@@ -146,36 +136,36 @@
                         <h5>Quick Actions</h5>
                         <div class="row">
                             <div class="col-6 mb-3">
-                                <div class="card text-center h-100">
+                                <a href="/rentals/owner/cars/add/" class="card text-center h-100 text-decoration-none">
                                     <div class="card-body">
                                         <i class="fas fa-plus-circle text-primary fa-2x mb-2"></i>
                                         <h6>Add New Car</h6>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="card text-center h-100">
+                                <a href="/rentals/owner/cars/" class="card text-center h-100 text-decoration-none">
                                     <div class="card-body">
                                         <i class="fas fa-edit text-success fa-2x mb-2"></i>
                                         <h6>Manage Listings</h6>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="card text-center h-100">
+                                <a href="/rentals/owner/analytics/" class="card text-center h-100 text-decoration-none">
                                     <div class="card-body">
                                         <i class="fas fa-chart-bar text-warning fa-2x mb-2"></i>
                                         <h6>View Reports</h6>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                             <div class="col-6 mb-3">
-                                <div class="card text-center h-100">
+                                <a href="/rentals/owner/settings/" class="card text-center h-100 text-decoration-none">
                                     <div class="card-body">
                                         <i class="fas fa-cog text-info fa-2x mb-2"></i>
                                         <h6>Settings</h6>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -185,50 +175,37 @@
         
         <div class="card card-3d">
             <div class="card-body">
-                <h5 class="card-title">Your Cars</h5>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Your Cars</h5>
+                    <a href="/rentals/owner/cars/" class="btn btn-primary btn-sm">View All</a>
+                </div>
                 <div class="row">
+                    {% for car in owner_cars %}
                     <div class="col-md-4 mb-3">
-                        <div class="card">
+                        <div class="card h-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <h6>Toyota Camry</h6>
-                                    <span class="badge bg-success">Available</span>
+                                    <h6>{{ car.make }} {{ car.model }}</h6>
+                                    <span class="badge {% if car.is_available %}bg-success{% else %}bg-warning{% endif %}">
+                                        {{ car.is_available|yesno:"Available,Rented" }}
+                                    </span>
                                 </div>
-                                <small class="text-muted">Sedan • 2022</small>
+                                <small class="text-muted">{{ car.get_car_type_display }} • {{ car.year }}</small>
                                 <div class="mt-2">
-                                    <small><strong>$45/day</strong></small>
+                                    <small><strong>${{ car.daily_rate }}/day</strong></small>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <h6>Honda Civic</h6>
-                                    <span class="badge bg-warning">Rented</span>
-                                </div>
-                                <small class="text-muted">Compact • 2023</small>
-                                <div class="mt-2">
-                                    <small><strong>$35/day</strong></small>
-                                </div>
-                            </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="text-center py-4">
+                            <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No cars listed yet</p>
+                            <a href="/rentals/owner/cars/add/" class="btn btn-primary">Add Your First Car</a>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <h6>BMW X5</h6>
-                                    <span class="badge bg-success">Available</span>
-                                </div>
-                                <small class="text-muted">SUV • 2023</small>
-                                <div class="mt-2">
-                                    <small><strong>$85/day</strong></small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
