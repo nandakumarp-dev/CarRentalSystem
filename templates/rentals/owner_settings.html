@@ -1,0 +1,67 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Settings - Owner Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'rentals/partials/owner_sidebar.html' %}
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card card-3d">
+            <div class="card-body">
+                <h2>Owner Settings</h2>
+                <p class="text-muted">Update your company information and profile settings.</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" name="company_name" class="form-control" 
+                               value="{{ form.company_name.value|default:object.company_name|default:'' }}"
+                               placeholder="Enter your company name">
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="/rentals/owner/dashboard/" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Account Information</h5>
+                        <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
+                        {% if object %}
+                            <p><strong>Company:</strong> {{ object.company_name|default:"Not set" }}</p>
+                            <p><strong>Verification Status:</strong> 
+                                <span class="badge {% if object.verified %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ object.verified|yesno:"Verified,Not Verified" }}
+                                </span>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 10px;
+        padding: 10px 15px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+</style>
+{% endblock %}

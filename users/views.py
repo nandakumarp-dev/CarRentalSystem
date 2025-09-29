@@ -23,16 +23,14 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         if self.request.user.account_type == 'customer':
             return reverse_lazy('users:customer_dashboard')
-        return reverse_lazy('users:owner_dashboard')
+        return reverse_lazy('rentals:owner_dashboard')  # Changed to rentals app
 
 class CustomLogoutView(LogoutView):
     next_page = 'users:home'
     
     def dispatch(self, request, *args, **kwargs):
-        
         username = request.user.username
         response = super().dispatch(request, *args, **kwargs)
-       
         messages.success(request, f"You have been successfully logged out. Goodbye, {username}!")
         return response
 
@@ -42,12 +40,4 @@ class CustomerDashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['customer'] = getattr(self.request.user, 'customer', None)
-        return context
-
-class OwnerDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/owner_dashboard.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['owner'] = getattr(self.request.user, 'rentalowner', None)
         return context

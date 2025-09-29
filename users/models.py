@@ -14,7 +14,7 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     date_of_birth = models.DateField(null=True, blank=True)
 
-class CarOwner(models.Model):  # Instead of RentalOwner
+class CarOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100, blank=True)
     verified = models.BooleanField(default=False)

@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import HomeView, SignUpView, CustomLoginView, CustomLogoutView, OwnerDashboardView, CustomerDashboardView
+from django.views.generic import RedirectView
+from .views import HomeView, SignUpView, CustomLoginView, CustomLogoutView, CustomerDashboardView
 
 app_name = 'users'
 
@@ -8,6 +9,6 @@ urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
-    path('owner-dashboard/', OwnerDashboardView.as_view(), name='owner_dashboard'),
     path('customer-dashboard/', CustomerDashboardView.as_view(), name='customer_dashboard'),
+    path('owner-dashboard/', RedirectView.as_view(url='/rentals/owner/dashboard/'), name='owner_dashboard'),
 ]
