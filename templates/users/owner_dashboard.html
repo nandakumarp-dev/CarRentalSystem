@@ -1,211 +1,275 @@
 {% extends 'users/base.html' %}
+{% load static %}
 
-{% block title %}Owner Dashboard{% endblock %}
+{% block title %}Owner Dashboard - Car Rental System{% endblock %}
 
 {% block content %}
-<div class="row fade-in">
-    <div class="col-md-3">
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Owner Menu</h5>
-                <div class="list-group dashboard-menu">
-                    <a href="/rentals/owner/dashboard/" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a href="/rentals/owner/cars/add/" class="list-group-item list-group-item-action">
-                        <i class="fas fa-plus-circle me-2"></i>Add Car
-                    </a>
-                    <a href="/rentals/owner/cars/" class="list-group-item list-group-item-action">
-                        <i class="fas fa-car me-2"></i>My Cars
-                    </a>
-                    <a href="/rentals/owner/rentals/" class="list-group-item list-group-item-action">
-                        <i class="fas fa-receipt me-2"></i>Rentals
-                    </a>
-                    <a href="/rentals/owner/analytics/" class="list-group-item list-group-item-action">
-                        <i class="fas fa-chart-line me-2"></i>Analytics
-                    </a>
-                    <a href="/rentals/owner/settings/" class="list-group-item list-group-item-action">
-                        <i class="fas fa-cog me-2"></i>Settings
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Quick Stats</h5>
-                <div class="stat-card bg-primary mb-3">
-                    <h6>Total Cars</h6>
-                    <h4>{{ total_cars|default:"0" }}</h4>
-                </div>
-                <div class="stat-card bg-success mb-3">
-                    <h6>Active Rentals</h6>
-                    <h4>{{ active_rentals|default:"0" }}</h4>
-                </div>
-                <div class="stat-card bg-warning">
-                    <h6>Pending Requests</h6>
-                    <h4>{{ pending_requests|default:"0" }}</h4>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card card-3d">
-            <div class="card-body">
-                <h5 class="card-title">Your Profile</h5>
-                <p><strong>Name:</strong> {{ user.get_full_name }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
-                {% if owner %}
-                    <p><strong>Company:</strong> {{ owner.company_name|default:"Not set" }}</p>
-                    <p><strong>Status:</strong> 
-                        <span class="badge {% if owner.verified %}bg-success{% else %}bg-warning{% endif %}">
-                            {{ owner.verified|yesno:"Verified,Not Verified" }}
-                        </span>
-                    </p>
-                {% endif %}
-                <div class="mt-3">
-                    <a href="/rentals/owner/settings/" class="btn btn-outline-primary btn-sm w-100">Edit Profile</a>
+<div class="container-fluid">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-card">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="welcome-title">Welcome back, {{ user.first_name }}! 👋</h1>
+                        <p class="welcome-subtitle">Here's what's happening with your rental business today.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="date-display">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            {{ current_date|date:"F j, Y" }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-9">
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <h3 class="card-title">Owner Dashboard</h3>
-                <p>Manage your car listings, view rental requests, and track your earnings.</p>
-                
-                <div class="row mt-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-dollar-sign me-2 text-success"></i>Monthly Earnings</h6>
-                                <h4>${{ monthly_earnings|default:"0" }}</h4>
-                            </div>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            {% include 'rentals/partials/owner_sidebar.html' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="stat-card earnings">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
                         </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-car me-2 text-primary"></i>Cars Available</h6>
-                                <h4>{{ available_cars|default:"0" }} Available</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-star me-2 text-warning"></i>Customer Rating</h6>
-                                <h4>{{ avg_rating|default:"0" }}/5</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-calendar me-2 text-info"></i>This Month</h6>
-                                <h4>{{ monthly_bookings|default:"0" }} Bookings</h4>
-                            </div>
+                        <div class="stat-content">
+                            <h3>${{ monthly_earnings }}</h3>
+                            <p>Monthly Earnings</p>
+                            <span class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </span>
                         </div>
                     </div>
                 </div>
-                
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <h5>Recent Activity</h5>
-                        <div class="list-group">
-                            {% for activity in recent_activities %}
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ activity.title }}</h6>
-                                    <small>{{ activity.time }}</small>
-                                </div>
-                                <p class="mb-1">{{ activity.description }}</p>
-                                <small class="text-{{ activity.status_color }}">{{ activity.status_text }}</small>
-                            </a>
-                            {% empty %}
-                            <div class="list-group-item">
-                                <p class="mb-1 text-muted">No recent activity</p>
-                            </div>
-                            {% endfor %}
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="stat-card bookings">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ monthly_bookings }}</h3>
+                            <p>Monthly Bookings</p>
+                            <span class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i> 8%
+                            </span>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <h5>Quick Actions</h5>
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <a href="/rentals/owner/cars/add/" class="card text-center h-100 text-decoration-none">
-                                    <div class="card-body">
-                                        <i class="fas fa-plus-circle text-primary fa-2x mb-2"></i>
-                                        <h6>Add New Car</h6>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <a href="/rentals/owner/cars/" class="card text-center h-100 text-decoration-none">
-                                    <div class="card-body">
-                                        <i class="fas fa-edit text-success fa-2x mb-2"></i>
-                                        <h6>Manage Listings</h6>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <a href="/rentals/owner/analytics/" class="card text-center h-100 text-decoration-none">
-                                    <div class="card-body">
-                                        <i class="fas fa-chart-bar text-warning fa-2x mb-2"></i>
-                                        <h6>View Reports</h6>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <a href="/rentals/owner/settings/" class="card text-center h-100 text-decoration-none">
-                                    <div class="card-body">
-                                        <i class="fas fa-cog text-info fa-2x mb-2"></i>
-                                        <h6>Settings</h6>
-                                    </div>
-                                </a>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="stat-card cars">
+                        <div class="stat-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ total_cars }}</h3>
+                            <p>Total Cars</p>
+                            <span class="stat-trend {{ total_cars|yesno:'positive,neutral' }}">
+                                {{ total_cars|yesno:'Active,No cars' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="stat-card rentals">
+                        <div class="stat-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ active_rentals }}</h3>
+                            <p>Active Rentals</p>
+                            <span class="stat-trend {{ active_rentals|yesno:'positive,neutral' }}">
+                                {{ active_rentals|yesno:'Running,None' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card quick-actions-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-bolt me-2"></i>Quick Actions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-lg-3 mb-3">
+                                    <a href="/rentals/owner/cars/add/" class="quick-action-btn">
+                                        <div class="action-icon primary">
+                                            <i class="fas fa-plus-circle"></i>
+                                        </div>
+                                        <span>Add New Car</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-6 col-lg-3 mb-3">
+                                    <a href="/rentals/owner/cars/" class="quick-action-btn">
+                                        <div class="action-icon success">
+                                            <i class="fas fa-edit"></i>
+                                        </div>
+                                        <span>Manage Cars</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-6 col-lg-3 mb-3">
+                                    <a href="/rentals/owner/rentals/" class="quick-action-btn">
+                                        <div class="action-icon warning">
+                                            <i class="fas fa-receipt"></i>
+                                        </div>
+                                        <span>View Rentals</span>
+                                    </a>
+                                </div>
+                                <div class="col-sm-6 col-lg-3 mb-3">
+                                    <a href="/rentals/owner/analytics/" class="quick-action-btn">
+                                        <div class="action-icon info">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </div>
+                                        <span>Analytics</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="card card-3d">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Your Cars</h5>
-                    <a href="/rentals/owner/cars/" class="btn btn-primary btn-sm">View All</a>
-                </div>
-                <div class="row">
-                    {% for car in owner_cars %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <h6>{{ car.make }} {{ car.model }}</h6>
-                                    <span class="badge {% if car.is_available %}bg-success{% else %}bg-warning{% endif %}">
-                                        {{ car.is_available|yesno:"Available,Rented" }}
-                                    </span>
+
+            <div class="row">
+                <!-- Recent Activity -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card activity-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-history me-2"></i>Recent Activity
+                            </h5>
+                            <a href="/rentals/owner/rentals/" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_activities %}
+                            <div class="activity-feed">
+                                {% for activity in recent_activities %}
+                                <div class="activity-item">
+                                    <div class="activity-icon {{ activity.type }}">
+                                        <i class="fas fa-{{ activity.type }}"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">{{ activity.title }}</div>
+                                        <div class="activity-description">{{ activity.description }}</div>
+                                        <div class="activity-meta">
+                                            <span class="activity-time">{{ activity.time }}</span>
+                                            <span class="badge bg-{{ activity.status_color }}">{{ activity.status_text }}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small class="text-muted">{{ car.get_car_type_display }} • {{ car.year }}</small>
-                                <div class="mt-2">
-                                    <small><strong>${{ car.daily_rate }}/day</strong></small>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No recent activity</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your Cars -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card cars-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-car me-2"></i>Your Cars
+                            </h5>
+                            <a href="/rentals/owner/cars/" class="btn btn-sm btn-outline-primary">Manage All</a>
+                        </div>
+                        <div class="card-body">
+                            {% if owner_cars %}
+                            <div class="row">
+                                {% for car in owner_cars %}
+                                <div class="col-sm-6 mb-3">
+                                    <div class="car-item">
+                                        <div class="car-image">
+                                            {% if car.image %}
+                                            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="img-fluid">
+                                            {% else %}
+                                            <div class="car-image-placeholder">
+                                                <i class="fas fa-car"></i>
+                                            </div>
+                                            {% endif %}
+                                            <span class="car-status {% if car.is_available %}available{% else %}rented{% endif %}">
+                                                {{ car.is_available|yesno:"Available,Rented" }}
+                                            </span>
+                                        </div>
+                                        <div class="car-info">
+                                            <h6 class="car-name">{{ car.make }} {{ car.model }}</h6>
+                                            <p class="car-details">{{ car.year }} • {{ car.get_car_type_display }}</p>
+                                            <div class="car-price">${{ car.daily_rate }}/day</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                                <h6 class="text-muted">No cars listed yet</h6>
+                                <p class="text-muted small">Start earning by adding your first car</p>
+                                <a href="/rentals/owner/cars/add/" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus me-1"></i>Add First Car
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card performance-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-line me-2"></i>Performance Overview
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3 mb-3">
+                                    <div class="metric-item">
+                                        <div class="metric-value text-primary">${{ total_earnings }}</div>
+                                        <div class="metric-label">Total Earnings</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="metric-item">
+                                        <div class="metric-value text-success">{{ available_cars }}</div>
+                                        <div class="metric-label">Cars Available</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="metric-item">
+                                        <div class="metric-value text-warning">{{ pending_requests }}</div>
+                                        <div class="metric-label">Pending Requests</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="metric-item">
+                                        <div class="metric-value text-info">{% widthratio available_cars total_cars 100 %}%</div>
+                                        <div class="metric-label">Utilization Rate</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {% empty %}
-                    <div class="col-12">
-                        <div class="text-center py-4">
-                            <i class="fas fa-car fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">No cars listed yet</p>
-                            <a href="/rentals/owner/cars/add/" class="btn btn-primary">Add Your First Car</a>
-                        </div>
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -213,71 +277,332 @@
 </div>
 
 <style>
-    .dashboard-menu .list-group-item {
-        border: none;
-        padding: 12px 15px;
-        margin-bottom: 8px;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(5px);
-    }
-    
-    .dashboard-menu .list-group-item:hover {
-        background: var(--primary);
-        color: white;
-        transform: translateX(5px);
-    }
-    
-    .dashboard-menu .list-group-item.active {
-        background: var(--primary);
-        color: white;
-        transform: translateX(5px);
-        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+:root {
+    --primary: #4361ee;
+    --primary-light: #4895ef;
+    --secondary: #3f37c9;
+    --success: #4cc9f0;
+    --danger: #f72585;
+    --warning: #f8961e;
+    --info: #4895ef;
+    --dark: #1e1e2d;
+    --light: #f8f9fa;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --transition: all 0.3s ease;
+}
+
+/* Welcome Card */
+.welcome-card {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.welcome-title {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.date-display {
+    background: rgba(255,255,255,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+    border-left: 4px solid var(--primary);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.stat-card.earnings { border-left-color: #4cc9f0; }
+.stat-card.bookings { border-left-color: #f8961e; }
+.stat-card.cars { border-left-color: #7209b7; }
+.stat-card.rentals { border-left-color: #f72585; }
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-card.earnings .stat-icon { background: #4cc9f0; }
+.stat-card.bookings .stat-icon { background: #f8961e; }
+.stat-card.cars .stat-icon { background: #7209b7; }
+.stat-card.rentals .stat-icon { background: #f72585; }
+
+.stat-content h3 {
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: var(--dark);
+}
+
+.stat-content p {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-trend {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+}
+
+.stat-trend.positive {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.stat-trend.neutral {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* Quick Actions */
+.quick-actions-card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: none;
+}
+
+.quick-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    text-decoration: none;
+    color: var(--dark);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.quick-action-btn:hover {
+    background: var(--light);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: white;
+}
+
+.action-icon.primary { background: var(--primary); }
+.action-icon.success { background: var(--success); }
+.action-icon.warning { background: var(--warning); }
+.action-icon.info { background: var(--info); }
+
+/* Activity Feed */
+.activity-card, .cars-card, .performance-card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: none;
+    height: 100%;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.activity-icon.booking { background: var(--warning); }
+.activity-icon.confirmation { background: var(--info); }
+.activity-icon.rental { background: var(--success); }
+
+.activity-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--dark);
+}
+
+.activity-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.activity-meta {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.activity-time {
+    font-size: 0.8rem;
+    color: #adb5bd;
+}
+
+/* Car Items */
+.car-item {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: var(--transition);
+}
+
+.car-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.car-image {
+    position: relative;
+    height: 120px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.car-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.car-image-placeholder {
+    font-size: 2rem;
+    color: #adb5bd;
+}
+
+.car-status {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.car-status.available { background: var(--success); }
+.car-status.rented { background: var(--warning); }
+
+.car-info {
+    padding: 1rem;
+}
+
+.car-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--dark);
+}
+
+.car-details {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.car-price {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+/* Performance Metrics */
+.metric-item {
+    padding: 1rem;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.metric-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .welcome-card {
+        padding: 1.5rem;
     }
     
     .stat-card {
-        border-radius: 15px;
-        color: white;
-        padding: 15px;
-        margin-bottom: 15px;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        padding: 1rem;
     }
     
-    .stat-card:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
     }
-    
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
-    
-    .stat-card h6 {
-        font-size: 0.8rem;
-        opacity: 0.9;
-        margin-bottom: 5px;
-    }
-    
-    .stat-card h4 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        margin: 0;
-    }
-    
-    .badge {
-        font-size: 0.7rem;
-        padding: 4px 8px;
-    }
+}
 </style>
+
+<script>
+// Add current date to context
+document.addEventListener('DOMContentLoaded', function() {
+    const currentDate = new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    document.querySelector('.date-display').innerHTML = 
+        `<i class="fas fa-calendar-alt me-2"></i>${currentDate}`;
+});
+</script>
 {% endblock %}

@@ -1,114 +1,560 @@
 {% extends 'users/base.html' %}
+{% load static %}
 
-{% block title %}{% if object %}Edit{% else %}Add{% endif %} Car - Owner Dashboard{% endblock %}
+{% block title %}{% if object %}Edit{% else %}Add New{% endif %} Car - Owner Dashboard{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        {% include 'rentals/partials/owner_sidebar.html' %}
-    </div>
-    
-    <div class="col-md-9">
-        <div class="card card-3d">
-            <div class="card-body">
-                <h2 class="card-title">{% if object %}Edit{% else %}Add New{% endif %} Car</h2>
-                
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="{{ form.make.id_for_label }}" class="form-label">Make</label>
-                                {{ form.make }}
-                                {% if form.make.errors %}
-                                <div class="text-danger">{{ form.make.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="{{ form.model.id_for_label }}" class="form-label">Model</label>
-                                {{ form.model }}
-                                {% if form.model.errors %}
-                                <div class="text-danger">{{ form.model.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="page-title">
+                            <i class="fas fa-{% if object %}edit{% else %}plus-circle{% endif %} me-2"></i>
+                            {% if object %}Edit{% else %}Add New{% endif %} Car
+                        </h1>
+                        <p class="page-subtitle">
+                            {% if object %}
+                                Update your car details and availability
+                            {% else %}
+                                Add a new car to your rental fleet
+                            {% endif %}
+                        </p>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="{{ form.year.id_for_label }}" class="form-label">Year</label>
-                                {{ form.year }}
-                                {% if form.year.errors %}
-                                <div class="text-danger">{{ form.year.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="{{ form.car_type.id_for_label }}" class="form-label">Car Type</label>
-                                {{ form.car_type }}
-                                {% if form.car_type.errors %}
-                                <div class="text-danger">{{ form.car_type.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="{{ form.daily_rate.id_for_label }}" class="form-label">Daily Rate ($)</label>
-                                {{ form.daily_rate }}
-                                {% if form.daily_rate.errors %}
-                                <div class="text-danger">{{ form.daily_rate.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
-                        {{ form.description }}
-                        {% if form.description.errors %}
-                        <div class="text-danger">{{ form.description.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    {% if object %}
-                    <div class="mb-3 form-check">
-                        {{ form.is_available }}
-                        <label for="{{ form.is_available.id_for_label }}" class="form-check-label">
-                            Available for rent
-                        </label>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            {% if object %}Update{% else %}Add{% endif %} Car
-                        </button>
-                        <a href="{% url 'rentals:my_cars' %}" class="btn btn-outline-secondary">
-                            Cancel
+                    <div class="col-md-6 text-md-end">
+                        <a href="/rentals/owner/cars/" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Cars
                         </a>
                     </div>
-                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            {% include 'rentals/partials/owner_sidebar.html' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="card main-form-card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="car-form">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <h5>Basic Information</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_make" class="form-label">Make *</label>
+                                    <input type="text" name="make" id="id_make" class="form-control" 
+                                           value="{{ form.make.value|default:'' }}" required
+                                           placeholder="e.g., Toyota, Honda, BMW">
+                                    {% if form.make.errors %}
+                                    <div class="form-error">{{ form.make.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_model" class="form-label">Model *</label>
+                                    <input type="text" name="model" id="id_model" class="form-control" 
+                                           value="{{ form.model.value|default:'' }}" required
+                                           placeholder="e.g., Camry, Civic, X5">
+                                    {% if form.model.errors %}
+                                    <div class="form-error">{{ form.model.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_year" class="form-label">Year *</label>
+                                    <input type="number" name="year" id="id_year" class="form-control" 
+                                           value="{{ form.year.value|default:'' }}" required min="1990" max="2025"
+                                           placeholder="2023">
+                                    {% if form.year.errors %}
+                                    <div class="form-error">{{ form.year.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_car_type" class="form-label">Car Type *</label>
+                                    <select name="car_type" id="id_car_type" class="form-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="sedan" {% if form.car_type.value == 'sedan' %}selected{% endif %}>Sedan</option>
+                                        <option value="suv" {% if form.car_type.value == 'suv' %}selected{% endif %}>SUV</option>
+                                        <option value="compact" {% if form.car_type.value == 'compact' %}selected{% endif %}>Compact</option>
+                                        <option value="luxury" {% if form.car_type.value == 'luxury' %}selected{% endif %}>Luxury</option>
+                                        <option value="sports" {% if form.car_type.value == 'sports' %}selected{% endif %}>Sports</option>
+                                        <option value="van" {% if form.car_type.value == 'van' %}selected{% endif %}>Van</option>
+                                        <option value="convertible" {% if form.car_type.value == 'convertible' %}selected{% endif %}>Convertible</option>
+                                    </select>
+                                    {% if form.car_type.errors %}
+                                    <div class="form-error">{{ form.car_type.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_license_plate" class="form-label">License Plate</label>
+                                    <input type="text" name="license_plate" id="id_license_plate" class="form-control" 
+                                           value="{{ form.license_plate.value|default:'' }}"
+                                           placeholder="e.g., ABC123">
+                                    {% if form.license_plate.errors %}
+                                    <div class="form-error">{{ form.license_plate.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specifications -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-cogs me-2"></i>
+                                <h5>Specifications</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_fuel_type" class="form-label">Fuel Type</label>
+                                    <select name="fuel_type" id="id_fuel_type" class="form-select">
+                                        <option value="petrol" {% if form.fuel_type.value == 'petrol' %}selected{% endif %}>Petrol</option>
+                                        <option value="diesel" {% if form.fuel_type.value == 'diesel' %}selected{% endif %}>Diesel</option>
+                                        <option value="electric" {% if form.fuel_type.value == 'electric' %}selected{% endif %}>Electric</option>
+                                        <option value="hybrid" {% if form.fuel_type.value == 'hybrid' %}selected{% endif %}>Hybrid</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_transmission" class="form-label">Transmission</label>
+                                    <select name="transmission" id="id_transmission" class="form-select">
+                                        <option value="automatic" {% if form.transmission.value == 'automatic' %}selected{% endif %}>Automatic</option>
+                                        <option value="manual" {% if form.transmission.value == 'manual' %}selected{% endif %}>Manual</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_seats" class="form-label">Seats</label>
+                                    <input type="number" name="seats" id="id_seats" class="form-control" 
+                                           value="{{ form.seats.value|default:'5' }}" min="2" max="12"
+                                           placeholder="5">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_color" class="form-label">Color</label>
+                                    <input type="text" name="color" id="id_color" class="form-control" 
+                                           value="{{ form.color.value|default:'' }}"
+                                           placeholder="e.g., Red, Blue, Black">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_mileage" class="form-label">Mileage (km)</label>
+                                    <input type="number" name="mileage" id="id_mileage" class="form-control" 
+                                           value="{{ form.mileage.value|default:'' }}"
+                                           placeholder="e.g., 15000">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="id_daily_rate" class="form-label">Daily Rate ($) *</label>
+                                    <input type="number" name="daily_rate" id="id_daily_rate" class="form-control" 
+                                           value="{{ form.daily_rate.value|default:'' }}" step="0.01" min="0" required
+                                           placeholder="e.g., 45.00">
+                                    {% if form.daily_rate.errors %}
+                                    <div class="form-error">{{ form.daily_rate.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                <h5>Location</h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_pickup_location" class="form-label">Pickup Location</label>
+                                    <input type="text" name="pickup_location" id="id_pickup_location" class="form-control" 
+                                           value="{{ form.pickup_location.value|default:'' }}"
+                                           placeholder="Full address for pickup">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="id_city" class="form-label">City</label>
+                                    <input type="text" name="city" id="id_city" class="form-control" 
+                                           value="{{ form.city.value|default:'' }}"
+                                           placeholder="e.g., New York, London">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Features & Description -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-list-alt me-2"></i>
+                                <h5>Features & Description</h5>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Car Features</label>
+                                <div class="features-grid">
+                                    <div class="feature-checkbox">
+                                        <input type="checkbox" name="ac" id="id_ac" {% if 'ac' in form.features.value %}checked{% endif %}>
+                                        <label for="id_ac">
+                                            <i class="fas fa-snowflake"></i>
+                                            <span>Air Conditioning</span>
+                                        </label>
+                                    </div>
+                                    <div class="feature-checkbox">
+                                        <input type="checkbox" name="bluetooth" id="id_bluetooth" {% if 'bluetooth' in form.features.value %}checked{% endif %}>
+                                        <label for="id_bluetooth">
+                                            <i class="fas fa-bluetooth"></i>
+                                            <span>Bluetooth</span>
+                                        </label>
+                                    </div>
+                                    <div class="feature-checkbox">
+                                        <input type="checkbox" name="gps" id="id_gps" {% if 'gps' in form.features.value %}checked{% endif %}>
+                                        <label for="id_gps">
+                                            <i class="fas fa-map-marked-alt"></i>
+                                            <span>GPS Navigation</span>
+                                        </label>
+                                    </div>
+                                    <div class="feature-checkbox">
+                                        <input type="checkbox" name="usb" id="id_usb" {% if 'usb' in form.features.value %}checked{% endif %}>
+                                        <label for="id_usb">
+                                            <i class="fas fa-usb"></i>
+                                            <span>USB Ports</span>
+                                        </label>
+                                    </div>
+                                    <div class="feature-checkbox">
+                                        <input type="checkbox" name="sunroof" id="id_sunroof" {% if 'sunroof' in form.features.value %}checked{% endif %}>
+                                        <label for="id_sunroof">
+                                            <i class="fas fa-sun"></i>
+                                            <span>Sunroof</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="id_description" class="form-label">Description</label>
+                                <textarea name="description" id="id_description" class="form-control" rows="4"
+                                          placeholder="Describe the car's condition, special features, and any important details for renters...">{{ form.description.value|default:'' }}</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-camera me-2"></i>
+                                <h5>Car Image</h5>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_image" class="form-label">Upload Car Image</label>
+                                <input type="file" name="image" id="id_image" class="form-control" 
+                                       accept="image/*">
+                                <div class="form-text">Upload a clear photo of your car (JPEG, PNG, max 5MB)</div>
+                                {% if object.image %}
+                                <div class="current-image mt-2">
+                                    <p class="small text-muted">Current Image:</p>
+                                    <img src="{{ object.image.url }}" alt="Current car image" class="img-thumbnail" style="max-height: 150px;">
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Availability -->
+                        {% if object %}
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-toggle-on me-2"></i>
+                                <h5>Availability</h5>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" name="is_available" id="id_is_available" 
+                                           class="form-check-input" {% if form.is_available.value %}checked{% endif %}>
+                                    <label for="id_is_available" class="form-check-label">
+                                        Available for rent
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    When unchecked, the car won't be available for new rental requests.
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-{% if object %}save{% else %}plus-circle{% endif %} me-2"></i>
+                                {% if object %}Update Car{% else %}Add Car{% endif %}
+                            </button>
+                            <a href="/rentals/owner/cars/" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .form-control, .form-select {
-        border-radius: 10px;
-        padding: 10px 15px;
-        border: 1px solid #dee2e6;
-        transition: all 0.3s ease;
+/* Form Sections */
+.form-section {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.section-header i {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.section-header h5 {
+    margin: 0;
+    color: var(--dark);
+    font-weight: 600;
+}
+
+/* Form Controls */
+.form-label {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e9ecef;
+    transition: var(--transition);
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+    transform: translateY(-1px);
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.feature-checkbox {
+    position: relative;
+}
+
+.feature-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.feature-checkbox label {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    background: white;
+}
+
+.feature-checkbox label:hover {
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.feature-checkbox input[type="checkbox"]:checked + label {
+    border-color: var(--primary);
+    background: rgba(67, 97, 238, 0.05);
+    color: var(--primary);
+}
+
+.feature-checkbox i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.feature-checkbox span {
+    font-weight: 500;
+}
+
+/* Form Switch */
+.form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+}
+
+.form-check-input:checked {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+/* Current Image */
+.current-image {
+    text-align: center;
+}
+
+.current-image img {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Form Actions */
+.form-actions {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    text-align: center;
+}
+
+.form-actions .btn {
+    margin: 0 0.5rem;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* Main Form Card */
+.main-form-card {
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: none;
+}
+
+.main-form-card .card-body {
+    padding: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-section {
+        padding: 1.5rem;
     }
     
-    .form-control:focus, .form-select:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    .features-grid {
+        grid-template-columns: 1fr;
     }
+    
+    .form-actions .btn {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+}
+
+/* Form Validation States */
+.form-control:invalid {
+    border-color: #dc3545;
+}
+
+.form-control:valid {
+    border-color: #198754;
+}
+
+/* Loading State */
+.form-actions .btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculate daily rate suggestions
+    const carTypeSelect = document.getElementById('id_car_type');
+    const dailyRateInput = document.getElementById('id_daily_rate');
+    
+    const rateSuggestions = {
+        'sedan': '45',
+        'suv': '65',
+        'compact': '35',
+        'luxury': '120',
+        'sports': '150',
+        'van': '80',
+        'convertible': '100'
+    };
+    
+    carTypeSelect.addEventListener('change', function() {
+        if (!dailyRateInput.value && rateSuggestions[this.value]) {
+            dailyRateInput.placeholder = `Suggested: $${rateSuggestions[this.value]}`;
+        }
+    });
+    
+    // Form submission loading state
+    const form = document.querySelector('.car-form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+    });
+    
+    // Image preview
+    const imageInput = document.getElementById('id_image');
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Remove existing preview
+                    const existingPreview = document.querySelector('.image-preview');
+                    if (existingPreview) {
+                        existingPreview.remove();
+                    }
+                    
+                    // Create new preview
+                    const preview = document.createElement('div');
+                    preview.className = 'image-preview mt-2';
+                    preview.innerHTML = `
+                        <p class="small text-muted">Preview:</p>
+                        <img src="${e.target.result}" alt="Preview" class="img-thumbnail" style="max-height: 150px;">
+                    `;
+                    imageInput.parentNode.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

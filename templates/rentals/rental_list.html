@@ -1,62 +1,613 @@
 {% extends 'users/base.html' %}
+{% load static %}
 
 {% block title %}Rental Management - Owner Dashboard{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        {% include 'rentals/partials/owner_sidebar.html' %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="page-title">
+                            <i class="fas fa-receipt me-2"></i>Rental Management
+                        </h1>
+                        <p class="page-subtitle">Manage booking requests and active rentals</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="header-actions">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-2"></i>Filter
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item {% if status_filter == 'all' %}active{% endif %}" href="?status=all">All Rentals</a></li>
+                                    <li><a class="dropdown-item {% if status_filter == 'pending' %}active{% endif %}" href="?status=pending">Pending</a></li>
+                                    <li><a class="dropdown-item {% if status_filter == 'confirmed' %}active{% endif %}" href="?status=confirmed">Confirmed</a></li>
+                                    <li><a class="dropdown-item {% if status_filter == 'active' %}active{% endif %}" href="?status=active">Active</a></li>
+                                    <li><a class="dropdown-item {% if status_filter == 'completed' %}active{% endif %}" href="?status=completed">Completed</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="col-md-9">
-        <div class="card card-3d">
-            <div class="card-body">
-                <h2 class="card-title">Rental Management</h2>
-                <p class="text-muted">Manage all rental requests and bookings for your cars.</p>
-                
-                {% if rentals %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Car</th>
-                                <th>Customer</th>
-                                <th>Dates</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for rental in rentals %}
-                            <tr>
-                                <td>{{ rental.car.make }} {{ rental.car.model }}</td>
-                                <td>{{ rental.customer.get_full_name }}</td>
-                                <td>{{ rental.start_date }} to {{ rental.end_date }}</td>
-                                <td>${{ rental.total_amount }}</td>
-                                <td>
-                                    <span class="badge 
-                                        {% if rental.status == 'pending' %}bg-warning
-                                        {% elif rental.status == 'confirmed' %}bg-info
-                                        {% elif rental.status == 'active' %}bg-primary
-                                        {% elif rental.status == 'completed' %}bg-success
-                                        {% else %}bg-danger{% endif %}">
-                                        {{ rental.status|title }}
-                                    </span>
-                                </td>
-                            </tr>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            {% include 'rentals/partials/owner_sidebar.html' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Stats Overview -->
+            {% if status_counts %}
+            <div class="row mb-4">
+                <div class="col-md-2 col-6 mb-3">
+                    <div class="rental-stat-card all">
+                        <div class="stat-number">{{ status_counts.all }}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-6 mb-3">
+                    <div class="rental-stat-card pending">
+                        <div class="stat-number">{{ status_counts.pending }}</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-6 mb-3">
+                    <div class="rental-stat-card confirmed">
+                        <div class="stat-number">{{ status_counts.confirmed }}</div>
+                        <div class="stat-label">Confirmed</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-6 mb-3">
+                    <div class="rental-stat-card active">
+                        <div class="stat-number">{{ status_counts.active }}</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-6 mb-3">
+                    <div class="rental-stat-card completed">
+                        <div class="stat-number">{{ status_counts.completed }}</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Rentals Table -->
+            <div class="card main-content-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        {% if status_filter != 'all' %}
+                            {{ status_filter|title }} Rentals
+                        {% else %}
+                            All Rentals
+                        {% endif %}
+                        ({{ rentals|length }})
+                    </h5>
+                    <div class="header-badges">
+                        {% if status_filter == 'pending' %}
+                        <span class="badge bg-warning">Action Required</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if rentals %}
+                    <div class="table-responsive">
+                        <table class="table rental-table">
+                            <thead>
+                                <tr>
+                                    <th>Rental ID</th>
+                                    <th>Car</th>
+                                    <th>Customer</th>
+                                    <th>Rental Period</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rental in rentals %}
+                                <tr class="rental-row rental-{{ rental.status }}">
+                                    <td>
+                                        <div class="rental-id">#{{ rental.id }}</div>
+                                        <small class="text-muted">{{ rental.created_at|date:"M d, Y" }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="car-info">
+                                            <strong>{{ rental.car.make }} {{ rental.car.model }}</strong>
+                                            <div class="car-details">
+                                                {{ rental.car.year }} • {{ rental.car.get_car_type_display }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="customer-info">
+                                            <strong>{{ rental.customer.get_full_name }}</strong>
+                                            <div class="customer-contact">
+                                                {{ rental.customer.email }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="rental-period">
+                                            <div class="date-range">
+                                                {{ rental.start_date|date:"M d" }} - {{ rental.end_date|date:"M d, Y" }}
+                                            </div>
+                                            <div class="duration">
+                                                {{ rental.total_days }} day{{ rental.total_days|pluralize }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="amount-info">
+                                            <strong>${{ rental.total_amount }}</strong>
+                                            <div class="payment-status {% if rental.payment_status %}paid{% else %}unpaid{% endif %}">
+                                                {{ rental.payment_status|yesno:"Paid,Unpaid" }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-{{ rental.status }}">
+                                            {{ rental.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            {% if rental.status == 'pending' %}
+                                            <form method="post" action="{% url 'rentals:rental_action' rental.pk 'approve' %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-success btn-sm" title="Approve">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form method="post" action="{% url 'rentals:rental_action' rental.pk 'reject' %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Reject">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form>
+                                            {% elif rental.status == 'confirmed' %}
+                                            <form method="post" action="{% url 'rentals:rental_action' rental.pk 'start' %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary btn-sm" title="Start Rental">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </form>
+                                            {% elif rental.status == 'active' %}
+                                            <form method="post" action="{% url 'rentals:rental_action' rental.pk 'complete' %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-success btn-sm" title="Complete Rental">
+                                                    <i class="fas fa-flag-checkered"></i>
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            
+                                            <button class="btn btn-info btn-sm view-details" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#rentalModal{{ rental.id }}"
+                                                    title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Rental Details Modal -->
+                                <div class="modal fade" id="rentalModal{{ rental.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Rental Details #{{ rental.id }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6>Car Information</h6>
+                                                        <p><strong>{{ rental.car.make }} {{ rental.car.model }}</strong><br>
+                                                        {{ rental.car.year }} • {{ rental.car.get_car_type_display }}<br>
+                                                        License: {{ rental.car.license_plate|default:"N/A" }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <h6>Customer Information</h6>
+                                                        <p><strong>{{ rental.customer.get_full_name }}</strong><br>
+                                                        {{ rental.customer.email }}<br>
+                                                        Phone: {{ rental.customer.phone_number|default:"N/A" }}</p>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6>Rental Details</h6>
+                                                        <p><strong>Dates:</strong> {{ rental.start_date }} to {{ rental.end_date }}<br>
+                                                        <strong>Duration:</strong> {{ rental.total_days }} days<br>
+                                                        <strong>Amount:</strong> ${{ rental.total_amount }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <h6>Status Information</h6>
+                                                        <p><strong>Status:</strong> 
+                                                            <span class="status-badge status-{{ rental.status }}">
+                                                                {{ rental.get_status_display }}
+                                                            </span><br>
+                                                        <strong>Payment:</strong> 
+                                                            <span class="payment-status {% if rental.payment_status %}paid{% else %}unpaid{% endif %}">
+                                                                {{ rental.payment_status|yesno:"Paid,Unpaid" }}
+                                                            </span><br>
+                                                        <strong>Created:</strong> {{ rental.created_at|date:"M d, Y H:i" }}</p>
+                                                    </div>
+                                                </div>
+                                                {% if rental.special_requests %}
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <h6>Special Requests</h6>
+                                                        <p>{{ rental.special_requests }}</p>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if is_paginated %}
+                    <nav aria-label="Rental pagination" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
+                                </li>
+                                {% endif %}
                             {% endfor %}
-                        </tbody>
-                    </table>
+                            
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter != 'all' %}&status={{ status_filter }}{% endif %}">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    
+                    {% else %}
+                    <!-- Empty State -->
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-receipt fa-4x"></i>
+                        </div>
+                        <h3>No rentals found</h3>
+                        <p class="empty-state-text">
+                            {% if status_filter != 'all' %}
+                                No {{ status_filter }} rentals at the moment.
+                            {% else %}
+                                When customers book your cars, they will appear here.
+                            {% endif %}
+                        </p>
+                        {% if status_filter != 'all' %}
+                        <a href="?status=all" class="btn btn-outline-primary">
+                            View All Rentals
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="text-center py-5">
-                    <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">No rentals found</h4>
-                    <p class="text-muted">When customers book your cars, they will appear here.</p>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Rental Stats */
+.rental-stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: var(--transition);
+    border-top: 4px solid var(--primary);
+}
+
+.rental-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+.rental-stat-card.all { border-top-color: #6c757d; }
+.rental-stat-card.pending { border-top-color: var(--warning); }
+.rental-stat-card.confirmed { border-top-color: var(--info); }
+.rental-stat-card.active { border-top-color: var(--primary); }
+.rental-stat-card.completed { border-top-color: var(--success); }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Rental Table */
+.rental-table {
+    margin-bottom: 0;
+}
+
+.rental-table th {
+    border-top: none;
+    font-weight: 600;
+    color: var(--dark);
+    padding: 1rem 0.75rem;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.rental-table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.rental-row:hover {
+    background-color: rgba(67, 97, 238, 0.02);
+}
+
+.rental-id {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.car-info strong {
+    color: var(--dark);
+}
+
+.car-details {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.customer-info strong {
+    color: var(--dark);
+}
+
+.customer-contact {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.rental-period .date-range {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.rental-period .duration {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.amount-info strong {
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.payment-status {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.payment-status.paid {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.payment-status.unpaid {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-confirmed {
+    background: #cce7ff;
+    color: #004085;
+    border: 1px solid #b3d7ff;
+}
+
+.status-active {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-cancelled, .status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+}
+
+/* Header Badges */
+.header-badges .badge {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rental-table {
+        font-size: 0.85rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+    
+    .rental-stat-card {
+        padding: 1rem 0.5rem;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+}
+
+/* Loading States */
+.action-buttons form {
+    display: inline;
+}
+
+.action-buttons button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add confirmation for destructive actions
+    const rejectButtons = document.querySelectorAll('form button[title="Reject"]');
+    rejectButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to reject this rental request?')) {
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // Add loading state to action buttons
+    const actionForms = document.querySelectorAll('.action-buttons form');
+    actionForms.forEach(form => {
+        form.addEventListener('submit', function() {
+            const button = this.querySelector('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+            
+            // Revert after 3 seconds if still processing (fallback)
+            setTimeout(() => {
+                if (button.disabled) {
+                    button.innerHTML = originalHTML;
+                    button.disabled = false;
+                }
+            }, 3000);
+        });
+    });
+    
+    // Auto-refresh for pending rentals
+    {% if status_filter == 'pending' %}
+    setTimeout(() => {
+        window.location.reload();
+    }, 30000); // Refresh every 30 seconds for pending page
+    {% endif %}
+});
+</script>
 {% endblock %}
