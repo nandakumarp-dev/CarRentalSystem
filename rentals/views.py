@@ -1,24 +1,28 @@
-# source rentals/views.py
-
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, View
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, View, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
-from django.db.models import Sum, Count, Q
+from django.db.models import Q, Count, Sum, Avg
 from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 from datetime import datetime, timedelta
+import logging
+
 from users.models import CarOwner
 from .models import Car, Rental, Review
+from .forms import CarForm, RentalForm, ReviewForm, CarSearchForm
+
+logger = logging.getLogger(__name__)
 
 class OwnerDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/owner_dashboard.html'
+    template_name = 'rentals/owner_dashboard.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if not car_owner:
             car_owner = CarOwner.objects.create(user=self.request.user)
         
@@ -43,7 +47,7 @@ class OwnerDashboardView(LoginRequiredMixin, TemplateView):
         ).count()
         
         # Get recent activities
-        recent_rentals = Rental.objects.filter(car__owner=car_owner).order_by('-created_at')[:5]
+        recent_rentals = Rental.objects.filter(car__owner=car_owner).select_related('car', 'customer').order_by('-created_at')[:5]
         recent_activities = []
         
         for rental in recent_rentals:
@@ -112,14 +116,14 @@ class CarListView(LoginRequiredMixin, ListView):
     paginate_by = 8
     
     def get_queryset(self):
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if car_owner:
             return Car.objects.filter(owner=car_owner).select_related('owner')
         return Car.objects.none()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if car_owner:
             context['stats'] = {
                 'total': Car.objects.filter(owner=car_owner).count(),
@@ -130,49 +134,27 @@ class CarListView(LoginRequiredMixin, ListView):
 
 class CarCreateView(LoginRequiredMixin, CreateView):
     model = Car
+    form_class = CarForm
     template_name = 'rentals/car_form.html'
-    fields = [
-        'make', 'model', 'year', 'car_type', 'fuel_type', 'transmission',
-        'daily_rate', 'seats', 'color', 'license_plate', 'mileage',
-        'pickup_location', 'city', 'description', 'image', 'features'
-    ]
     success_url = reverse_lazy('rentals:my_cars')
     
     def form_valid(self, form):
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if not car_owner:
             car_owner = CarOwner.objects.create(user=self.request.user)
         form.instance.owner = car_owner
         
-        # Set features from form data
-        features = []
-        for feature in ['ac', 'bluetooth', 'gps', 'usb', 'sunroof']:
-            if self.request.POST.get(feature):
-                features.append(feature)
-        form.instance.features = features
-        
         messages.success(self.request, f"Car {form.instance.make} {form.instance.model} added successfully!")
         return super().form_valid(form)
-    
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        # Add CSS classes to form fields
-        for field in form.fields:
-            form.fields[field].widget.attrs.update({'class': 'form-control'})
-        return form
 
 class CarUpdateView(LoginRequiredMixin, UpdateView):
     model = Car
+    form_class = CarForm
     template_name = 'rentals/car_form.html'
-    fields = [
-        'make', 'model', 'year', 'car_type', 'fuel_type', 'transmission',
-        'daily_rate', 'is_available', 'seats', 'color', 'license_plate', 
-        'mileage', 'pickup_location', 'city', 'description', 'image', 'features'
-    ]
     success_url = reverse_lazy('rentals:my_cars')
     
     def get_queryset(self):
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if car_owner:
             return Car.objects.filter(owner=car_owner)
         return Car.objects.none()
@@ -183,7 +165,7 @@ class CarUpdateView(LoginRequiredMixin, UpdateView):
 
 class CarDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
-        car = get_object_or_404(Car, pk=pk, owner=request.user.carowner)
+        car = get_object_or_404(Car, pk=pk, owner=request.user.owner_profile)
         car_name = f"{car.make} {car.model}"
         car.delete()
         messages.success(request, f"Car {car_name} deleted successfully!")
@@ -196,7 +178,7 @@ class RentalListView(LoginRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if car_owner:
             status_filter = self.request.GET.get('status', 'all')
             queryset = Rental.objects.filter(car__owner=car_owner).select_related('car', 'customer')
@@ -209,7 +191,7 @@ class RentalListView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if car_owner:
             context['status_filter'] = self.request.GET.get('status', 'all')
             context['status_counts'] = {
@@ -223,7 +205,7 @@ class RentalListView(LoginRequiredMixin, ListView):
 
 class RentalActionView(LoginRequiredMixin, View):
     def post(self, request, pk, action):
-        rental = get_object_or_404(Rental, pk=pk, car__owner=request.user.carowner)
+        rental = get_object_or_404(Rental, pk=pk, car__owner=request.user.owner_profile)
         
         if action == 'approve' and rental.status == 'pending':
             rental.status = 'confirmed'
@@ -254,12 +236,14 @@ class AnalyticsView(LoginRequiredMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         
         if car_owner:
             # Monthly earnings for the last 6 months
             months = []
             earnings = []
+            bookings_data = []
+            
             for i in range(5, -1, -1):
                 month = timezone.now().replace(day=1) - timedelta(days=30*i)
                 next_month = month.replace(day=28) + timedelta(days=4)
@@ -272,20 +256,35 @@ class AnalyticsView(LoginRequiredMixin, TemplateView):
                     payment_status=True
                 ).aggregate(total=Sum('total_amount'))['total'] or 0
                 
+                monthly_bookings = Rental.objects.filter(
+                    car__owner=car_owner,
+                    created_at__date__gte=month,
+                    created_at__date__lt=next_month
+                ).count()
+                
                 months.append(month.strftime('%b %Y'))
                 earnings.append(float(monthly_earnings))
+                bookings_data.append(monthly_bookings)
+            
+            # Popular cars
+            popular_cars = Car.objects.filter(owner=car_owner).annotate(
+                rental_count=Count('rentals'),
+                total_earnings=Sum('rentals__total_amount', filter=Q(rentals__payment_status=True))
+            ).order_by('-rental_count')[:5]
             
             context.update({
                 'owner': car_owner,
                 'months': months,
                 'earnings': earnings,
+                'bookings_data': bookings_data,
                 'total_bookings': Rental.objects.filter(car__owner=car_owner).count(),
                 'total_earnings': Rental.objects.filter(
                     car__owner=car_owner, payment_status=True
                 ).aggregate(total=Sum('total_amount'))['total'] or 0,
-                'popular_car': Car.objects.filter(owner=car_owner).annotate(
-                    rental_count=Count('rentals')
-                ).order_by('-rental_count').first(),
+                'popular_cars': popular_cars,
+                'average_rating': Review.objects.filter(
+                    rental__car__owner=car_owner
+                ).aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0,
             })
         
         return context
@@ -293,11 +292,11 @@ class AnalyticsView(LoginRequiredMixin, TemplateView):
 class OwnerSettingsView(LoginRequiredMixin, UpdateView):
     model = CarOwner
     template_name = 'rentals/owner_settings.html'
-    fields = ['company_name', 'verified']
+    fields = ['company_name', 'company_address', 'tax_id']
     success_url = reverse_lazy('rentals:owner_dashboard')
     
     def get_object(self):
-        car_owner = getattr(self.request.user, 'carowner', None)
+        car_owner = getattr(self.request.user, 'owner_profile', None)
         if not car_owner:
             car_owner = CarOwner.objects.create(user=self.request.user)
         return car_owner
@@ -305,3 +304,109 @@ class OwnerSettingsView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Profile updated successfully!")
         return super().form_valid(form)
+
+# Public car browsing views
+class CarBrowseView(ListView):
+    """View for customers to browse available cars"""
+    model = Car
+    template_name = 'rentals/car_browse.html'
+    context_object_name = 'cars'
+    paginate_by = 9
+    
+    def get_queryset(self):
+        queryset = Car.objects.filter(is_available=True, is_active=True)
+        
+        # Apply filters
+        form = CarSearchForm(self.request.GET)
+        if form.is_valid():
+            car_type = form.cleaned_data.get('car_type')
+            fuel_type = form.cleaned_data.get('fuel_type')
+            transmission = form.cleaned_data.get('transmission')
+            min_price = form.cleaned_data.get('min_price')
+            max_price = form.cleaned_data.get('max_price')
+            seats = form.cleaned_data.get('seats')
+            city = form.cleaned_data.get('city')
+            
+            if car_type:
+                queryset = queryset.filter(car_type=car_type)
+            if fuel_type:
+                queryset = queryset.filter(fuel_type=fuel_type)
+            if transmission:
+                queryset = queryset.filter(transmission=transmission)
+            if min_price:
+                queryset = queryset.filter(daily_rate__gte=min_price)
+            if max_price:
+                queryset = queryset.filter(daily_rate__lte=max_price)
+            if seats:
+                queryset = queryset.filter(seats__gte=seats)
+            if city:
+                queryset = queryset.filter(city__icontains=city)
+        
+        return queryset.select_related('owner').prefetch_related('images')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_form'] = CarSearchForm(self.request.GET)
+        context['car_types'] = Car.CAR_TYPES
+        return context
+
+class CarDetailView(DetailView):
+    """View for car details"""
+    model = Car
+    template_name = 'rentals/car_detail.html'
+    context_object_name = 'car'
+    
+    def get_queryset(self):
+        return Car.objects.filter(is_available=True, is_active=True)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['similar_cars'] = Car.objects.filter(
+            car_type=self.object.car_type,
+            is_available=True,
+            is_active=True
+        ).exclude(pk=self.object.pk)[:4]
+        context['reviews'] = Review.objects.filter(
+            rental__car=self.object,
+            rental__status='completed'
+        ).select_related('rental__customer')[:10]
+        return context
+
+class CarAvailabilityCheckView(View):
+    """API endpoint to check car availability"""
+    
+    def get(self, request, car_id):
+        try:
+            car = get_object_or_404(Car, id=car_id, is_available=True, is_active=True)
+            start_date = request.GET.get('start_date')
+            end_date = request.GET.get('end_date')
+            
+            if not start_date or not end_date:
+                return JsonResponse({'error': 'Start and end dates are required'}, status=400)
+            
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            
+            # Check availability
+            is_available = not Rental.objects.filter(
+                car=car,
+                status__in=['pending', 'confirmed', 'active'],
+                start_date__lt=end_date,
+                end_date__gt=start_date
+            ).exists()
+            
+            # Calculate total amount
+            total_days = (end_date - start_date).days
+            total_amount = total_days * car.daily_rate if total_days > 0 else 0
+            
+            return JsonResponse({
+                'available': is_available,
+                'total_days': total_days,
+                'total_amount': float(total_amount),
+                'daily_rate': float(car.daily_rate),
+                'car_name': f"{car.make} {car.model}"
+            })
+            
+        except Exception as e:
+            logger.error(f"Error checking availability: {str(e)}")
+            return JsonResponse({'error': 'Invalid request'}, status=400)

@@ -1,9 +1,12 @@
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, UpdateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .forms import SignUpForm
+from django.shortcuts import redirect
+from django.db import transaction
+from .forms import SignUpForm, CustomLoginForm, UserUpdateForm, CustomerProfileForm, CarOwnerProfileForm
+from .models import Customer, CarOwner
 
 class HomeView(TemplateView):
     template_name = 'users/home.html'
@@ -19,10 +22,11 @@ class SignUpView(CreateView):
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
+    form_class = CustomLoginForm
     
     def get_success_url(self):
         if self.request.user.account_type == 'customer':
-            return reverse_lazy('bookings:customer_dashboard')  # Point to bookings app
+            return reverse_lazy('bookings:customer_dashboard')
         return reverse_lazy('rentals:owner_dashboard')
 
 class CustomLogoutView(LogoutView):
@@ -34,4 +38,47 @@ class CustomLogoutView(LogoutView):
         messages.success(request, f"You have been successfully logged out. Goodbye, {username}!")
         return response
 
-# Remove the CustomerDashboardView from here - it's now in bookings app
+class ProfileUpdateView(LoginRequiredMixin, FormView):
+    template_name = 'users/profile_update.html'
+    success_url = reverse_lazy('users:profile_update')
+    
+    def get_form_class(self):
+        if self.request.user.account_type == 'customer':
+            return CustomerProfileForm
+        return CarOwnerProfileForm
+    
+    def get_form(self, form_class=None):
+        if self.request.user.account_type == 'customer':
+            profile, created = Customer.objects.get_or_create(user=self.request.user)
+            return CustomerProfileForm(instance=profile, **self.get_form_kwargs())
+        else:
+            profile, created = CarOwner.objects.get_or_create(user=self.request.user)
+            return CarOwnerProfileForm(instance=profile, **self.get_form_kwargs())
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user_form'] = UserUpdateForm(instance=self.request.user)
+        return context
+    
+    def form_valid(self, form):
+        user_form = UserUpdateForm(self.request.POST, instance=self.request.user)
+        
+        with transaction.atomic():
+            if user_form.is_valid():
+                user_form.save()
+            form.save()
+        
+        messages.success(self.request, "Profile updated successfully!")
+        return super().form_valid(form)
+
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    form_class = UserUpdateForm
+    template_name = 'users/user_update.html'
+    success_url = reverse_lazy('users:profile_update')
+    
+    def get_object(self):
+        return self.request.user
+    
+    def form_valid(self, form):
+        messages.success(self.request, "User information updated successfully!")
+        return super().form_valid(form)

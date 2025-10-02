@@ -50,6 +50,8 @@ class Booking(models.Model):
                 name='end_date_after_start_date'
             )
         ]
+        verbose_name = 'Booking'
+        verbose_name_plural = 'Bookings'
     
     def __str__(self):
         return f"Booking #{self.id} - {self.customer.username} - {self.car}"
@@ -100,6 +102,10 @@ class Booking(models.Model):
     def days_until_start(self):
         today = timezone.now().date()
         return (self.start_date - today).days if self.start_date > today else 0
+    
+    @property
+    def is_overdue(self):
+        return self.status == 'active' and self.end_date < timezone.now().date()
 
 class BookingPayment(models.Model):
     booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name='payment')
@@ -115,6 +121,8 @@ class BookingPayment(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'Booking Payment'
+        verbose_name_plural = 'Booking Payments'
     
     def __str__(self):
         return f"Payment for Booking #{self.booking.id}"
@@ -133,3 +141,17 @@ class BookingReview(models.Model):
     
     def __str__(self):
         return f"Review for Booking #{self.booking.id} - {self.rating} stars"
+
+class FavoriteCar(models.Model):
+    """Model for customers to favorite cars"""
+    customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorites')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='favorited_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['customer', 'car']
+        verbose_name = 'Favorite Car'
+        verbose_name_plural = 'Favorite Cars'
+    
+    def __str__(self):
+        return f"{self.customer.username} - {self.car}"
