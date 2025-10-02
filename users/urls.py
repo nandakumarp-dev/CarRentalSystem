@@ -1,9 +1,6 @@
-# source users/urls.py
-
-
 from django.urls import path
 from django.views.generic import RedirectView
-from .views import HomeView, SignUpView, CustomLoginView, CustomLogoutView, CustomerDashboardView
+from .views import HomeView, SignUpView, CustomLoginView, CustomLogoutView
 
 app_name = 'users'
 
@@ -12,6 +9,7 @@ urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView.as_view(), name='logout'),
-    path('customer-dashboard/', CustomerDashboardView.as_view(), name='customer_dashboard'),
+    # Redirect customer-dashboard to bookings app
+    path('customer-dashboard/', RedirectView.as_view(pattern_name='bookings:customer_dashboard'), name='customer_dashboard'),
     path('owner-dashboard/', RedirectView.as_view(url='/rentals/owner/dashboard/'), name='owner_dashboard'),
 ]

@@ -10,25 +10,26 @@
             <div class="card-body">
                 <h5 class="card-title">Customer Menu</h5>
                 <div class="list-group dashboard-menu">
-                    <a href="{% url 'customer_dashboard' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+                    <a href="{% url 'bookings:customer_dashboard' %}" class="list-group-item list-group-item-action active">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
-                    <a href="{% url 'browse_cars' %}" class="list-group-item list-group-item-action">
+                    <a href="#" class="list-group-item list-group-item-action">
                         <i class="fas fa-search me-2"></i>Browse Cars
                     </a>
-                    <a href="{% url 'my_bookings' %}" class="list-group-item list-group-item-action">
+                    <a href="{% url 'bookings:my_bookings' %}" class="list-group-item list-group-item-action">
                         <i class="fas fa-calendar-check me-2"></i>My Bookings
                     </a>
-                    <a href="{% url 'my_favorites' %}" class="list-group-item list-group-item-action">
+                    <a href="#" class="list-group-item list-group-item-action">
                         <i class="fas fa-heart me-2"></i>My Favorites
                     </a>
-                    <a href="{% url 'rental_history' %}" class="list-group-item list-group-item-action">
+                    <a href="{% url 'bookings:rental_history' %}" class="list-group-item list-group-item-action">
                         <i class="fas fa-history me-2"></i>Rental History
                     </a>
                 </div>
             </div>
         </div>
         
+        <!-- Rest of your dashboard content remains the same -->
         <div class="card card-3d mb-4">
             <div class="card-body">
                 <h5 class="card-title">Booking Stats</h5>
@@ -54,7 +55,7 @@
                 <p><strong>Email:</strong> {{ user.email }}</p>
                 <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
                 <p><strong>Member since:</strong> {{ user.date_joined|date:"M Y" }}</p>
-                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
+                <a href="#" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
             </div>
         </div>
     </div>
@@ -65,7 +66,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3 class="card-title mb-0">Welcome to Your Dashboard</h3>
-                    <a href="{% url 'browse_cars' %}" class="btn btn-primary">
+                    <a href="#" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>New Booking
                     </a>
                 </div>
@@ -113,7 +114,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="card-title mb-0">Recent Bookings</h5>
-                    <a href="{% url 'my_bookings' %}" class="btn btn-outline-primary btn-sm">View All</a>
+                    <a href="{% url 'bookings:my_bookings' %}" class="btn btn-outline-primary btn-sm">View All</a>
                 </div>
                 
                 {% if recent_bookings %}
@@ -157,7 +158,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{% url 'booking_detail' booking.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    <a href="{% url 'bookings:booking_detail' booking.id %}" class="btn btn-sm btn-outline-primary">View</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -168,7 +169,7 @@
                 <div class="text-center py-4">
                     <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
                     <p class="text-muted">No bookings yet</p>
-                    <a href="{% url 'browse_cars' %}" class="btn btn-primary">Make Your First Booking</a>
+                    <a href="#" class="btn btn-primary">Make Your First Booking</a>
                 </div>
                 {% endif %}
             </div>
@@ -191,7 +192,7 @@
                                 <div class="mt-2">
                                     <strong class="text-primary">${{ car.daily_rate }}/day</strong>
                                 </div>
-                                <a href="{% url 'car_detail' car.id %}" class="btn btn-sm btn-primary mt-2">Book Now</a>
+                                <a href="#" class="btn btn-sm btn-primary mt-2">Book Now</a>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,3 @@
-# source users/views.py
-
 from django.views.generic import TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -24,8 +22,8 @@ class CustomLoginView(LoginView):
     
     def get_success_url(self):
         if self.request.user.account_type == 'customer':
-            return reverse_lazy('users:customer_dashboard')
-        return reverse_lazy('rentals:owner_dashboard')  # Changed to rentals app
+            return reverse_lazy('bookings:customer_dashboard')  # Point to bookings app
+        return reverse_lazy('rentals:owner_dashboard')
 
 class CustomLogoutView(LogoutView):
     next_page = 'users:home'
@@ -36,10 +34,4 @@ class CustomLogoutView(LogoutView):
         messages.success(request, f"You have been successfully logged out. Goodbye, {username}!")
         return response
 
-class CustomerDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/customer_dashboard.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['customer'] = getattr(self.request.user, 'customer', None)
-        return context
+# Remove the CustomerDashboardView from here - it's now in bookings app

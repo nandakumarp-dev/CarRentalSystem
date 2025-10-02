@@ -4,7 +4,7 @@ from . import views
 app_name = 'bookings'
 
 urlpatterns = [
-    # Dashboard
+    # Dashboard - this is the main customer dashboard
     path('dashboard/', views.CustomerDashboardView.as_view(), name='customer_dashboard'),
     
     # Bookings
