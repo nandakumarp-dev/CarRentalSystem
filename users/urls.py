@@ -1,3 +1,6 @@
+# source users/urls.py
+
+
 from django.urls import path
 from django.views.generic import RedirectView
 from .views import HomeView, SignUpView, CustomLoginView, CustomLogoutView, CustomerDashboardView

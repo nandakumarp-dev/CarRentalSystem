@@ -1,0 +1,119 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Booking #{{ booking.id }} Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'bookings/partials/customer_menu.html' %}
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card card-3d">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title mb-0">Booking #{{ booking.id }}</h4>
+                    <span class="badge bg-{% if booking.status == 'confirmed' %}success{% elif booking.status == 'active' %}primary{% elif booking.status == 'pending' %}warning{% elif booking.status == 'completed' %}secondary{% else %}danger{% endif %}">
+                        {{ booking.get_status_display }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Car Details</h5>
+                        <div class="d-flex align-items-center mb-3">
+                            {% if booking.car.image %}
+                            <img src="{{ booking.car.image.url }}" alt="{{ booking.car }}" class="rounded me-3" style="width: 80px; height: 60px; object-fit: cover;">
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-1">{{ booking.car.make }} {{ booking.car.model }}</h6>
+                                <small class="text-muted">{{ booking.car.year }} • {{ booking.car.get_car_type_display }}</small>
+                            </div>
+                        </div>
+                        
+                        <h5>Rental Period</h5>
+                        <p class="mb-1"><strong>Start Date:</strong> {{ booking.start_date|date:"M d, Y" }}</p>
+                        <p class="mb-1"><strong>End Date:</strong> {{ booking.end_date|date:"M d, Y" }}</p>
+                        <p><strong>Total Days:</strong> {{ booking.total_days }}</p>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5>Payment Information</h5>
+                        <p class="mb-1"><strong>Total Amount:</strong> ${{ booking.total_amount }}</p>
+                        <p class="mb-1">
+                            <strong>Payment Status:</strong> 
+                            <span class="badge bg-{% if booking.payment_status == 'paid' %}success{% elif booking.payment_status == 'pending' %}warning{% else %}danger{% endif %}">
+                                {{ booking.get_payment_status_display }}
+                            </span>
+                        </p>
+                        
+                        {% if booking.payment %}
+                        <p class="mb-1"><strong>Payment Method:</strong> {{ booking.payment.payment_method|title }}</p>
+                        <p class="mb-1"><strong>Paid At:</strong> {{ booking.payment.paid_at|date:"M d, Y H:i" }}</p>
+                        {% endif %}
+                        
+                        <h5 class="mt-4">Location</h5>
+                        <p class="mb-1"><strong>Pickup:</strong> {{ booking.pickup_location }}</p>
+                        {% if booking.dropoff_location %}
+                        <p class="mb-1"><strong>Dropoff:</strong> {{ booking.dropoff_location }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if booking.special_requests %}
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Special Requests</h5>
+                        <p class="text-muted">{{ booking.special_requests }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if booking.review %}
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Your Review</h5>
+                        <div class="review-card">
+                            <div class="rating">
+                                {% for i in "12345" %}
+                                <i class="fas fa-star{% if forloop.counter > booking.review.rating %} text-muted{% else %} text-warning{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <p class="mt-2">{{ booking.review.comment }}</p>
+                            <small class="text-muted">Reviewed on {{ booking.review.created_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'bookings:my_bookings' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+                            </a>
+                            
+                            {% if can_cancel %}
+                            <form method="post" action="{% url 'bookings:cancel_booking' booking.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger" 
+                                        onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                    <i class="fas fa-times me-2"></i>Cancel Booking
+                                </button>
+                            </form>
+                            {% endif %}
+                            
+                            {% if can_review %}
+                            <a href="{% url 'bookings:create_review' booking.id %}" class="btn btn-primary">
+                                <i class="fas fa-star me-2"></i>Write Review
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

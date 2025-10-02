@@ -1,4 +1,5 @@
 {% extends 'users/base.html' %}
+{% load humanize %}
 
 {% block title %}Customer Dashboard{% endblock %}
 
@@ -9,16 +10,19 @@
             <div class="card-body">
                 <h5 class="card-title">Customer Menu</h5>
                 <div class="list-group dashboard-menu">
-                    <a href="#" class="list-group-item list-group-item-action active">
+                    <a href="{% url 'customer_dashboard' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{% url 'browse_cars' %}" class="list-group-item list-group-item-action">
                         <i class="fas fa-search me-2"></i>Browse Cars
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{% url 'my_bookings' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar-check me-2"></i>My Bookings
+                    </a>
+                    <a href="{% url 'my_favorites' %}" class="list-group-item list-group-item-action">
                         <i class="fas fa-heart me-2"></i>My Favorites
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action">
+                    <a href="{% url 'rental_history' %}" class="list-group-item list-group-item-action">
                         <i class="fas fa-history me-2"></i>Rental History
                     </a>
                 </div>
@@ -27,14 +31,18 @@
         
         <div class="card card-3d mb-4">
             <div class="card-body">
-                <h5 class="card-title">Quick Stats</h5>
+                <h5 class="card-title">Booking Stats</h5>
                 <div class="stat-card bg-primary mb-3">
-                    <h6>Cars Viewed</h6>
-                    <h4>12</h4>
+                    <h6>Active Bookings</h6>
+                    <h4>{{ active_bookings_count }}</h4>
                 </div>
-                <div class="stat-card bg-success">
-                    <h6>Favorite Cars</h6>
-                    <h4>5</h4>
+                <div class="stat-card bg-success mb-3">
+                    <h6>Total Bookings</h6>
+                    <h4>{{ total_bookings_count }}</h4>
+                </div>
+                <div class="stat-card bg-warning">
+                    <h6>Loyalty Points</h6>
+                    <h4>{{ loyalty_points|intcomma }}</h4>
                 </div>
             </div>
         </div>
@@ -46,66 +54,152 @@
                 <p><strong>Email:</strong> {{ user.email }}</p>
                 <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
                 <p><strong>Member since:</strong> {{ user.date_joined|date:"M Y" }}</p>
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
             </div>
         </div>
     </div>
     
     <div class="col-md-9">
+        <!-- Quick Actions -->
         <div class="card card-3d mb-4">
             <div class="card-body">
-                <h3 class="card-title">Welcome to Your Dashboard</h3>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="card-title mb-0">Welcome to Your Dashboard</h3>
+                    <a href="{% url 'browse_cars' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>New Booking
+                    </a>
+                </div>
                 <p>Here you can manage your car rentals, view history, and find new vehicles.</p>
                 
                 <div class="row mt-4">
-                    <div class="col-md-6 mb-3">
-                        <div class="card bg-light">
-                            <div class="card-body">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
                                 <h6><i class="fas fa-clock me-2 text-warning"></i>Current Rentals</h6>
-                                <h4>2 Active</h4>
+                                <h4>{{ active_bookings_count }} Active</h4>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="card bg-light">
-                            <div class="card-body">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
+                                <h6><i class="fas fa-check-circle me-2 text-success"></i>Completed</h6>
+                                <h4>{{ completed_bookings_count }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
                                 <h6><i class="fas fa-star me-2 text-warning"></i>Loyalty Points</h6>
-                                <h4>1,250 Points</h4>
+                                <h4>{{ loyalty_points|intcomma }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
+                                <h6><i class="fas fa-calendar me-2 text-info"></i>Upcoming</h6>
+                                <h4>{{ upcoming_bookings_count }}</h4>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Recent Bookings Section -->
+        <div class="card card-3d mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Recent Bookings</h5>
+                    <a href="{% url 'my_bookings' %}" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
                 
-                <div class="mt-4">
-                    <h5>Recommended for You</h5>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-car text-primary mb-2"></i>
-                                    <h6>Economy Sedan</h6>
-                                    <small>Perfect for city driving</small>
+                {% if recent_bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Car</th>
+                                <th>Period</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in recent_bookings %}
+                            <tr>
+                                <td>#{{ booking.id }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if booking.car.image %}
+                                        <img src="{{ booking.car.image.url }}" alt="{{ booking.car.name }}" class="rounded me-2" style="width: 40px; height: 30px; object-fit: cover;">
+                                        {% endif %}
+                                        <span>{{ booking.car.make }} {{ booking.car.model }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <small>{{ booking.start_date|date:"M d" }} - {{ booking.end_date|date:"M d" }}</small>
+                                    <br><small class="text-muted">{{ booking.total_days }} days</small>
+                                </td>
+                                <td>${{ booking.total_amount }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if booking.status == 'confirmed' %}bg-success
+                                        {% elif booking.status == 'active' %}bg-primary
+                                        {% elif booking.status == 'pending' %}bg-warning
+                                        {% elif booking.status == 'completed' %}bg-secondary
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ booking.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'booking_detail' booking.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No bookings yet</p>
+                    <a href="{% url 'browse_cars' %}" class="btn btn-primary">Make Your First Booking</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recommended Cars -->
+        <div class="card card-3d">
+            <div class="card-body">
+                <h5 class="card-title">Recommended for You</h5>
+                <div class="row">
+                    {% for car in recommended_cars %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 car-card">
+                            {% if car.image %}
+                            <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.name }}" style="height: 120px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h6 class="card-title">{{ car.make }} {{ car.model }}</h6>
+                                <small class="text-muted">{{ car.category }}</small>
+                                <div class="mt-2">
+                                    <strong class="text-primary">${{ car.daily_rate }}/day</strong>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-car text-primary mb-2"></i>
-                                    <h6>SUV</h6>
-                                    <small>Great for family trips</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-car text-primary mb-2"></i>
-                                    <h6>Luxury Car</h6>
-                                    <small>For special occasions</small>
-                                </div>
+                                <a href="{% url 'car_detail' car.id %}" class="btn btn-sm btn-primary mt-2">Book Now</a>
                             </div>
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="col-12 text-center py-3">
+                        <p class="text-muted">No recommendations available</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -113,6 +207,17 @@
 </div>
 
 <style>
+    .car-card {
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
     .dashboard-menu .list-group-item {
         border: none;
         padding: 15px 20px;
@@ -174,25 +279,5 @@
         font-weight: 700;
         margin: 0;
     }
-    
-    @keyframes slideInLeft {
-        from { transform: translateX(-50px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideInRight {
-        from { transform: translateX(50px); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes bounceIn {
-        0% { transform: scale(0.5); opacity: 0; }
-        70% { transform: scale(1.05); }
-        100% { transform: scale(1); opacity: 1; }
-    }
-    
-    .slide-in-left { animation: slideInLeft 0.8s ease; }
-    .slide-in-right { animation: slideInRight 0.8s ease; }
-    .bounce-in { animation: bounceIn 0.8s ease; }
 </style>
 {% endblock %}

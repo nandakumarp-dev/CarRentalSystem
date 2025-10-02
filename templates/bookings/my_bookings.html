@@ -1,0 +1,109 @@
+{% extends 'users/base.html' %}
+{% load humanize %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <!-- Sidebar menu same as dashboard -->
+        {% include 'bookings/partials/customer_menu.html' %}
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card card-3d">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="card-title mb-0">My Bookings</h3>
+                    <div class="filter-section">
+                        <select class="form-select" onchange="location = this.value;">
+                            <option value="{% url 'my_bookings' %}" {% if not status_filter %}selected{% endif %}>All Bookings</option>
+                            <option value="{% url 'my_bookings' %}?status=pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="{% url 'my_bookings' %}?status=confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                            <option value="{% url 'my_bookings' %}?status=active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                            <option value="{% url 'my_bookings' %}?status=completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="{% url 'my_bookings' %}?status=cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Car</th>
+                                <th>Dates</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>#{{ booking.id }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        {% if booking.car.image %}
+                                        <img src="{{ booking.car.image.url }}" alt="{{ booking.car.name }}" class="rounded me-2" style="width: 50px; height: 35px; object-fit: cover;">
+                                        {% endif %}
+                                        <div>
+                                            <strong>{{ booking.car.make }} {{ booking.car.model }}</strong>
+                                            <br><small class="text-muted">{{ booking.car.year }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <small>{{ booking.start_date|date:"M d, Y" }}</small>
+                                    <br><small class="text-muted">to {{ booking.end_date|date:"M d, Y" }}</small>
+                                    <br><small>{{ booking.total_days }} days</small>
+                                </td>
+                                <td>${{ booking.total_amount }}</td>
+                                <td>
+                                    <span class="badge 
+                                        {% if booking.status == 'confirmed' %}bg-success
+                                        {% elif booking.status == 'active' %}bg-primary
+                                        {% elif booking.status == 'pending' %}bg-warning
+                                        {% elif booking.status == 'completed' %}bg-secondary
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ booking.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if booking.payment_status == 'paid' %}bg-success
+                                        {% elif booking.payment_status == 'pending' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ booking.get_payment_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'bookings:booking_detail' booking.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                        {% if booking.status in ['pending', 'confirmed'] %}
+                                        <a href="{% url 'bookings:cancel_booking' booking.id %}" class="btn btn-sm btn-outline-danger" 
+                                           onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No bookings found</h4>
+                    <p class="text-muted">{% if status_filter %}No {{ status_filter }} bookings{% else %}You haven't made any bookings yet{% endif %}</p>
+                    <a href="{% url 'browse_cars' %}" class="btn btn-primary">Browse Cars</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

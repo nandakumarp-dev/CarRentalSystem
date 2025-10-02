@@ -1,0 +1,22 @@
+<div class="card card-3d mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Customer Menu</h5>
+        <div class="list-group dashboard-menu">
+            <a href="{% url 'bookings:customer_dashboard' %}" 
+               class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+            </a>
+            <a href="{% url 'browse_cars' %}" class="list-group-item list-group-item-action">
+                <i class="fas fa-search me-2"></i>Browse Cars
+            </a>
+            <a href="{% url 'bookings:my_bookings' %}" 
+               class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
+                <i class="fas fa-calendar-check me-2"></i>My Bookings
+            </a>
+            <a href="{% url 'bookings:rental_history' %}" 
+               class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'rental_history' %}active{% endif %}">
+                <i class="fas fa-history me-2"></i>Rental History
+            </a>
+        </div>
+    </div>
+</div>
