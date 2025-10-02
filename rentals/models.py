@@ -153,7 +153,7 @@ class Rental(models.Model):
         constraints = [
             models.CheckConstraint(
                 check=models.Q(end_date__gt=models.F('start_date')),
-                name='end_date_after_start_date'
+                name='rental_end_date_after_start_date'  # Unique name
             )
         ]
     

@@ -118,7 +118,7 @@ class PaymentForm(forms.Form):
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'MM/YY',
-            'pattern': '(0[1-9]|1[0-2])\/[0-9]{2}'
+            'pattern': r'(0[1-9]|1[0-2])\/[0-9]{2}'  # Fixed: added raw string prefix
         })
     )
     cvv = forms.CharField(

@@ -47,7 +47,7 @@ class Booking(models.Model):
         constraints = [
             models.CheckConstraint(
                 check=models.Q(end_date__gt=models.F('start_date')),
-                name='end_date_after_start_date'
+                name='booking_end_date_after_start_date'  # Unique name
             )
         ]
         verbose_name = 'Booking'

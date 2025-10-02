@@ -8,6 +8,8 @@ urlpatterns = [
     path('', include('users.urls')),
     path('rentals/', include('rentals.urls')),
     path('bookings/', include('bookings.urls')),
+    # Remove API URLs for now - we'll add them later when we install DRF
+    # path('', include('carrentalsystem.api_urls')),
 ]
 
 if settings.DEBUG:

@@ -7,8 +7,6 @@ from django.utils import timezone
 from django.db.models import Q, Count, Sum, Avg
 from django.http import JsonResponse, Http404
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from datetime import datetime, timedelta
 import logging
 import json
@@ -516,43 +514,46 @@ class BookingAvailabilityCheckView(LoginRequiredMixin, View):
         return discount
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class PaymentWebhookView(View):
-    """Webhook endpoint for payment providers (Stripe, etc.)"""
-    
-    def post(self, request):
-        try:
-            # In production, you would verify the webhook signature
-            payload = json.loads(request.body)
-            
-            # Process different webhook events
-            event_type = payload.get('type')
-            
-            if event_type == 'payment_intent.succeeded':
-                payment_intent = payload.get('data', {}).get('object', {})
-                payment_intent_id = payment_intent.get('id')
-                
-                # Find and update the corresponding booking
-                try:
-                    from .models import BookingPayment
-                    booking_payment = BookingPayment.objects.get(
-                        payment_intent_id=payment_intent_id
-                    )
-                    booking = booking_payment.booking
-                    booking.payment_status = 'paid'
-                    booking.status = 'confirmed'
-                    booking.save()
-                    
-                    booking_payment.paid_at = timezone.now()
-                    booking_payment.save()
-                    
-                    logger.info(f"Payment confirmed via webhook for booking #{booking.id}")
-                    
-                except BookingPayment.DoesNotExist:
-                    logger.error(f"Payment intent not found: {payment_intent_id}")
-            
-            return JsonResponse({'status': 'success'})
-            
-        except Exception as e:
-            logger.error(f"Error processing webhook: {str(e)}")
-            return JsonResponse({'error': 'Webhook processing failed'}, status=400)
+# Remove the PaymentWebhookView for now since it requires additional setup
+# We'll add it back when we have proper payment integration
+
+# @method_decorator(csrf_exempt, name='dispatch')
+# class PaymentWebhookView(View):
+#     """Webhook endpoint for payment providers (Stripe, etc.)"""
+#     
+#     def post(self, request):
+#         try:
+#             # In production, you would verify the webhook signature
+#             payload = json.loads(request.body)
+#             
+#             # Process different webhook events
+#             event_type = payload.get('type')
+#             
+#             if event_type == 'payment_intent.succeeded':
+#                 payment_intent = payload.get('data', {}).get('object', {})
+#                 payment_intent_id = payment_intent.get('id')
+#                 
+#                 # Find and update the corresponding booking
+#                 try:
+#                     from .models import BookingPayment
+#                     booking_payment = BookingPayment.objects.get(
+#                         payment_intent_id=payment_intent_id
+#                     )
+#                     booking = booking_payment.booking
+#                     booking.payment_status = 'paid'
+#                     booking.status = 'confirmed'
+#                     booking.save()
+#                     
+#                     booking_payment.paid_at = timezone.now()
+#                     booking_payment.save()
+#                     
+#                     logger.info(f"Payment confirmed via webhook for booking #{booking.id}")
+#                     
+#                 except BookingPayment.DoesNotExist:
+#                     logger.error(f"Payment intent not found: {payment_intent_id}")
+#             
+#             return JsonResponse({'status': 'success'})
+#             
+#         except Exception as e:
+#             logger.error(f"Error processing webhook: {str(e)}")
+#             return JsonResponse({'error': 'Webhook processing failed'}, status=400)

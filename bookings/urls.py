@@ -20,7 +20,7 @@ urlpatterns = [
     # Payments
     path('booking/<int:pk>/payment/', views.BookingPaymentView.as_view(), name='booking_payment'),
     path('booking/<int:pk>/process-payment/', views.ProcessPaymentView.as_view(), name='process_payment'),
-    path('webhooks/payment/', views.PaymentWebhookView.as_view(), name='payment_webhook'),
+    # Remove webhook for now: path('webhooks/payment/', views.PaymentWebhookView.as_view(), name='payment_webhook'),
     
     # Favorites
     path('favorites/', views.FavoriteListView.as_view(), name='favorite_cars'),

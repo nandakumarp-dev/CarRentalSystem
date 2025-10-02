@@ -42,7 +42,7 @@ class Customer(models.Model):
     address = models.TextField(blank=True)
     city = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -59,7 +59,7 @@ class CarOwner(models.Model):
     tax_id = models.CharField(max_length=50, blank=True)
     verified = models.BooleanField(default=False)
     verification_date = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)  # Changed from auto_now_add=True
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
