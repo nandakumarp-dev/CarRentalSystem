@@ -1,21 +1,31 @@
 <div class="card card-3d mb-4">
     <div class="card-body">
-        <h5 class="card-title">Customer Menu</h5>
-        <div class="list-group dashboard-menu">
+        <h5 class="card-title text-primary mb-3">Customer Menu</h5>
+        <div class="list-group list-group-flush">
             <a href="{% url 'bookings:customer_dashboard' %}" 
-               class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
-                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+               class="list-group-item list-group-item-action d-flex align-items-center {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+                <i class="fas fa-tachometer-alt me-3"></i>
+                <span>Dashboard</span>
             </a>
-            <a href="{% url 'browse_cars' %}" class="list-group-item list-group-item-action">
-                <i class="fas fa-search me-2"></i>Browse Cars
+            <a href="{% url 'rentals:browse_cars' %}" 
+               class="list-group-item list-group-item-action d-flex align-items-center">
+                <i class="fas fa-search me-3"></i>
+                <span>Browse Cars</span>
             </a>
             <a href="{% url 'bookings:my_bookings' %}" 
-               class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
-                <i class="fas fa-calendar-check me-2"></i>My Bookings
+               class="list-group-item list-group-item-action d-flex align-items-center {% if request.resolver_match.url_name == 'my_bookings' %}active{% endif %}">
+                <i class="fas fa-calendar-check me-3"></i>
+                <span>My Bookings</span>
+            </a>
+            <a href="{% url 'bookings:favorite_cars' %}" 
+               class="list-group-item list-group-item-action d-flex align-items-center {% if request.resolver_match.url_name == 'favorite_cars' %}active{% endif %}">
+                <i class="fas fa-heart me-3"></i>
+                <span>My Favorites</span>
             </a>
             <a href="{% url 'bookings:rental_history' %}" 
-               class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'rental_history' %}active{% endif %}">
-                <i class="fas fa-history me-2"></i>Rental History
+               class="list-group-item list-group-item-action d-flex align-items-center {% if request.resolver_match.url_name == 'rental_history' %}active{% endif %}">
+                <i class="fas fa-history me-3"></i>
+                <span>Rental History</span>
             </a>
         </div>
     </div>

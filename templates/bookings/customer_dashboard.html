@@ -1,206 +1,290 @@
 {% extends 'users/base.html' %}
 {% load humanize %}
 
-{% block title %}Customer Dashboard{% endblock %}
+{% block title %}Customer Dashboard - DriveRental{% endblock %}
 
 {% block content %}
-<div class="row fade-in">
-    <div class="col-md-3">
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Customer Menu</h5>
-                <div class="list-group dashboard-menu">
-                    <a href="{% url 'bookings:customer_dashboard' %}" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-search me-2"></i>Browse Cars
-                    </a>
-                    <a href="{% url 'bookings:my_bookings' %}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-calendar-check me-2"></i>My Bookings
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-heart me-2"></i>My Favorites
-                    </a>
-                    <a href="{% url 'bookings:rental_history' %}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-history me-2"></i>Rental History
-                    </a>
+<div class="container-fluid py-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-3d bg-primary text-white">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="h2 fw-bold">Welcome back, {{ user.first_name }}! 👋</h1>
+                            <p class="mb-0">Manage your bookings and find your next ride.</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="bg-white text-primary rounded-pill px-3 py-2 d-inline-block">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                <span id="current-date"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Rest of your dashboard content remains the same -->
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Booking Stats</h5>
-                <div class="stat-card bg-primary mb-3">
-                    <h6>Active Bookings</h6>
-                    <h4>{{ active_bookings_count }}</h4>
-                </div>
-                <div class="stat-card bg-success mb-3">
-                    <h6>Total Bookings</h6>
-                    <h4>{{ total_bookings_count }}</h4>
-                </div>
-                <div class="stat-card bg-warning">
-                    <h6>Loyalty Points</h6>
-                    <h4>{{ loyalty_points|intcomma }}</h4>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card card-3d">
-            <div class="card-body">
-                <h5 class="card-title">Your Profile</h5>
-                <p><strong>Name:</strong> {{ user.get_full_name }}</p>
-                <p><strong>Email:</strong> {{ user.email }}</p>
-                <p><strong>Account Type:</strong> {{ user.get_account_type_display }}</p>
-                <p><strong>Member since:</strong> {{ user.date_joined|date:"M Y" }}</p>
-                <a href="#" class="btn btn-outline-primary btn-sm mt-2">Edit Profile</a>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-9">
-        <!-- Quick Actions -->
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3 class="card-title mb-0">Welcome to Your Dashboard</h3>
-                    <a href="#" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>New Booking
-                    </a>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card card-3d mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary mb-3">Customer Menu</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'bookings:customer_dashboard' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center active">
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'rentals:browse_cars' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-search me-3"></i>
+                            <span>Browse Cars</span>
+                        </a>
+                        <a href="{% url 'bookings:my_bookings' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-calendar-check me-3"></i>
+                            <span>My Bookings</span>
+                        </a>
+                        <a href="{% url 'bookings:favorite_cars' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-heart me-3"></i>
+                            <span>My Favorites</span>
+                        </a>
+                        <a href="{% url 'bookings:rental_history' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-history me-3"></i>
+                            <span>Rental History</span>
+                        </a>
+                    </div>
                 </div>
-                <p>Here you can manage your car rentals, view history, and find new vehicles.</p>
-                
-                <div class="row mt-4">
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light h-100">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-clock me-2 text-warning"></i>Current Rentals</h6>
-                                <h4>{{ active_bookings_count }} Active</h4>
-                            </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card card-3d">
+                <div class="card-body">
+                    <h5 class="card-title text-primary mb-3">Quick Stats</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Active Bookings</span>
+                            <span class="fw-bold text-primary">{{ active_bookings_count }}</span>
                         </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light h-100">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-check-circle me-2 text-success"></i>Completed</h6>
-                                <h4>{{ completed_bookings_count }}</h4>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Total Bookings</span>
+                            <span class="fw-bold text-success">{{ total_bookings_count }}</span>
                         </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light h-100">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-star me-2 text-warning"></i>Loyalty Points</h6>
-                                <h4>{{ loyalty_points|intcomma }}</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="card bg-light h-100">
-                            <div class="card-body text-center">
-                                <h6><i class="fas fa-calendar me-2 text-info"></i>Upcoming</h6>
-                                <h4>{{ upcoming_bookings_count }}</h4>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Loyalty Points</span>
+                            <span class="fw-bold text-warning">{{ loyalty_points|intcomma }}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Bookings Section -->
-        <div class="card card-3d mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title mb-0">Recent Bookings</h5>
-                    <a href="{% url 'bookings:my_bookings' %}" class="btn btn-outline-primary btn-sm">View All</a>
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Quick Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card card-3d border-start border-primary border-4">
+                        <div class="card-body text-center">
+                            <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-clock fa-2x text-white"></i>
+                            </div>
+                            <h3 class="text-primary">{{ active_bookings_count }}</h3>
+                            <p class="text-muted mb-0">Active Rentals</p>
+                        </div>
+                    </div>
                 </div>
-                
-                {% if recent_bookings %}
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Booking ID</th>
-                                <th>Car</th>
-                                <th>Period</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for booking in recent_bookings %}
-                            <tr>
-                                <td>#{{ booking.id }}</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        {% if booking.car.image %}
-                                        <img src="{{ booking.car.image.url }}" alt="{{ booking.car.name }}" class="rounded me-2" style="width: 40px; height: 30px; object-fit: cover;">
-                                        {% endif %}
-                                        <span>{{ booking.car.make }} {{ booking.car.model }}</span>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card card-3d border-start border-success border-4">
+                        <div class="card-body text-center">
+                            <div class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-check-circle fa-2x text-white"></i>
+                            </div>
+                            <h3 class="text-success">{{ completed_bookings_count }}</h3>
+                            <p class="text-muted mb-0">Completed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card card-3d border-start border-warning border-4">
+                        <div class="card-body text-center">
+                            <div class="bg-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-star fa-2x text-white"></i>
+                            </div>
+                            <h3 class="text-warning">{{ loyalty_points|intcomma }}</h3>
+                            <p class="text-muted mb-0">Loyalty Points</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card card-3d border-start border-info border-4">
+                        <div class="card-body text-center">
+                            <div class="bg-info rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-calendar fa-2x text-white"></i>
+                            </div>
+                            <h3 class="text-info">{{ upcoming_bookings_count }}</h3>
+                            <p class="text-muted mb-0">Upcoming</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card card-3d mb-4">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Bookings
+                    </h5>
+                    <a href="{% url 'bookings:my_bookings' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_bookings %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Car</th>
+                                    <th>Dates</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in recent_bookings %}
+                                <tr>
+                                    <td>
+                                        <strong>#{{ booking.id }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ booking.created_at|date:"M d, Y" }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if booking.car.image %}
+                                            <img src="{{ booking.car.image.url }}" alt="{{ booking.car.make }} {{ booking.car.model }}" 
+                                                 class="rounded me-3" style="width: 60px; height: 40px; object-fit: cover;">
+                                            {% else %}
+                                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" 
+                                                 style="width: 60px; height: 40px;">
+                                                <i class="fas fa-car text-muted"></i>
+                                            </div>
+                                            {% endif %}
+                                            <div>
+                                                <strong>{{ booking.car.make }} {{ booking.car.model }}</strong>
+                                                <br>
+                                                <small class="text-muted">{{ booking.car.year }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-nowrap">
+                                            <strong>{{ booking.start_date|date:"M d" }} - {{ booking.end_date|date:"M d" }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ booking.total_days }} days</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong class="text-primary">${{ booking.total_amount }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if booking.status == 'confirmed' %}bg-success
+                                            {% elif booking.status == 'active' %}bg-primary
+                                            {% elif booking.status == 'pending' %}bg-warning
+                                            {% elif booking.status == 'completed' %}bg-secondary
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ booking.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'bookings:booking_detail' booking.id %}" 
+                                               class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                                            <a href="{% url 'bookings:cancel_booking' booking.id %}" 
+                                               class="btn btn-sm btn-outline-danger" 
+                                               data-bs-toggle="tooltip" title="Cancel Booking"
+                                               onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No bookings yet</h4>
+                        <p class="text-muted mb-4">Start your journey by making your first booking.</p>
+                        <a href="{% url 'rentals:browse_cars' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Browse Cars
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recommended Cars -->
+            <div class="card card-3d">
+                <div class="card-header bg-transparent">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-star me-2"></i>Recommended for You
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recommended_cars %}
+                    <div class="row">
+                        {% for car in recommended_cars %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card car-card h-100">
+                                <div class="car-image position-relative">
+                                    {% if car.image %}
+                                    <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.make }} {{ car.model }}" 
+                                         style="height: 180px; object-fit: cover;">
+                                    {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                         style="height: 180px;">
+                                        <i class="fas fa-car fa-3x text-muted"></i>
                                     </div>
-                                </td>
-                                <td>
-                                    <small>{{ booking.start_date|date:"M d" }} - {{ booking.end_date|date:"M d" }}</small>
-                                    <br><small class="text-muted">{{ booking.total_days }} days</small>
-                                </td>
-                                <td>${{ booking.total_amount }}</td>
-                                <td>
-                                    <span class="badge 
-                                        {% if booking.status == 'confirmed' %}bg-success
-                                        {% elif booking.status == 'active' %}bg-primary
-                                        {% elif booking.status == 'pending' %}bg-warning
-                                        {% elif booking.status == 'completed' %}bg-secondary
-                                        {% else %}bg-danger{% endif %}">
-                                        {{ booking.get_status_display }}
+                                    {% endif %}
+                                    <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                        Available
                                     </span>
-                                </td>
-                                <td>
-                                    <a href="{% url 'bookings:booking_detail' booking.id %}" class="btn btn-sm btn-outline-primary">View</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <div class="text-center py-4">
-                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No bookings yet</p>
-                    <a href="#" class="btn btn-primary">Make Your First Booking</a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Recommended Cars -->
-        <div class="card card-3d">
-            <div class="card-body">
-                <h5 class="card-title">Recommended for You</h5>
-                <div class="row">
-                    {% for car in recommended_cars %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 car-card">
-                            {% if car.image %}
-                            <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.name }}" style="height: 120px; object-fit: cover;">
-                            {% endif %}
-                            <div class="card-body text-center">
-                                <h6 class="card-title">{{ car.make }} {{ car.model }}</h6>
-                                <small class="text-muted">{{ car.category }}</small>
-                                <div class="mt-2">
-                                    <strong class="text-primary">${{ car.daily_rate }}/day</strong>
                                 </div>
-                                <a href="#" class="btn btn-sm btn-primary mt-2">Book Now</a>
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ car.make }} {{ car.model }}</h6>
+                                    <p class="card-text text-muted small mb-2">{{ car.year }} • {{ car.get_car_type_display }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="h5 text-primary mb-0">${{ car.daily_rate }}/day</span>
+                                        <a href="{% url 'rentals:car_detail' car.id %}" class="btn btn-primary btn-sm">
+                                            Book Now
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <div class="col-12 text-center py-3">
-                        <p class="text-muted">No recommendations available</p>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No recommendations available at the moment.</p>
+                        <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-primary">Browse All Cars</a>
                     </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -208,77 +292,62 @@
 </div>
 
 <style>
-    .car-card {
-        transition: all 0.3s ease;
-        border: none;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .car-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
-    
-    .dashboard-menu .list-group-item {
-        border: none;
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(5px);
-    }
-    
-    .dashboard-menu .list-group-item:hover {
-        background: var(--primary);
-        color: white;
-        transform: translateX(5px);
-    }
-    
-    .dashboard-menu .list-group-item.active {
-        background: var(--primary);
-        color: white;
-        transform: translateX(5px);
-        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
-    }
-    
-    .stat-card {
-        border-radius: 15px;
-        color: white;
-        padding: 20px;
-        margin-bottom: 20px;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .stat-card:before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
-    
-    .stat-card h6 {
-        font-size: 0.9rem;
-        opacity: 0.9;
-        margin-bottom: 5px;
-    }
-    
-    .stat-card h4 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin: 0;
-    }
+.car-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.card-3d {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+}
+
+.card-3d:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+.list-group-item {
+    border: none;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.7);
+}
+
+.list-group-item:hover, .list-group-item.active {
+    background: #4361ee;
+    color: white;
+    transform: translateX(5px);
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set current date
+    const now = new Date();
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}

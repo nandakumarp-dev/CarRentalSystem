@@ -1,0 +1,370 @@
+{% extends 'users/base.html' %}
+{% load humanize %}
+
+{% block title %}My Favorites - DriveRental{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 fw-bold">My Favorite Cars</h1>
+                    <p class="text-muted">Your saved cars for quick booking</p>
+                </div>
+                <div>
+                    <a href="{% url 'rentals:browse_cars' %}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Browse More Cars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            <div class="card card-3d mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary mb-3">Customer Menu</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'bookings:customer_dashboard' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-tachometer-alt me-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="{% url 'rentals:browse_cars' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-search me-3"></i>
+                            <span>Browse Cars</span>
+                        </a>
+                        <a href="{% url 'bookings:my_bookings' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-calendar-check me-3"></i>
+                            <span>My Bookings</span>
+                        </a>
+                        <a href="{% url 'bookings:favorite_cars' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center active">
+                            <i class="fas fa-heart me-3"></i>
+                            <span>My Favorites</span>
+                        </a>
+                        <a href="{% url 'bookings:rental_history' %}" 
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-history me-3"></i>
+                            <span>Rental History</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favorites Stats -->
+            <div class="card card-3d">
+                <div class="card-body">
+                    <h5 class="card-title text-primary mb-3">Favorites Summary</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Total Favorites</span>
+                            <span class="fw-bold text-primary">{{ favorites_count }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Available Now</span>
+                            <span class="fw-bold text-success">{{ available_count }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Recently Added</span>
+                            <span class="fw-bold text-info">{{ recent_count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            {% if favorite_cars %}
+            <div class="row">
+                {% for favorite in favorite_cars %}
+                <div class="col-xl-4 col-lg-6 mb-4">
+                    <div class="card car-card h-100">
+                        <div class="car-image position-relative">
+                            {% if favorite.car.image %}
+                            <img src="{{ favorite.car.image.url }}" class="card-img-top" alt="{{ favorite.car.make }} {{ favorite.car.model }}" 
+                                 style="height: 200px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                 style="height: 200px;">
+                                <i class="fas fa-car fa-3x text-muted"></i>
+                            </div>
+                            {% endif %}
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                Available
+                            </span>
+                            <button class="btn btn-danger btn-sm position-absolute top-0 start-0 m-2 favorite-btn"
+                                    data-car-id="{{ favorite.car.id }}"
+                                    data-bs-toggle="tooltip" 
+                                    title="Remove from favorites">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ favorite.car.make }} {{ favorite.car.model }}</h5>
+                            <p class="card-text text-muted mb-2">{{ favorite.car.year }} • {{ favorite.car.get_car_type_display }}</p>
+                            
+                            <div class="car-specs mb-3">
+                                <div class="row text-center small">
+                                    <div class="col-4">
+                                        <i class="fas fa-gas-pump text-primary mb-1"></i>
+                                        <div>{{ favorite.car.get_fuel_type_display }}</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-cog text-primary mb-1"></i>
+                                        <div>{{ favorite.car.get_transmission_display }}</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fas fa-users text-primary mb-1"></i>
+                                        <div>{{ favorite.car.seats }} seats</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="car-location mb-3">
+                                <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                                <small class="text-muted">{{ favorite.car.city|default:"Location not specified" }}</small>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="h4 text-primary mb-0">${{ favorite.car.daily_rate }}</span>
+                                    <small class="text-muted">/day</small>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="{% url 'rentals:car_detail' favorite.car.id %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    <a href="{% url 'bookings:create_booking' favorite.car.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-calendar-check me-1"></i>Book
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Added {{ favorite.created_at|timesince }} ago
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav aria-label="Favorites pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                            <i class="fas fa-chevron-left me-2"></i>Previous
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                            Next <i class="fas fa-chevron-right ms-2"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            
+            {% else %}
+            <!-- Empty State -->
+            <div class="card card-3d">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-heart fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">No favorite cars yet</h4>
+                    <p class="text-muted mb-4">
+                        Start building your favorites list by saving cars you're interested in.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'rentals:browse_cars' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Browse Cars
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.car-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.card-3d {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+}
+
+.card-3d:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+.list-group-item {
+    border: none;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.7);
+}
+
+.list-group-item:hover, .list-group-item.active {
+    background: #4361ee;
+    color: white;
+    transform: translateX(5px);
+}
+
+.car-specs {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.favorite-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Handle favorite removal
+    const favoriteButtons = document.querySelectorAll('.favorite-btn');
+    
+    favoriteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const carId = this.getAttribute('data-car-id');
+            
+            if (confirm('Are you sure you want to remove this car from your favorites?')) {
+                // Send AJAX request to remove from favorites
+                fetch(`/bookings/favorites/remove/${carId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the card from the DOM
+                        this.closest('.col-xl-4').remove();
+                        
+                        // Show success message
+                        showAlert('Car removed from favorites', 'success');
+                        
+                        // Update favorites count if needed
+                        updateFavoritesCount();
+                    } else {
+                        showAlert('Error removing from favorites', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('Error removing from favorites', 'error');
+                });
+            }
+        });
+    });
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Helper function to show alerts
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.row'));
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+
+    // Update favorites count (you can implement this based on your needs)
+    function updateFavoritesCount() {
+        // This would typically make another AJAX call to get updated count
+        // For now, we'll just reload the page after a short delay
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+});
+</script>
+{% endblock %}

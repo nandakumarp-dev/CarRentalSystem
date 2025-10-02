@@ -1,0 +1,266 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Update Profile - DriveRental{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px;">
+                            <i class="fas fa-user-edit fa-lg text-white"></i>
+                        </div>
+                        <h2 class="h4 fw-bold">Update Your Profile</h2>
+                        <p class="text-muted">Keep your information up to date</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- User Information -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-user me-2"></i>Personal Information
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">First Name</label>
+                                    {{ user_form.first_name }}
+                                    {% if user_form.first_name.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Last Name</label>
+                                    {{ user_form.last_name }}
+                                    {% if user_form.last_name.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Email</label>
+                                    {{ user_form.email }}
+                                    {% if user_form.email.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">Phone Number</label>
+                                    {{ user_form.phone_number }}
+                                    {% if user_form.phone_number.errors %}
+                                    <div class="text-danger small mt-1">{{ user_form.phone_number.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Information -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-id-card me-2"></i>
+                                {% if user.account_type == 'customer' %}
+                                    Customer Profile
+                                {% else %}
+                                    Business Profile
+                                {% endif %}
+                            </h5>
+                            
+                            {% if user.account_type == 'customer' %}
+                                <!-- Customer Profile Fields -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Date of Birth</label>
+                                        {{ form.date_of_birth }}
+                                        {% if form.date_of_birth.errors %}
+                                        <div class="text-danger small mt-1">{{ form.date_of_birth.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Driver License Number</label>
+                                        {{ form.driver_license_number }}
+                                        {% if form.driver_license_number.errors %}
+                                        <div class="text-danger small mt-1">{{ form.driver_license_number.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12 mb-3">
+                                        <label class="form-label fw-semibold">Address</label>
+                                        {{ form.address }}
+                                        {% if form.address.errors %}
+                                        <div class="text-danger small mt-1">{{ form.address.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">City</label>
+                                        {{ form.city }}
+                                        {% if form.city.errors %}
+                                        <div class="text-danger small mt-1">{{ form.city.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Country</label>
+                                        {{ form.country }}
+                                        {% if form.country.errors %}
+                                        <div class="text-danger small mt-1">{{ form.country.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                            {% else %}
+                                <!-- Car Owner Profile Fields -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Company Name</label>
+                                        {{ form.company_name }}
+                                        {% if form.company_name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.company_name.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Tax ID</label>
+                                        {{ form.tax_id }}
+                                        {% if form.tax_id.errors %}
+                                        <div class="text-danger small mt-1">{{ form.tax_id.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Company Address</label>
+                                    {{ form.company_address }}
+                                    {% if form.company_address.errors %}
+                                    <div class="text-danger small mt-1">{{ form.company_address.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Verification Status</label>
+                                    <div>
+                                        {% if user.owner_profile.verified %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i>Verified
+                                        </span>
+                                        <div class="form-text text-success">
+                                            Your business account has been verified
+                                        </div>
+                                        {% else %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-clock me-1"></i>Pending Verification
+                                        </span>
+                                        <div class="form-text">
+                                            <a href="#" class="text-primary text-decoration-none">Submit verification documents</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Account Type Display -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3 text-primary">
+                                <i class="fas fa-users me-2"></i>Account Type
+                            </h5>
+                            <div class="alert alert-info">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <div>
+                                        <strong>
+                                            {% if user.account_type == 'customer' %}
+                                                Customer Account
+                                            {% else %}
+                                                Rental Owner Account
+                                            {% endif %}
+                                        </strong>
+                                        <p class="mb-0 small">
+                                            {% if user.account_type == 'customer' %}
+                                                You can browse and book cars for rental.
+                                            {% else %}
+                                                You can list and manage cars for rental.
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="border-top pt-4 mt-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                                <a href="{% url 'users:user_update' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-cog me-2"></i>Account Settings
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add proper classes to form fields
+    const formControls = document.querySelectorAll('input, select, textarea');
+    formControls.forEach(control => {
+        if (!control.classList.contains('form-control') && control.type !== 'checkbox' && control.type !== 'radio') {
+            control.classList.add('form-control');
+        }
+    });
+    
+    // Form submission loading state
+    const form = document.querySelector('form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+    });
+    
+    // Date field enhancement
+    const dateField = document.querySelector('input[type="date"]');
+    if (dateField) {
+        dateField.classList.add('form-control');
+    }
+});
+</script>
+{% endblock %}
