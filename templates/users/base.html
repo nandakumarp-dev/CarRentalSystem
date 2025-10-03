@@ -164,6 +164,12 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+
+        /* Dropdown form styling */
+        .dropdown-item:focus, .dropdown-item:hover {
+            background-color: var(--primary);
+            color: white;
+        }
     </style>
     
     {% block extra_css %}{% endblock %}
@@ -224,9 +230,12 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item text-danger" href="{% url 'users:logout' %}">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </a>
+                                    <form method="post" action="{% url 'users:logout' %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start" style="cursor: pointer;">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </li>
