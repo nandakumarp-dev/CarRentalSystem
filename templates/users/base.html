@@ -1,31 +1,34 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}DriveRental - Premium Car Rental{% endblock %}</title>
+    <title>{% block title %}DriveRental | Premium Car Rental{% endblock %}</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --primary-light: #3b82f6;
-            --secondary: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --primary-light: #4d94ff;
+            --accent: #00d4aa;
+            --accent-dark: #00b894;
             --dark: #1e293b;
+            --darker: #0f172a;
             --light: #f8fafc;
+            --lighter: #ffffff;
             --border: #e2e8f0;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --gradient: linear-gradient(135deg, var(--primary), var(--accent));
         }
 
         * {
@@ -36,55 +39,100 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff;
+            background-color: var(--lighter);
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
-        /* Navigation */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Premium Navigation */
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            padding: 1rem 0;
+            padding: 1.2rem 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
         }
 
         .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--primary) !important;
+            font-weight: 800;
+            font-size: 1.75rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .nav-link {
             font-weight: 500;
             color: var(--dark) !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .nav-link:hover {
-            background: var(--primary);
-            color: white !important;
+            color: var(--primary) !important;
+            transform: translateY(-1px);
         }
 
-        /* Buttons */
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        /* Premium Buttons */
         .btn {
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.2s ease;
+            padding: 0.875rem 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background: var(--primary);
+            background: var(--gradient);
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+            color: white;
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 255, 0.4);
+            color: white;
         }
 
         .btn-outline-primary {
@@ -96,32 +144,50 @@
         .btn-outline-primary:hover {
             background: var(--primary);
             color: white;
-        }
-
-        /* Cards */
-        .card {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            transition: all 0.2s ease;
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
         }
 
-        /* Forms */
-        .form-control {
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            transition: all 0.2s ease;
+        .btn-outline-light {
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
+            background: transparent;
         }
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-light {
+            background: white;
+            color: var(--dark);
+        }
+
+        .btn-light:hover {
+            background: #f8f9fa;
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-lg {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Premium Cards */
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            background: white;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-5px);
         }
 
         /* Utility Classes */
@@ -130,45 +196,87 @@
         }
 
         .text-gradient {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .bg-gradient {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: var(--gradient);
         }
 
-        /* Loading States */
-        .btn-loading {
+        .bg-dark-gradient {
+            background: linear-gradient(135deg, var(--darker), #1e293b);
+        }
+
+        /* Text Colors for Better Contrast */
+        .text-dark-custom {
+            color: var(--dark) !important;
+        }
+
+        .text-light-custom {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+
+        .text-muted-custom {
+            color: #64748b !important;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker);
             position: relative;
-            color: transparent;
         }
 
-        .btn-loading::after {
+        footer::before {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 50%;
-            left: 50%;
-            margin-left: -10px;
-            margin-top: -10px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-right-color: transparent;
-            animation: spin 0.8s linear infinite;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient);
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .footer-links a {
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.8) !important;
+            text-decoration: none;
         }
 
-        /* Dropdown form styling */
-        .dropdown-item:focus, .dropdown-item:hover {
-            background-color: var(--primary);
-            color: white;
+        .footer-links a:hover {
+            color: var(--accent) !important;
+            padding-left: 5px;
+        }
+
+        /* Alert Messages */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Form Controls */
+        .form-control {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 0.875rem 1.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
         }
     </style>
     
@@ -176,7 +284,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'users:home' %}">
                 <i class="fas fa-car me-2"></i>DriveRental
@@ -211,20 +319,20 @@
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
-                                     style="width: 32px; height: 32px;">
-                                    <i class="fas fa-user text-white" style="font-size: 0.8rem;"></i>
+                                <div class="bg-gradient rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                     style="width: 38px; height: 38px;">
+                                    <i class="fas fa-user text-white"></i>
                                 </div>
-                                {{ user.first_name|default:user.username }}
+                                <span class="text-dark-custom">{{ user.first_name|default:user.username }}</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'users:profile_update' %}">
+                                    <a class="dropdown-item text-dark-custom" href="{% url 'users:profile_update' %}">
                                         <i class="fas fa-user-edit me-2"></i>Profile
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'users:user_update' %}">
+                                    <a class="dropdown-item text-dark-custom" href="{% url 'users:user_update' %}">
                                         <i class="fas fa-cog me-2"></i>Settings
                                     </a>
                                 </li>
@@ -254,9 +362,9 @@
 
     <!-- Messages -->
     {% if messages %}
-    <div class="container mt-3">
+    <div class="container mt-5 pt-4">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -270,95 +378,58 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-5 mt-5">
+    <footer class="py-5 mt-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <h5 class="fw-bold mb-3">
-                        <i class="fas fa-car me-2"></i>DriveRental
+                    <h5 class="fw-bold mb-3 text-light-custom">
+                        <i class="fas fa-car me-2 text-gradient"></i>DriveRental
                     </h5>
-                    <p class="text-light">Your trusted partner for premium car rentals. Experience the journey with our exceptional service.</p>
+                    <p class="text-light-custom opacity-75">Your trusted partner for premium car rentals. Experience the journey with our exceptional service.</p>
                 </div>
                 <div class="col-lg-2 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{% url 'users:home' %}" class="text-light text-decoration-none">Home</a></li>
-                        <li class="mb-2"><a href="{% url 'rentals:browse_cars' %}" class="text-light text-decoration-none">Browse Cars</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">About Us</a></li>
+                    <h6 class="fw-bold mb-3 text-light-custom">Quick Links</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="{% url 'users:home' %}">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'rentals:browse_cars' %}">Browse Cars</a></li>
+                        <li class="mb-2"><a href="#">About Us</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h6 class="fw-bold mb-3">Support</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Help Center</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Contact</a></li>
-                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Privacy Policy</a></li>
+                    <h6 class="fw-bold mb-3 text-light-custom">Support</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#">Help Center</a></li>
+                        <li class="mb-2"><a href="#">Contact</a></li>
+                        <li class="mb-2"><a href="#">Privacy Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 mb-4">
-                    <h6 class="fw-bold mb-3">Contact</h6>
-                    <ul class="list-unstyled text-light">
-                        <li class="mb-2"><i class="fas fa-phone me-2"></i>+1 (555) 123-4567</li>
-                        <li class="mb-2"><i class="fas fa-envelope me-2"></i>info@driverental.com</li>
+                    <h6 class="fw-bold mb-3 text-light-custom">Contact</h6>
+                    <ul class="list-unstyled text-light-custom opacity-75">
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-accent"></i>
+                            +1 (555) 123-4567
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-accent"></i>
+                            info@driverental.com
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-accent"></i>
+                            123 Premium Drive
+                        </li>
                     </ul>
                 </div>
             </div>
-            <hr class="bg-light">
+            <hr class="bg-light opacity-25">
             <div class="text-center">
-                <p class="mb-0">&copy; 2024 DriveRental. All rights reserved.</p>
+                <p class="mb-0 text-light-custom opacity-75">&copy; 2024 DriveRental. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Enhanced form handling
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add loading states to forms
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const submitBtn = this.querySelector('button[type="submit"]');
-                    if (submitBtn && !submitBtn.disabled) {
-                        submitBtn.classList.add('btn-loading');
-                        submitBtn.disabled = true;
-                    }
-                });
-            });
-
-            // Password visibility toggle
-            document.querySelectorAll('.toggle-password').forEach(button => {
-                button.addEventListener('click', function() {
-                    const target = this.dataset.target;
-                    const input = document.getElementById(target);
-                    const icon = this.querySelector('i');
-                    
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        icon.className = 'fas fa-eye-slash';
-                    } else {
-                        input.type = 'password';
-                        icon.className = 'fas fa-eye';
-                    }
-                });
-            });
-
-            // Smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        });
-    </script>
     
     {% block extra_js %}{% endblock %}
 </body>
