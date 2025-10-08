@@ -114,7 +114,7 @@
             <div class="row g-4">
                 {% for car in featured_cars %}
                 <div class="col-lg-4 col-md-6">
-                    <div class="fleet-card fade-in" data-delay="{{ forloop.counter0|add:0|mul:100 }}">
+                    <div class="testimonial-card fade-in" data-delay="{{ forloop.counter0|add:100 }}">
                         <div class="card-image">
                             {% if car.image %}
                             <img src="{{ car.image.url }}" 
@@ -337,8 +337,8 @@
         <div class="testimonials-grid">
             <div class="row g-4">
                 {% for review in featured_reviews %}
-                <div class="col-lg-4">
-                    <div class="testimonial-card fade-in" data-delay="{{ forloop.counter0|mul:100 }}">
+                <div class="col-lg-4 col-md-6">
+    <div class="fleet-card fade-in" data-delay="{{ forloop.counter0|add:100 }}">
                         <div class="testimonial-content">
                             <div class="quote-icon">
                                 <i class="fas fa-quote-left"></i>
