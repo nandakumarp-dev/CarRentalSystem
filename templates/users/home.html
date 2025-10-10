@@ -1,7 +1,7 @@
 {% extends 'users/base.html' %}
 {% load static %}
 
-{% block title %}DriveRental | Premium Car Rental Experience{% endblock %}
+{% block title %}DriveRental | Ultra-Premium Car Rental Experience{% endblock %}
 
 {% block content %}
 <!-- Premium Hero Section -->
@@ -13,23 +13,23 @@
                 <div class="hero-content">
                     <div class="badge-premium mb-4 fade-in-up">
                         <span class="badge-premium-content">
-                            <i class="fas fa-crown me-2"></i>PREMIUM MOBILITY EXPERIENCE
+                            <i class="fas fa-crown me-2"></i>ULTIMATE LUXURY EXPERIENCE
                         </span>
                     </div>
                     <h1 class="hero-title mb-4 fade-in-up" data-delay="100">
                         Elevate Your Journey With 
-                        <span class="text-gradient">Premium Mobility</span>
+                        <span class="text-gradient-gold">Ultimate Luxury</span>
                     </h1>
                     <p class="hero-subtitle mb-5 fade-in-up" data-delay="200">
-                        Experience the finest collection of luxury vehicles with unparalleled service. 
-                        From executive sedans to elite sports cars, discover driving perfection.
+                        Experience the world's finest collection of luxury vehicles with unparalleled service. 
+                        From executive sedans to elite supercars, discover driving perfection.
                     </p>
                     <div class="hero-actions d-flex flex-wrap gap-3 fade-in-up" data-delay="300">
-                        <a href="{% url 'rentals:browse_cars' %}" class="btn btn-primary btn-lg btn-premium">
+                        <a href="{% url 'rentals:browse_cars' %}" class="btn btn-gold btn-lg">
                             <i class="fas fa-search me-2"></i>Explore Our Fleet
                         </a>
                         {% if not user.is_authenticated %}
-                        <a href="{% url 'users:signup' %}" class="btn btn-outline-light btn-lg">
+                        <a href="{% url 'users:signup' %}" class="btn btn-outline-gold btn-lg">
                             <i class="fas fa-crown me-2"></i>Join Elite
                         </a>
                         {% endif %}
@@ -40,20 +40,20 @@
                         <div class="row g-4">
                             <div class="col-4">
                                 <div class="trust-item text-center">
-                                    <div class="trust-value display-6 fw-bold text-light">{{ total_cars }}+</div>
-                                    <div class="trust-label text-light opacity-75">Premium Vehicles</div>
+                                    <div class="trust-value display-6 fw-bold">{{ total_cars }}+</div>
+                                    <div class="trust-label text-champagne opacity-75">Premium Vehicles</div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="trust-item text-center">
-                                    <div class="trust-value display-6 fw-bold text-light">{{ total_rentals }}+</div>
-                                    <div class="trust-label text-light opacity-75">Satisfied Clients</div>
+                                    <div class="trust-value display-6 fw-bold">{{ total_rentals }}+</div>
+                                    <div class="trust-label text-champagne opacity-75">Satisfied Clients</div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="trust-item text-center">
-                                    <div class="trust-value display-6 fw-bold text-light">24/7</div>
-                                    <div class="trust-label text-light opacity-75">Concierge</div>
+                                    <div class="trust-value display-6 fw-bold">24/7</div>
+                                    <div class="trust-label text-champagne opacity-75">Concierge</div>
                                 </div>
                             </div>
                         </div>
@@ -75,14 +75,14 @@
                             {% endif %}
                         </div>
                         <div class="floating-element element-1">
-                            <div class="floating-card card-premium">
-                                <i class="fas fa-bolt text-warning"></i>
+                            <div class="floating-card">
+                                <i class="fas fa-bolt text-gold"></i>
                                 <span>Electric Fleet</span>
                             </div>
                         </div>
                         <div class="floating-element element-2">
-                            <div class="floating-card card-premium">
-                                <i class="fas fa-star text-warning"></i>
+                            <div class="floating-card">
+                                <i class="fas fa-star text-gold"></i>
                                 <span>5-Star Rated</span>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
     <div class="container">
         <div class="section-header text-center mb-5">
             <h6 class="section-subtitle fade-in">CURATED COLLECTION</h6>
-            <h2 class="section-title fade-in" data-delay="100">Our <span class="text-gradient">Premium Fleet</span></h2>
+            <h2 class="section-title fade-in" data-delay="100">Our <span class="text-gradient-gold">Premium Fleet</span></h2>
             <p class="section-description fade-in" data-delay="200">
                 Hand-picked luxury vehicles maintained to perfection for your exclusive driving experience
             </p>
@@ -114,7 +114,7 @@
             <div class="row g-4">
                 {% for car in featured_cars %}
                 <div class="col-lg-4 col-md-6">
-                    <div class="testimonial-card fade-in" data-delay="{{ forloop.counter0|add:100 }}">
+                    <div class="fleet-card card fade-in" data-delay="{{ forloop.counter0|add:100 }}">
                         <div class="card-image">
                             {% if car.image %}
                             <img src="{{ car.image.url }}" 
@@ -129,7 +129,7 @@
                                 {{ car.get_car_type_display|default:"Premium" }}
                             </div>
                             <div class="card-overlay">
-                                <a href="{% url 'rentals:car_detail' car.pk %}" class="btn btn-light">View Details</a>
+                                <a href="{% url 'rentals:car_detail' car.pk %}" class="btn btn-platinum">View Details</a>
                             </div>
                         </div>
                         <div class="card-content">
@@ -149,12 +149,12 @@
                                 <div class="stars">
                                     {% for i in "12345" %}
                                         {% if forloop.counter <= car.average_rating %}
-                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-gold"></i>
                                         {% else %}
-                                            <i class="far fa-star text-warning"></i>
+                                            <i class="far fa-star text-gold"></i>
                                         {% endif %}
                                     {% endfor %}
-                                    <span class="ms-1 text-muted">({{ car.total_reviews }})</span>
+                                    <span class="ms-1 text-champagne">({{ car.total_reviews }})</span>
                                 </div>
                             </div>
                             {% endif %}
@@ -173,7 +173,7 @@
         </div>
         
         <div class="text-center mt-5 fade-in" data-delay="300">
-            <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-primary btn-lg">
+            <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-gold btn-lg">
                 View Complete Collection <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
@@ -185,7 +185,7 @@
     <div class="container">
         <div class="section-header text-center mb-5">
             <h6 class="section-subtitle fade-in">WHY DRIVERENTAL</h6>
-            <h2 class="section-title fade-in" data-delay="100">The <span class="text-gradient">Elite Experience</span></h2>
+            <h2 class="section-title fade-in" data-delay="100">The <span class="text-gradient-gold">Elite Experience</span></h2>
             <p class="section-description fade-in" data-delay="200">
                 We redefine luxury car rental with unparalleled service and attention to detail
             </p>
@@ -262,7 +262,7 @@
     <div class="container">
         <div class="section-header text-center mb-5">
             <h6 class="section-subtitle fade-in">ELEGANT PROCESS</h6>
-            <h2 class="section-title fade-in" data-delay="100">How <span class="text-gradient">DriveRental</span> Works</h2>
+            <h2 class="section-title fade-in" data-delay="100">How <span class="text-gradient-gold">DriveRental</span> Works</h2>
             <p class="section-description fade-in" data-delay="200">
                 Experience our seamless luxury rental process designed for your convenience
             </p>
@@ -331,38 +331,36 @@
     <div class="container">
         <div class="section-header text-center mb-5">
             <h6 class="section-subtitle fade-in">CLIENT TESTIMONIALS</h6>
-            <h2 class="section-title text-light fade-in" data-delay="100">What Our <span class="text-gradient">Elite Clients</span> Say</h2>
+            <h2 class="section-title text-platinum fade-in" data-delay="100">What Our <span class="text-gradient-gold">Elite Clients</span> Say</h2>
         </div>
         
         <div class="testimonials-grid">
             <div class="row g-4">
                 {% for review in featured_reviews %}
                 <div class="col-lg-4 col-md-6">
-    <div class="fleet-card fade-in" data-delay="{{ forloop.counter0|add:100 }}">
-                        <div class="testimonial-content">
-                            <div class="quote-icon">
-                                <i class="fas fa-quote-left"></i>
+                    <div class="card testimonial-content fade-in" data-delay="{{ forloop.counter0|add:100 }}">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="testimonial-text">
+                            "{{ review.comment|truncatewords:30 }}"
+                        </p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="fas fa-user"></i>
                             </div>
-                            <p class="testimonial-text">
-                                "{{ review.comment|truncatewords:30 }}"
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="author-info">
-                                    <h6 class="author-name">{{ review.rental.customer.get_full_name|default:review.rental.customer.username }}</h6>
-                                    <p class="author-role">{{ review.rental.car.make }} Driver</p>
-                                </div>
-                                <div class="rating ms-auto">
-                                    {% for i in "12345" %}
-                                        {% if forloop.counter <= review.rating %}
-                                            <i class="fas fa-star text-warning small"></i>
-                                        {% else %}
-                                            <i class="far fa-star text-warning small"></i>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
+                            <div class="author-info">
+                                <h6 class="author-name">{{ review.rental.customer.get_full_name|default:review.rental.customer.username }}</h6>
+                                <p class="author-role">{{ review.rental.car.make }} Driver</p>
+                            </div>
+                            <div class="rating ms-auto">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star text-gold small"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-gold small"></i>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -370,7 +368,7 @@
                 {% empty %}
                 <div class="col-12 text-center">
                     <div class="alert alert-light">
-                        <p class="text-light mb-0">Be the first to share your experience!</p>
+                        <p class="text-platinum mb-0">Be the first to share your experience!</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -387,18 +385,18 @@
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="cta-content text-white">
-                        <h2 class="cta-title mb-3">Ready to Experience Premium Mobility?</h2>
+                        <h2 class="cta-title mb-3">Ready to Experience Ultimate Luxury?</h2>
                         <p class="cta-description mb-4 opacity-90">
                             Join our exclusive community of discerning clients who value excellence in every journey. 
                             Experience the DriveRental difference today.
                         </p>
                         <div class="cta-actions d-flex flex-wrap gap-3">
                             {% if not user.is_authenticated %}
-                            <a href="{% url 'users:signup' %}" class="btn btn-light btn-lg">
+                            <a href="{% url 'users:signup' %}" class="btn btn-platinum btn-lg">
                                 <i class="fas fa-crown me-2"></i>Become a Member
                             </a>
                             {% endif %}
-                            <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-light btn-lg">
+                            <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-gold btn-lg">
                                 <i class="fas fa-car me-2"></i>Browse Collection
                             </a>
                         </div>
@@ -413,47 +411,6 @@
         </div>
     </div>
 </section>
-
-<style>
-/* Add these new styles for dynamic content */
-.card-rating .stars {
-    font-size: 0.9rem;
-}
-
-.badge-sedan { background: #3b82f6; }
-.badge-suv { background: #10b981; }
-.badge-compact { background: #6b7280; }
-.badge-luxury { background: #f59e0b; }
-.badge-sports { background: #ef4444; }
-.badge-van { background: #8b5cf6; }
-.badge-convertible { background: #ec4899; }
-.badge-electric { background: #10b981; }
-.badge-hybrid { background: #84cc16; }
-
-.testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.rating {
-    display: flex;
-    gap: 2px;
-}
-
-/* Keep all the existing CSS styles from your original template */
-.hero-section {
-    background: linear-gradient(135deg, #0a0f1f 0%, #1a243f 50%, #2d3748 100%);
-    padding: 8rem 0 6rem;
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-}
-
-/* ... (keep all your existing CSS styles) ... */
-
-</style>
 
 <script>
 // Intersection Observer for fade-in animations
