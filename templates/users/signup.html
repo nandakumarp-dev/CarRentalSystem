@@ -1,91 +1,81 @@
 {% extends 'users/base.html' %}
+{% load static %}
 
 {% block title %}Join Elite - DriveRental | Premium Membership{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-3 px-md-4 py-4 py-md-5">
-    <div class="row justify-content-center align-items-center min-vh-100 py-4">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-            <!-- Luxury Signup Card -->
-            <div class="luxury-card position-relative overflow-hidden mx-auto">
-                <!-- Background Elements -->
-                <div class="luxury-background">
-                    <div class="luxury-shape shape-1"></div>
-                    <div class="luxury-shape shape-2"></div>
-                    <div class="luxury-shape shape-3"></div>
-                </div>
-                
-                <div class="card-body p-3 p-md-4 p-lg-5 position-relative z-2">
-                    <!-- Premium Header -->
-                    <div class="text-center mb-4 mb-md-5">
-                        <div class="luxury-icon mx-auto mb-3">
-                            <i class="fas fa-crown"></i>
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100 py-5">
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 col-12">
+            <!-- Signup Card -->
+            <div class="card auth-card border-0 shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="auth-icon-wrapper mb-4">
+                            <div class="auth-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
                         </div>
-                        <h2 class="luxury-title mb-2">Join The Elite Circle</h2>
-                        <p class="luxury-subtitle">Begin your premium mobility experience</p>
+                        <h2 class="auth-title mb-2">Join The Elite</h2>
+                        <p class="auth-subtitle">Create your DriveRental account</p>
                     </div>
 
-                    <form method="post" novalidate class="luxury-form">
+                    <form method="post" novalidate class="auth-form">
                         {% csrf_token %}
                         
                         {% if form.non_field_errors %}
-                            <div class="luxury-alert">
-                                <i class="fas fa-exclamation-circle me-2"></i>
-                                {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                {% endfor %}
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <div>
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
                             </div>
                         {% endif %}
 
                         <!-- Name Fields -->
                         <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-6">
-                                <div class="luxury-form-group">
-                                    <label for="{{ form.first_name.id_for_label }}" class="luxury-label">
-                                        <i class="fas fa-user me-2"></i>First Name
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user me-2 text-gold"></i>First Name
                                     </label>
-                                    <div class="luxury-input-group">
-                                        <input type="text" 
-                                               name="{{ form.first_name.name }}" 
-                                               id="{{ form.first_name.id_for_label }}" 
-                                               class="luxury-input" 
-                                               placeholder="Enter your first name"
-                                               value="{{ form.first_name.value|default:'' }}"
-                                               required>
-                                        <div class="luxury-input-decoration">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    </div>
+                                    <input type="text" 
+                                           name="{{ form.first_name.name }}" 
+                                           id="{{ form.first_name.id_for_label }}" 
+                                           class="form-control form-control-lg" 
+                                           placeholder="Enter your first name"
+                                           value="{{ form.first_name.value|default:'' }}"
+                                           required>
                                     {% if form.first_name.errors %}
-                                        <div class="luxury-error">
+                                        <div class="error-message">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
                                             {% for error in form.first_name.errors %}
-                                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                                                {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="luxury-form-group">
-                                    <label for="{{ form.last_name.id_for_label }}" class="luxury-label">
-                                        <i class="fas fa-user me-2"></i>Last Name
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user me-2 text-gold"></i>Last Name
                                     </label>
-                                    <div class="luxury-input-group">
-                                        <input type="text" 
-                                               name="{{ form.last_name.name }}" 
-                                               id="{{ form.last_name.id_for_label }}" 
-                                               class="luxury-input" 
-                                               placeholder="Enter your last name"
-                                               value="{{ form.last_name.value|default:'' }}"
-                                               required>
-                                        <div class="luxury-input-decoration">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    </div>
+                                    <input type="text" 
+                                           name="{{ form.last_name.name }}" 
+                                           id="{{ form.last_name.id_for_label }}" 
+                                           class="form-control form-control-lg" 
+                                           placeholder="Enter your last name"
+                                           value="{{ form.last_name.value|default:'' }}"
+                                           required>
                                     {% if form.last_name.errors %}
-                                        <div class="luxury-error">
+                                        <div class="error-message">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
                                             {% for error in form.last_name.errors %}
-                                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                                                {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -94,95 +84,75 @@
                         </div>
 
                         <!-- Email Field -->
-                        <div class="luxury-form-group mb-3">
-                            <label for="{{ form.email.id_for_label }}" class="luxury-label">
-                                <i class="fas fa-envelope me-2"></i>Email Address
+                        <div class="form-group mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-2 text-gold"></i>Email Address
                             </label>
-                            <div class="luxury-input-group">
-                                <input type="email" 
-                                       name="{{ form.email.name }}" 
-                                       id="{{ form.email.id_for_label }}" 
-                                       class="luxury-input" 
-                                       placeholder="Enter your email address"
-                                       value="{{ form.email.value|default:'' }}"
-                                       required>
-                                <div class="luxury-input-decoration">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                            </div>
+                            <input type="email" 
+                                   name="{{ form.email.name }}" 
+                                   id="{{ form.email.id_for_label }}" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Enter your email address"
+                                   value="{{ form.email.value|default:'' }}"
+                                   required>
                             {% if form.email.errors %}
-                                <div class="luxury-error">
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
                                     {% for error in form.email.errors %}
-                                        <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                                        {{ error }}
                                     {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
 
                         <!-- Username Field -->
-                        <div class="luxury-form-group mb-3">
-                            <label for="{{ form.username.id_for_label }}" class="luxury-label">
-                                <i class="fas fa-at me-2"></i>Username
+                        <div class="form-group mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="fas fa-at me-2 text-gold"></i>Username
                             </label>
-                            <div class="luxury-input-group">
-                                <input type="text" 
-                                       name="{{ form.username.name }}" 
-                                       id="{{ form.username.id_for_label }}" 
-                                       class="luxury-input" 
-                                       placeholder="Choose a username"
-                                       value="{{ form.username.value|default:'' }}"
-                                       required>
-                                <div class="luxury-input-decoration">
-                                    <i class="fas fa-at"></i>
-                                </div>
-                            </div>
+                            <input type="text" 
+                                   name="{{ form.username.name }}" 
+                                   id="{{ form.username.id_for_label }}" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Choose a username"
+                                   value="{{ form.username.value|default:'' }}"
+                                   required>
                             {% if form.username.errors %}
-                                <div class="luxury-error">
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
                                     {% for error in form.username.errors %}
-                                        <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                                        {{ error }}
                                     {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
 
                         <!-- Account Type Selection -->
-                        <div class="luxury-form-group mb-3">
-                            <label class="luxury-label mb-2">
-                                <i class="fas fa-user-tie me-2"></i>Select Your Elite Role
+                        <div class="form-group mb-4">
+                            <label class="form-label mb-3">
+                                <i class="fas fa-user-tie me-2 text-gold"></i>Account Type
                             </label>
-                            <div class="row g-2">
-                                <div class="col-12 col-md-6">
-                                    <div class="luxury-account-type" data-value="customer">
-                                        <input type="radio" name="account_type" id="customer" value="customer" checked class="luxury-radio-input">
-                                        <label for="customer" class="luxury-account-card">
-                                            <div class="account-icon">
-                                                <i class="fas fa-car"></i>
-                                            </div>
-                                            <div class="account-content">
-                                                <h6 class="account-title">Premium Client</h6>
-                                                <p class="account-description">Experience luxury mobility</p>
-                                                <div class="account-features">
-                                                    <span><i class="fas fa-check"></i> Premium Vehicles</span>
-                                                    <span><i class="fas fa-check"></i> 24/7 Concierge</span>
-                                                </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="account-type-card" data-type="customer">
+                                        <input type="radio" name="account_type" id="customer" value="customer" checked class="account-type-radio">
+                                        <label for="customer" class="account-type-label w-100 h-100">
+                                            <div class="account-type-content text-center p-3">
+                                                <i class="fas fa-user fa-2x mb-3 text-gold"></i>
+                                                <h6 class="mb-2">Premium Client</h6>
+                                                <p class="mb-0">Rent luxury vehicles</p>
                                             </div>
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="luxury-account-type" data-value="owner">
-                                        <input type="radio" name="account_type" id="owner" value="owner" class="luxury-radio-input">
-                                        <label for="owner" class="luxury-account-card">
-                                            <div class="account-icon">
-                                                <i class="fas fa-building"></i>
-                                            </div>
-                                            <div class="account-content">
-                                                <h6 class="account-title">Elite Partner</h6>
-                                                <p class="account-description">Join premium network</p>
-                                                <div class="account-features">
-                                                    <span><i class="fas fa-check"></i> Premium Listing</span>
-                                                    <span><i class="fas fa-check"></i> Business Tools</span>
-                                                </div>
+                                <div class="col-md-6">
+                                    <div class="account-type-card" data-type="owner">
+                                        <input type="radio" name="account_type" id="owner" value="owner" class="account-type-radio">
+                                        <label for="owner" class="account-type-label w-100 h-100">
+                                            <div class="account-type-content text-center p-3">
+                                                <i class="fas fa-car fa-2x mb-3 text-gold"></i>
+                                                <h6 class="mb-2">Vehicle Owner</h6>
+                                                <p class="mb-0">List your luxury cars</p>
                                             </div>
                                         </label>
                                     </div>
@@ -192,59 +162,55 @@
 
                         <!-- Password Fields -->
                         <div class="row g-3 mb-3">
-                            <div class="col-12 col-md-6">
-                                <div class="luxury-form-group">
-                                    <label for="{{ form.password1.id_for_label }}" class="luxury-label">
-                                        <i class="fas fa-lock me-2"></i>Password
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                        <i class="fas fa-lock me-2 text-gold"></i>Password
                                     </label>
-                                    <div class="luxury-input-group">
+                                    <div class="input-group">
                                         <input type="password" 
                                                name="{{ form.password1.name }}" 
                                                id="{{ form.password1.id_for_label }}" 
-                                               class="luxury-input" 
-                                               placeholder="Create secure password"
+                                               class="form-control form-control-lg" 
+                                               placeholder="Create password"
                                                required>
-                                        <div class="luxury-input-decoration">
-                                            <i class="fas fa-lock"></i>
-                                        </div>
-                                        <button type="button" class="luxury-password-toggle" 
+                                        <button type="button" class="btn btn-outline-gold password-toggle" 
                                                 data-target="{{ form.password1.id_for_label }}">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                     {% if form.password1.errors %}
-                                        <div class="luxury-error">
+                                        <div class="error-message">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
                                             {% for error in form.password1.errors %}
-                                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                                                {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="luxury-form-group">
-                                    <label for="{{ form.password2.id_for_label }}" class="luxury-label">
-                                        <i class="fas fa-lock me-2"></i>Confirm Password
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                        <i class="fas fa-lock me-2 text-gold"></i>Confirm Password
                                     </label>
-                                    <div class="luxury-input-group">
+                                    <div class="input-group">
                                         <input type="password" 
                                                name="{{ form.password2.name }}" 
                                                id="{{ form.password2.id_for_label }}" 
-                                               class="luxury-input" 
-                                               placeholder="Confirm your password"
+                                               class="form-control form-control-lg" 
+                                               placeholder="Confirm password"
                                                required>
-                                        <div class="luxury-input-decoration">
-                                            <i class="fas fa-lock"></i>
-                                        </div>
-                                        <button type="button" class="luxury-password-toggle" 
+                                        <button type="button" class="btn btn-outline-gold password-toggle" 
                                                 data-target="{{ form.password2.id_for_label }}">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                     {% if form.password2.errors %}
-                                        <div class="luxury-error">
+                                        <div class="error-message">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
                                             {% for error in form.password2.errors %}
-                                                <i class="fas fa-exclamation-triangle me-1"></i>{{ error }}
+                                                {{ error }}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -253,35 +219,37 @@
                         </div>
 
                         <!-- Terms Agreement -->
-                        <div class="luxury-form-group mb-4">
-                            <div class="luxury-checkbox">
-                                <input class="luxury-checkbox-input" type="checkbox" id="terms" name="terms" required>
-                                <label class="luxury-checkbox-label" for="terms">
-                                    <span class="luxury-checkbox-custom"></span>
-                                    I agree to the <a href="#" class="luxury-link">Terms</a> & <a href="#" class="luxury-link">Privacy</a>
+                        <div class="form-group mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agree_terms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    I agree to the <a href="#" class="text-gold">Terms of Service</a> and 
+                                    <a href="#" class="text-gold">Privacy Policy</a>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="d-grid mb-4">
-                            <button type="submit" class="luxury-btn luxury-btn-primary">
-                                <i class="fas fa-crown me-2"></i>Join Elite Circle
+                            <button type="submit" class="btn btn-gold btn-lg py-3">
+                                <i class="fas fa-crown me-2"></i>Create Elite Account
                             </button>
                         </div>
 
                         <!-- Divider -->
-                        <div class="luxury-divider mb-4">
-                            <span>Already Elite?</span>
+                        <div class="divider-with-text mb-4">
+                            <span class="divider-line"></span>
+                            <span class="divider-text">Already have an account?</span>
+                            <span class="divider-line"></span>
                         </div>
 
-                        <!-- Alternative Actions -->
+                        <!-- Login Link -->
                         <div class="text-center">
-                            <p class="luxury-text mb-3">
-                                Welcome back to the inner circle
+                            <p class="mb-3">
+                                Welcome back to the elite circle
                             </p>
-                            <a href="{% url 'users:login' %}" class="luxury-btn luxury-btn-outline">
-                                <i class="fas fa-sign-in-alt me-2"></i>Access Elite Portal
+                            <a href="{% url 'users:login' %}" class="btn btn-outline-gold btn-lg w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In to Account
                             </a>
                         </div>
                     </form>
@@ -292,614 +260,363 @@
 </div>
 
 <style>
-/* Reset and Base Styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-:root {
-    --gold-primary: #D4AF37;
-    --gold-secondary: #FFD700;
-    --gold-light: #F7EF8A;
-    --platinum: #E5E4E2;
-    --carbon: #1a1a1a;
-    --midnight: #0a0a0a;
-    --ivory: #FFFFF0;
-    --champagne: #F7E7CE;
-    --shadow-gold: 0 0 30px rgba(212, 175, 55, 0.3);
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: var(--midnight);
-    color: var(--platinum);
-    line-height: 1.5;
-    overflow-x: hidden;
-}
-
-/* Luxury Card */
-.luxury-card {
+.auth-card {
     background: rgba(26, 26, 26, 0.95);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 
-                0 0 80px rgba(212, 175, 55, 0.1);
-    overflow: hidden;
-    transition: all 0.4s ease;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 20px;
 }
 
-.luxury-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
+.auth-icon-wrapper {
+    position: relative;
 }
 
-.luxury-shape {
-    position: absolute;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
-}
-
-.shape-1 {
-    width: 120px;
-    height: 120px;
-    top: -40px;
-    right: -40px;
-}
-
-.shape-2 {
+.auth-icon {
     width: 80px;
     height: 80px;
-    bottom: -30px;
-    left: -30px;
-}
-
-.shape-3 {
-    width: 60px;
-    height: 60px;
-    top: 50%;
-    left: 80%;
-}
-
-/* Header Styles */
-.luxury-icon {
-    width: 60px;
-    height: 60px;
     background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--carbon);
-    font-size: 1.3rem;
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-    margin: 0 auto 1rem;
+    font-size: 1.8rem;
+    margin: 0 auto;
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+    transition: all 0.3s ease;
 }
 
-.luxury-title {
+.auth-icon:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(212, 175, 55, 0.6);
+}
+
+.auth-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.75rem;
+    font-size: 2.2rem;
     font-weight: 700;
     background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
-    line-height: 1.2;
-    text-align: center;
 }
 
-.luxury-subtitle {
-    color: var(--champagne);
-    font-size: 0.9rem;
+.auth-subtitle {
+    font-size: 1.1rem;
+    color: var(--platinum);
     opacity: 0.9;
-    text-align: center;
-    line-height: 1.4;
 }
 
-/* Form Styles */
-.luxury-form-group {
-    position: relative;
-    margin-bottom: 1rem;
+.form-group {
+    margin-bottom: 1.5rem;
 }
 
-.luxury-label {
+.form-label {
     color: var(--platinum);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
     display: block;
-    font-size: 0.85rem;
-    line-height: 1.3;
 }
 
-.luxury-input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.luxury-input {
-    width: 100%;
-    padding: 0.875rem 3rem 0.875rem 1rem;
-    background: rgba(15, 15, 15, 0.9);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 8px;
-    color: var(--platinum);
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
-    line-height: 1.4;
-}
-
-.luxury-input::placeholder {
-    color: rgba(229, 228, 226, 0.5);
-    font-weight: 400;
-    font-size: 0.85rem;
-}
-
-.luxury-input:focus {
-    outline: none;
-    border-color: var(--gold-primary);
-    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
-    background: rgba(20, 20, 20, 0.95);
-}
-
-.luxury-input-decoration {
-    position: absolute;
-    right: 1rem;
-    color: var(--gold-primary);
-    font-size: 0.85rem;
-    pointer-events: none;
-}
-
-.luxury-password-toggle {
-    position: absolute;
-    right: 2.5rem;
-    background: none;
-    border: none;
-    color: var(--champagne);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 0.3rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.luxury-password-toggle:hover {
-    color: var(--gold-primary);
-    background: rgba(212, 175, 55, 0.1);
-}
-
-/* Account Type Cards */
-.luxury-account-type {
-    position: relative;
-    height: 100%;
-    margin-bottom: 0.5rem;
-}
-
-.luxury-radio-input {
-    display: none;
-}
-
-.luxury-account-card {
-    display: block;
-    padding: 1.25rem 1rem;
-    background: rgba(15, 15, 15, 0.8);
+.form-control-lg {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
     border: 2px solid rgba(212, 175, 55, 0.2);
-    border-radius: 10px;
-    cursor: pointer;
+    background: rgba(15, 15, 15, 0.9);
+    color: var(--platinum);
     transition: all 0.3s ease;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
 }
 
-.luxury-account-card:hover {
+.form-control-lg:focus {
+    border-color: var(--gold-primary);
+    background: rgba(20, 20, 20, 0.95);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    color: var(--platinum);
+}
+
+.form-control-lg::placeholder {
+    color: rgba(229, 228, 226, 0.6);
+    font-weight: 400;
+}
+
+.input-group .btn-outline-gold {
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-left: none;
+    background: rgba(15, 15, 15, 0.9);
+    color: var(--platinum);
+    transition: all 0.3s ease;
+}
+
+.input-group .btn-outline-gold:hover {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold-primary);
     border-color: rgba(212, 175, 55, 0.4);
 }
 
-.luxury-radio-input:checked + .luxury-account-card {
-    border-color: var(--gold-primary);
-    background: rgba(212, 175, 55, 0.05);
+/* Account Type Cards */
+.account-type-card {
+    position: relative;
+    cursor: pointer;
 }
 
-.luxury-radio-input:checked + .luxury-account-card::after {
+.account-type-radio {
+    display: none;
+}
+
+.account-type-label {
+    display: block;
+    background: rgba(20, 20, 20, 0.8);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: var(--platinum);
+}
+
+.account-type-label:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: rgba(25, 25, 25, 0.9);
+}
+
+.account-type-radio:checked + .account-type-label {
+    border-color: var(--gold-primary);
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+    transform: translateY(-2px);
+}
+
+.account-type-radio:checked + .account-type-label::after {
     content: '✓';
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 18px;
-    height: 18px;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
     background: var(--gold-primary);
     color: var(--carbon);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: bold;
 }
 
-.account-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(212, 175, 55, 0.1);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 0.75rem;
-    color: var(--gold-primary);
-    font-size: 1rem;
-}
-
-.account-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--platinum);
-    margin-bottom: 0.25rem;
-    text-align: center;
-    line-height: 1.2;
-}
-
-.account-description {
-    color: var(--champagne);
-    font-size: 0.75rem;
-    margin-bottom: 0.75rem;
-    text-align: center;
-    line-height: 1.3;
-}
-
-.account-features {
+.account-type-content {
+    min-height: 120px;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-}
-
-.account-features span {
-    color: var(--champagne);
-    font-size: 0.7rem;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 0.3rem;
-    line-height: 1.2;
-}
-
-.account-features i {
-    color: var(--gold-primary);
-    font-size: 0.6rem;
-}
-
-/* Alert & Error Styles */
-.luxury-alert {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
-    padding: 0.75rem 1rem;
-    margin-bottom: 1rem;
-    border-radius: 6px;
-    display: flex;
     align-items: center;
-    font-size: 0.8rem;
-    line-height: 1.3;
+    color: var(--platinum);
 }
 
-.luxury-error {
-    color: #fca5a5;
-    font-size: 0.75rem;
-    margin-top: 0.3rem;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    line-height: 1.2;
+.account-type-content h6 {
+    color: var(--platinum);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
-/* Checkbox Styles */
-.luxury-checkbox {
-    display: flex;
-    align-items: flex-start;
-    cursor: pointer;
-    margin-top: 0.5rem;
-}
-
-.luxury-checkbox-input {
-    display: none;
-}
-
-.luxury-checkbox-custom {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(212, 175, 55, 0.5);
-    background: rgba(10, 10, 10, 0.8);
-    margin-right: 0.6rem;
-    position: relative;
-    transition: all 0.3s ease;
-    border-radius: 3px;
-    flex-shrink: 0;
-    margin-top: 0.1rem;
-}
-
-.luxury-checkbox-input:checked + .luxury-checkbox-label .luxury-checkbox-custom {
-    background: var(--gold-primary);
-    border-color: var(--gold-primary);
-}
-
-.luxury-checkbox-input:checked + .luxury-checkbox-label .luxury-checkbox-custom::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--carbon);
-    font-size: 0.65rem;
-    font-weight: bold;
-}
-
-.luxury-checkbox-label {
+.account-type-content p {
     color: var(--champagne);
-    font-size: 0.8rem;
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    cursor: pointer;
-    font-weight: 500;
-    line-height: 1.3;
-    flex: 1;
-}
-
-/* Link Styles */
-.luxury-link {
-    color: var(--gold-primary);
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-size: 0.8rem;
-}
-
-.luxury-link:hover {
-    color: var(--gold-secondary);
-}
-
-/* Button Styles */
-.luxury-btn {
-    padding: 0.875rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
     font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    line-height: 1.4;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.luxury-btn-primary {
-    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
-    color: var(--carbon);
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
-}
-
-.luxury-btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-}
-
-.luxury-btn-outline {
-    background: transparent;
-    border: 2px solid var(--gold-primary);
-    color: var(--gold-primary);
-    padding: 0.75rem 1.5rem;
-}
-
-.luxury-btn-outline:hover {
-    background: var(--gold-primary);
-    color: var(--carbon);
-    transform: translateY(-1px);
+    margin: 0;
 }
 
 /* Divider */
-.luxury-divider {
-    position: relative;
-    text-align: center;
-    margin: 1.5rem 0;
+.divider-with-text {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
-.luxury-divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
+.divider-line {
+    flex: 1;
     height: 1px;
     background: linear-gradient(90deg, 
         transparent, 
-        rgba(212, 175, 55, 0.3), 
-        rgba(212, 175, 55, 0.3), 
+        rgba(212, 175, 55, 0.4), 
         transparent);
 }
 
-.luxury-divider span {
-    background: rgba(26, 26, 26, 0.95);
-    padding: 0 0.75rem;
-    color: var(--champagne);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.divider-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--platinum);
+}
+
+/* Error Messages */
+.error-message {
+    color: #f8d7da;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    color: #f8d7da;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+}
+
+/* Form Check */
+.form-check-input {
+    background-color: rgba(15, 15, 15, 0.8);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.form-check-input:checked {
+    background-color: var(--gold-primary);
+    border-color: var(--gold-primary);
+}
+
+.form-check-input:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.25);
+}
+
+.form-check-label {
+    color: var(--platinum);
+    font-size: 0.95rem;
+}
+
+.form-check-label a {
+    color: var(--gold-primary) !important;
+    text-decoration: none;
     font-weight: 600;
 }
 
-/* Text Styles */
-.luxury-text {
-    color: var(--champagne);
-    margin-bottom: 1rem;
-    font-size: 0.85rem;
-    opacity: 0.9;
-    text-align: center;
-    line-height: 1.3;
+.form-check-label a:hover {
+    text-decoration: underline;
 }
 
-/* Mobile-First Responsive Design */
-@media (max-width: 575.98px) {
-    .container-fluid {
-        padding: 0.5rem;
-    }
-    
-    .luxury-card {
-        border-radius: 12px;
-        margin: 0.25rem auto;
-    }
-    
-    .card-body {
-        padding: 1.25rem !important;
-    }
-    
-    .luxury-title {
-        font-size: 1.5rem;
-    }
-    
-    .luxury-subtitle {
-        font-size: 0.8rem;
-    }
-    
-    .luxury-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.1rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .luxury-btn {
-        padding: 0.75rem 1.25rem;
-        font-size: 0.85rem;
-    }
-    
-    .luxury-account-card {
-        padding: 1rem 0.75rem;
-    }
-    
-    .account-icon {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .account-title {
-        font-size: 0.9rem;
-    }
-    
-    .account-description {
-        font-size: 0.7rem;
-    }
-    
-    .luxury-input {
-        padding: 0.75rem 2.5rem 0.75rem 0.875rem;
-        font-size: 0.85rem;
-    }
+/* Text Elements */
+p {
+    color: var(--platinum);
+    margin-bottom: 0;
 }
 
-@media (min-width: 576px) {
-    .luxury-card {
-        max-width: 450px;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-card {
+        margin: 1rem;
+        border-radius: 16px;
     }
     
-    .luxury-title {
-        font-size: 1.75rem;
+    .auth-title {
+        font-size: 1.8rem;
     }
     
-    .luxury-subtitle {
-        font-size: 0.9rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .luxury-card {
-        max-width: 500px;
-    }
-    
-    .luxury-title {
-        font-size: 2rem;
-    }
-    
-    .luxury-subtitle {
-        font-size: 1rem;
-    }
-    
-    .luxury-icon {
+    .auth-icon {
         width: 70px;
         height: 70px;
         font-size: 1.5rem;
     }
-}
-
-@media (min-width: 992px) {
-    .luxury-card {
-        max-width: 500px;
+    
+    .card-body {
+        padding: 2rem !important;
+    }
+    
+    .account-type-content {
+        min-height: 100px;
+        padding: 1.5rem !important;
+    }
+    
+    .account-type-content i {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .account-type-content h6 {
+        font-size: 0.9rem;
+    }
+    
+    .account-type-content p {
+        font-size: 0.8rem;
     }
 }
 
-/* Utility Classes */
-.text-center { text-align: center; }
-.d-flex { display: flex; }
-.align-items-center { align-items: center; }
-.justify-content-center { justify-content: center; }
-.w-100 { width: 100%; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-.mb-0 { margin-bottom: 0; }
-.mb-1 { margin-bottom: 0.25rem; }
-.mb-2 { margin-bottom: 0.5rem; }
-.mb-3 { margin-bottom: 1rem; }
-.mb-4 { margin-bottom: 1.5rem; }
-.mb-5 { margin-bottom: 2rem; }
-.me-1 { margin-right: 0.25rem; }
-.me-2 { margin-right: 0.5rem; }
+@media (max-width: 576px) {
+    .auth-title {
+        font-size: 1.6rem;
+    }
+    
+    .auth-subtitle {
+        font-size: 1rem;
+    }
+    
+    .form-control-lg {
+        padding: 0.875rem 1rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .account-type-card {
+        margin-bottom: 1rem;
+    }
+    
+    .form-check-label {
+        font-size: 0.9rem;
+    }
+}
 
-/* Focus States */
-.luxury-input:focus,
-.luxury-btn:focus,
-.luxury-password-toggle:focus {
+/* Animation for form elements */
+.auth-form .form-group {
+    animation: slideInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.auth-form .form-group:nth-child(1) { animation-delay: 0.1s; }
+.auth-form .form-group:nth-child(2) { animation-delay: 0.15s; }
+.auth-form .form-group:nth-child(3) { animation-delay: 0.2s; }
+.auth-form .form-group:nth-child(4) { animation-delay: 0.25s; }
+.auth-form .form-group:nth-child(5) { animation-delay: 0.3s; }
+.auth-form .form-group:nth-child(6) { animation-delay: 0.35s; }
+
+@keyframes slideInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Focus states for accessibility */
+.form-control:focus,
+.btn:focus,
+.form-check-input:focus {
     outline: 2px solid var(--gold-primary);
     outline-offset: 2px;
 }
 
-/* Loading State */
-.luxury-btn.loading {
+/* Loading state */
+.btn-loading {
+    position: relative;
     pointer-events: none;
     opacity: 0.8;
 }
 
-.luxury-btn.loading::after {
+.btn-loading::after {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 16px;
-    height: 16px;
-    margin: -8px 0 0 -8px;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
@@ -910,64 +627,55 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-/* Touch Device Optimizations */
-@media (hover: none) {
-    .luxury-btn:hover,
-    .luxury-account-card:hover {
-        transform: none;
-    }
-}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Password toggle functionality
-    const toggleButtons = document.querySelectorAll('.luxury-password-toggle');
+    const toggleButtons = document.querySelectorAll('.password-toggle');
     
     toggleButtons.forEach(button => {
         button.addEventListener('click', function() {
             const targetId = this.getAttribute('data-target');
             const passwordInput = document.getElementById(targetId);
+            const icon = this.querySelector('i');
             
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                this.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                icon.className = 'fas fa-eye-slash';
+                this.setAttribute('aria-label', 'Hide password');
             } else {
                 passwordInput.type = 'password';
-                this.innerHTML = '<i class="fas fa-eye"></i>';
+                icon.className = 'fas fa-eye';
+                this.setAttribute('aria-label', 'Show password');
             }
+        });
+    });
+
+    // Account type card selection
+    const accountTypeCards = document.querySelectorAll('.account-type-card');
+    
+    accountTypeCards.forEach(card => {
+        const radio = card.querySelector('.account-type-radio');
+        
+        card.addEventListener('click', function() {
+            // Uncheck all radios
+            accountTypeCards.forEach(c => {
+                c.querySelector('.account-type-radio').checked = false;
+            });
+            // Check clicked radio
+            radio.checked = true;
         });
     });
     
     // Form submission loading state
-    const form = document.querySelector('.luxury-form');
-    const submitBtn = form.querySelector('.luxury-btn-primary');
+    const form = document.querySelector('.auth-form');
+    const submitBtn = form.querySelector('.btn-gold');
     
     form.addEventListener('submit', function() {
-        submitBtn.classList.add('loading');
+        submitBtn.classList.add('btn-loading');
         submitBtn.innerHTML = '<i class="fas fa-spinner me-2"></i>Creating Account...';
     });
-    
-    // Account type selection
-    const accountTypes = document.querySelectorAll('.luxury-account-type');
-    accountTypes.forEach(type => {
-        type.addEventListener('click', function() {
-            const radio = this.querySelector('.luxury-radio-input');
-            radio.checked = true;
-            
-            // Update visual states
-            accountTypes.forEach(t => {
-                t.querySelector('.luxury-account-card').classList.remove('active');
-            });
-            this.querySelector('.luxury-account-card').classList.add('active');
-        });
-    });
-    
-    // Initialize first account type as active
-    if (accountTypes.length > 0) {
-        accountTypes[0].querySelector('.luxury-account-card').classList.add('active');
-    }
 });
 </script>
 {% endblock %}

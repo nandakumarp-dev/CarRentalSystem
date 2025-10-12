@@ -1,0 +1,76 @@
+/* static/css/main.css */
+:root {
+    --gold-primary: #D4AF37;
+    --gold-secondary: #FFD700;
+    --gold-light: #F7EF8A;
+    --platinum: #E5E4E2;
+    --carbon: #1a1a1a;
+    --midnight: #0a0a0a;
+    --ivory: #FFFFF0;
+    --champagne: #F7E7CE;
+    --shadow-gold: 0 0 30px rgba(212, 175, 55, 0.3);
+    --shadow-platinum: 0 0 40px rgba(229, 228, 226, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--midnight);
+    color: var(--platinum);
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+/* Utility Classes */
+.section-padding {
+    padding: 4rem 0;
+}
+
+.text-gold {
+    color: var(--gold-primary) !important;
+}
+
+.text-gradient-gold {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bg-gold {
+    background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary)) !important;
+}
+
+.bg-dark-gradient {
+    background: linear-gradient(135deg, var(--midnight), #1a1a1a);
+}
+
+.text-platinum {
+    color: var(--platinum) !important;
+}
+
+.text-champagne {
+    color: var(--champagne) !important;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    .section-padding {
+        padding: 3rem 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .section-padding {
+        padding: 2rem 0;
+    }
+}
