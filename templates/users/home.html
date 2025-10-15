@@ -20,8 +20,8 @@
                         <span class="text-gradient-gold">Ultimate Luxury</span>
                     </h1>
                     <p class="hero-subtitle lead mb-5 text-champagne">
-                        Experience the world's finest collection of luxury vehicles with unparalleled service. 
-                        From executive sedans to elite supercars, discover driving perfection.
+                        Experience Kerala's finest collection of luxury vehicles with unparalleled service. 
+                        From premium SUVs to elite sedans, discover driving perfection across God's Own Country.
                     </p>
                     <div class="hero-actions d-flex flex-wrap gap-3">
                         <a href="{% url 'rentals:browse_cars' %}" class="btn btn-gold btn-lg">
@@ -39,13 +39,13 @@
                         <div class="row g-4">
                             <div class="col-4">
                                 <div class="text-center">
-                                    <div class="h2 fw-bold text-gold">{{ total_cars|default:"50" }}+</div>
+                                    <div class="h2 fw-bold text-gold">{{ total_cars|default:"75" }}+</div>
                                     <div class="text-champagne small">Premium Vehicles</div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="text-center">
-                                    <div class="h2 fw-bold text-gold">{{ total_rentals|default:"1000" }}+</div>
+                                    <div class="h2 fw-bold text-gold">{{ total_rentals|default:"2500" }}+</div>
                                     <div class="text-champagne small">Satisfied Clients</div>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="hero-image text-center">
-                    <img src="{% static 'images/car.png' %}" 
+                    <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
                          alt="Luxury Car" 
                          class="img-fluid rounded-3 shadow-lg">
                 </div>
@@ -75,107 +75,220 @@
     <div class="container">
         <div class="text-center mb-5">
             <h6 class="text-gold text-uppercase letter-spacing">CURATED COLLECTION</h6>
-            <h2 class="display-5 fw-bold mb-3">Our <span class="text-gradient-gold">Premium Fleet</span></h2>
+            <h2 class="display-5 fw-bold mb-3">Kerala's <span class="text-gradient-gold">Premium Fleet</span></h2>
             <p class="lead text-champagne">
-                Hand-picked luxury vehicles maintained to perfection for your exclusive driving experience
+                Hand-picked luxury vehicles perfect for Kerala's diverse terrain - from city elegance to hill station adventures
             </p>
         </div>
         
         <div class="row g-4">
-            {% for car in featured_cars|slice:":3" %}
+            <!-- Toyota Fortuner -->
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 fleet-card">
-                    <div class="card-img-top position-relative">
-                        {% if car.image %}
-                        <img src="{{ car.image.url }}" 
-                             alt="{{ car.make }} {{ car.model }}" 
-                             class="img-fluid" style="height: 200px; object-fit: cover; width: 100%;">
-                        {% else %}
-                        <img src="{% static 'images/default-car.jpg' %}" 
-                             alt="{{ car.make }} {{ car.model }}" 
-                             class="img-fluid" style="height: 200px; object-fit: cover; width: 100%;">
-                        {% endif %}
+                    <div class="card-img-top position-relative luxury-car-placeholder">
+                        <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Toyota Fortuner" 
+                             class="img-fluid" 
+                             style="height: 200px; object-fit: cover; width: 100%;">
                         <div class="card-badge position-absolute top-0 end-0 m-3">
-                            <span class="badge bg-dark">{{ car.get_car_type_display|default:"Premium" }}</span>
+                            <span class="badge bg-dark">Premium SUV</span>
                         </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">{{ car.year }} {{ car.make }} {{ car.model }}</h5>
-                        <p class="card-text text-champagne">{{ car.description|truncatewords:15|default:"Premium luxury vehicle" }}</p>
-                        
+                        <h5 class="card-title text-platinum">2024 Toyota Fortuner</h5>
+                        <p class="card-text text-champagne">Powerful SUV perfect for Kerala's diverse terrain and family trips with premium comfort.</p>
                         <div class="car-features mb-3">
                             <div class="row g-2">
                                 <div class="col-6">
                                     <small class="text-champagne">
-                                        <i class="fas fa-users me-1"></i>{{ car.seats|default:4 }} Seats
+                                        <i class="fas fa-users me-1"></i>7 Seats
                                     </small>
                                 </div>
                                 <div class="col-6">
                                     <small class="text-champagne">
-                                        <i class="fas fa-gas-pump me-1"></i>{{ car.get_fuel_type_display|default:"Petrol" }}
+                                        <i class="fas fa-gas-pump me-1"></i>Diesel
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-car me-1"></i>Automatic
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-snowflake me-1"></i>Climate AC
                                     </small>
                                 </div>
                             </div>
                         </div>
-                        
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="price">
-                                <span class="h5 text-gold mb-0">${{ car.daily_rate|default:199 }}</span>
+                                <span class="h5 text-gold mb-0">₹4,500</span>
                                 <small class="text-champagne">/day</small>
                             </div>
-                            <a href="{% url 'rentals:car_detail' car.pk %}" class="btn btn-outline-gold btn-sm">
+                            <a href="#" class="btn btn-outline-gold btn-sm">
                                 View Details
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="row g-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 fleet-card">
-                            <div class="card-img-top position-relative">
-                                <img src="{% static 'images/default-car.jpg' %}" 
-                                     alt="Mercedes S-Class" 
-                                     class="img-fluid" style="height: 200px; object-fit: cover; width: 100%;">
-                                <div class="card-badge position-absolute top-0 end-0 m-3">
-                                    <span class="badge bg-dark">Luxury</span>
+
+            <!-- Range Rover -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 fleet-card">
+                    <div class="card-img-top position-relative luxury-car-placeholder">
+                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Range Rover" 
+                             class="img-fluid" 
+                             style="height: 200px; object-fit: cover; width: 100%;">
+                        <div class="card-badge position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-dark">Luxury SUV</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-platinum">2024 Range Rover Vogue</h5>
+                        <p class="card-text text-champagne">British luxury SUV with exceptional off-road capability and supreme comfort.</p>
+                        <div class="car-features mb-3">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-users me-1"></i>5 Seats
+                                    </small>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">2024 Mercedes S-Class</h5>
-                                <p class="card-text text-champagne">Ultimate luxury sedan with advanced technology and comfort.</p>
-                                <div class="car-features mb-3">
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <small class="text-champagne">
-                                                <i class="fas fa-users me-1"></i>5 Seats
-                                            </small>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-champagne">
-                                                <i class="fas fa-gas-pump me-1"></i>Petrol
-                                            </small>
-                                        </div>
-                                    </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-gas-pump me-1"></i>Diesel
+                                    </small>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="price">
-                                        <span class="h5 text-gold mb-0">$299</span>
-                                        <small class="text-champagne">/day</small>
-                                    </div>
-                                    <a href="#" class="btn btn-outline-gold btn-sm">
-                                        View Details
-                                    </a>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-car me-1"></i>Automatic
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-shield-alt me-1"></i>4WD
+                                    </small>
                                 </div>
                             </div>
                         </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="price">
+                                <span class="h5 text-gold mb-0">₹15,000</span>
+                                <small class="text-champagne">/day</small>
+                            </div>
+                            <a href="#" class="btn btn-outline-gold btn-sm">
+                                View Details
+                            </a>
+                        </div>
                     </div>
-                    <!-- Add 2 more placeholder cards -->
                 </div>
             </div>
-            {% endfor %}
+
+            <!-- Mercedes S-Class -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 fleet-card">
+                    <div class="card-img-top position-relative luxury-car-placeholder">
+                        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Mercedes S-Class" 
+                             class="img-fluid" 
+                             style="height: 200px; object-fit: cover; width: 100%;">
+                        <div class="card-badge position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-dark">Luxury Sedan</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-platinum">2024 Mercedes S-Class</h5>
+                        <p class="card-text text-champagne">The pinnacle of luxury sedans with cutting-edge technology and executive comfort.</p>
+                        <div class="car-features mb-3">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-users me-1"></i>5 Seats
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-gas-pump me-1"></i>Petrol
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-car me-1"></i>Automatic
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-star me-1"></i>Executive
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="price">
+                                <span class="h5 text-gold mb-0">₹10,000</span>
+                                <small class="text-champagne">/day</small>
+                            </div>
+                            <a href="#" class="btn btn-outline-gold btn-sm">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audi A6 -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 fleet-card">
+                    <div class="card-img-top position-relative luxury-car-placeholder">
+                        <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Audi A6" 
+                             class="img-fluid" 
+                             style="height: 200px; object-fit: cover; width: 100%;">
+                        <div class="card-badge position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-dark">Executive Sedan</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-platinum">2024 Audi A6</h5>
+                        <p class="card-text text-champagne">Sophisticated luxury with Quattro all-wheel drive performance and premium features.</p>
+                        <div class="car-features mb-3">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-users me-1"></i>5 Seats
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-gas-pump me-1"></i>Petrol
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-car me-1"></i>Automatic
+                                    </small>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-champagne">
+                                        <i class="fas fa-shield-alt me-1"></i>AWD
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="price">
+                                <span class="h5 text-gold mb-0">₹8,500</span>
+                                <small class="text-champagne">/day</small>
+                            </div>
+                            <a href="#" class="btn btn-outline-gold btn-sm">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="text-center mt-5">
@@ -186,14 +299,94 @@
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Vehicle Categories -->
 <section class="section-padding bg-dark-gradient">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="text-gold text-uppercase letter-spacing">CATEGORIES</h6>
+            <h2 class="display-5 fw-bold mb-3">Explore By <span class="text-gradient-gold">Vehicle Type</span></h2>
+            <p class="lead text-champagne">
+                Choose from our diverse fleet tailored for every occasion in Kerala
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card text-center p-4">
+                    <div class="category-icon mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-gold"></i>
+                    </div>
+                    <h5 class="mb-3 text-platinum">Premium SUVs</h5>
+                    <p class="text-champagne small">
+                        Perfect for family trips and Kerala's diverse terrain
+                    </p>
+                    <div class="category-vehicles">
+                        <span class="badge bg-gold text-dark me-1 mb-1">Fortuner</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">Endeavour</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">GLS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card text-center p-4">
+                    <div class="category-icon mb-3">
+                        <i class="fas fa-gem fa-3x text-gold"></i>
+                    </div>
+                    <h5 class="mb-3 text-platinum">Luxury Sedans</h5>
+                    <p class="text-champagne small">
+                        Executive comfort for business and special occasions
+                    </p>
+                    <div class="category-vehicles">
+                        <span class="badge bg-gold text-dark me-1 mb-1">S-Class</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">7 Series</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">A6</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card text-center p-4">
+                    <div class="category-icon mb-3">
+                        <i class="fas fa-tachometer-alt fa-3x text-gold"></i>
+                    </div>
+                    <h5 class="mb-3 text-platinum">Performance Cars</h5>
+                    <p class="text-champagne small">
+                        Sports and performance vehicles for the driving enthusiast
+                    </p>
+                    <div class="category-vehicles">
+                        <span class="badge bg-gold text-dark me-1 mb-1">Porsche</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">BMW M</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">Audi RS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="category-card text-center p-4">
+                    <div class="category-icon mb-3">
+                        <i class="fas fa-users fa-3x text-gold"></i>
+                    </div>
+                    <h5 class="mb-3 text-platinum">Premium MPVs</h5>
+                    <p class="text-champagne small">
+                        Spacious vehicles perfect for large families and groups
+                    </p>
+                    <div class="category-vehicles">
+                        <span class="badge bg-gold text-dark me-1 mb-1">Innova</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">V-Class</span>
+                        <span class="badge bg-gold text-dark me-1 mb-1">Carnival</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section-padding">
     <div class="container">
         <div class="text-center mb-5">
             <h6 class="text-gold text-uppercase letter-spacing">WHY DRIVERENTAL</h6>
             <h2 class="display-5 fw-bold mb-3">The <span class="text-gradient-gold">Elite Experience</span></h2>
             <p class="lead text-champagne">
-                We redefine luxury car rental with unparalleled service and attention to detail
+                We redefine luxury car rental with unparalleled service across Kerala
             </p>
         </div>
         
@@ -203,9 +396,9 @@
                     <div class="feature-icon mb-4">
                         <i class="fas fa-gem fa-3x text-gold"></i>
                     </div>
-                    <h4 class="h5 mb-3">Premium Fleet</h4>
+                    <h4 class="h5 mb-3 text-platinum">Kerala's Premium Fleet</h4>
                     <p class="text-champagne">
-                        Curated selection of luxury vehicles from top manufacturers, meticulously maintained.
+                        Curated selection of luxury vehicles perfect for Kerala's diverse terrain and climate.
                     </p>
                 </div>
             </div>
@@ -214,9 +407,9 @@
                     <div class="feature-icon mb-4">
                         <i class="fas fa-concierge-bell fa-3x text-gold"></i>
                     </div>
-                    <h4 class="h5 mb-3">24/7 Concierge</h4>
+                    <h4 class="h5 mb-3 text-platinum">24/7 Kerala Concierge</h4>
                     <p class="text-champagne">
-                        Dedicated personal concierge service available round-the-clock.
+                        Dedicated local concierge service available across all districts of Kerala.
                     </p>
                 </div>
             </div>
@@ -225,9 +418,9 @@
                     <div class="feature-icon mb-4">
                         <i class="fas fa-shield-alt fa-3x text-gold"></i>
                     </div>
-                    <h4 class="h5 mb-3">Complete Protection</h4>
+                    <h4 class="h5 mb-3 text-platinum">Complete Protection</h4>
                     <p class="text-champagne">
-                        Comprehensive insurance coverage and safety protocols for peace of mind.
+                        Comprehensive insurance and safety protocols for Kerala's roads and conditions.
                     </p>
                 </div>
             </div>
@@ -236,13 +429,13 @@
 </section>
 
 <!-- CTA Section -->
-<section class="section-padding">
+<section class="section-padding bg-dark-gradient">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h2 class="display-6 fw-bold mb-3">Ready to Experience Ultimate Luxury?</h2>
+                <h2 class="display-6 fw-bold mb-3 text-platinum">Ready to Experience Kerala in Ultimate Luxury?</h2>
                 <p class="lead text-champagne mb-4">
-                    Join our exclusive community of discerning clients who value excellence in every journey.
+                    Join our exclusive community of discerning clients exploring God's Own Country in style.
                 </p>
                 <div class="d-flex flex-wrap gap-3">
                     {% if not user.is_authenticated %}
@@ -293,6 +486,41 @@
     transform: scale(1.1);
 }
 
+.category-card {
+    background: rgba(26, 26, 26, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.category-card:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    transform: translateY(-5px);
+}
+
+.category-icon {
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+}
+
+.category-vehicles {
+    margin-top: 1rem;
+}
+
+.luxury-car-placeholder {
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Ensure car titles are visible */
+.card-title {
+    color: var(--platinum) !important;
+    font-weight: 600;
+}
+
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -300,6 +528,10 @@
     
     .trust-indicators .h2 {
         font-size: 1.5rem;
+    }
+    
+    .category-card {
+        margin-bottom: 1rem;
     }
 }
 
