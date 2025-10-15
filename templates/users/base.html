@@ -47,12 +47,7 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <!-- Home button removed, only Browse Cars remains -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'rentals:browse_cars' %}">
-                            <i class="fas fa-search me-1"></i>Browse Cars
-                        </a>
-                    </li>
+            
                     {% if user.is_authenticated %}
                         {% if user.account_type == 'customer' %}
                             <li class="nav-item">
