@@ -82,220 +82,128 @@
         </div>
         
         <div class="row g-4">
-            <!-- Toyota Fortuner -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card h-100 fleet-card">
-                    <div class="card-img-top position-relative luxury-car-placeholder">
-                        <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                             alt="Toyota Fortuner" 
-                             class="img-fluid" 
-                             style="height: 200px; object-fit: cover; width: 100%;">
-                        <div class="card-badge position-absolute top-0 end-0 m-3">
-                            <span class="badge bg-dark">Premium SUV</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title text-platinum">2024 Toyota Fortuner</h5>
-                        <p class="card-text text-champagne">Powerful SUV perfect for Kerala's diverse terrain and family trips with premium comfort.</p>
-                        <div class="car-features mb-3">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-users me-1"></i>7 Seats
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-gas-pump me-1"></i>Diesel
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-car me-1"></i>Automatic
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-snowflake me-1"></i>Climate AC
-                                    </small>
-                                </div>
+            {% if cars %}
+                {% for car in cars %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 fleet-card">
+                        <div class="card-img-top position-relative luxury-car-placeholder">
+                            {% if car.image %}
+                                <img src="{{ car.image.url }}" 
+                                     alt="{{ car.make }} {{ car.model }}" 
+                                     class="img-fluid" 
+                                     style="height: 200px; object-fit: cover; width: 100%;">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                                     alt="{{ car.make }} {{ car.model }}" 
+                                     class="img-fluid" 
+                                     style="height: 200px; object-fit: cover; width: 100%;">
+                            {% endif %}
+                            <div class="card-badge position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-dark">{{ car.get_car_type_display }}</span>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="price">
-                                <span class="h5 text-gold mb-0">₹4,500</span>
-                                <small class="text-champagne">/day</small>
-                            </div>
-                            <a href="#" class="btn btn-outline-gold btn-sm">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Range Rover -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card h-100 fleet-card">
-                    <div class="card-img-top position-relative luxury-car-placeholder">
-                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                             alt="Range Rover" 
-                             class="img-fluid" 
-                             style="height: 200px; object-fit: cover; width: 100%;">
-                        <div class="card-badge position-absolute top-0 end-0 m-3">
-                            <span class="badge bg-dark">Luxury SUV</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title text-platinum">2024 Range Rover Vogue</h5>
-                        <p class="card-text text-champagne">British luxury SUV with exceptional off-road capability and supreme comfort.</p>
-                        <div class="car-features mb-3">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-users me-1"></i>5 Seats
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-gas-pump me-1"></i>Diesel
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-car me-1"></i>Automatic
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-shield-alt me-1"></i>4WD
-                                    </small>
+                        <div class="card-body">
+                            <h5 class="card-title text-platinum">{{ car.year }} {{ car.make }} {{ car.model }}</h5>
+                            <p class="card-text text-champagne">{{ car.description|truncatewords:20 }}</p>
+                            <div class="car-features mb-3">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-users me-1"></i>{{ car.seats }} Seats
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-gas-pump me-1"></i>{{ car.get_fuel_type_display }}
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-car me-1"></i>{{ car.get_transmission_display }}
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-map-marker-alt me-1"></i>{{ car.city }}
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="price">
-                                <span class="h5 text-gold mb-0">₹15,000</span>
-                                <small class="text-champagne">/day</small>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price">
+                                    <span class="h5 text-gold mb-0">₹{{ car.daily_rate }}</span>
+                                    <small class="text-champagne">/day</small>
+                                </div>
+                                <a href="{% url 'rentals:car_detail' car.pk %}" class="btn btn-outline-gold btn-sm">
+                                    View Details
+                                </a>
                             </div>
-                            <a href="#" class="btn btn-outline-gold btn-sm">
-                                View Details
-                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Mercedes S-Class -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card h-100 fleet-card">
-                    <div class="card-img-top position-relative luxury-car-placeholder">
-                        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                             alt="Mercedes S-Class" 
-                             class="img-fluid" 
-                             style="height: 200px; object-fit: cover; width: 100%;">
-                        <div class="card-badge position-absolute top-0 end-0 m-3">
-                            <span class="badge bg-dark">Luxury Sedan</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title text-platinum">2024 Mercedes S-Class</h5>
-                        <p class="card-text text-champagne">The pinnacle of luxury sedans with cutting-edge technology and executive comfort.</p>
-                        <div class="car-features mb-3">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-users me-1"></i>5 Seats
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-gas-pump me-1"></i>Petrol
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-car me-1"></i>Automatic
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-star me-1"></i>Executive
-                                    </small>
-                                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Single placeholder card when no cars are available -->
+                <div class="col-12 col-md-6 col-lg-4 mx-auto">
+                    <div class="card h-100 fleet-card">
+                        <div class="card-img-top position-relative luxury-car-placeholder">
+                            <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                                 alt="No Cars Available" 
+                                 class="img-fluid" 
+                                 style="height: 200px; object-fit: cover; width: 100%;">
+                            <div class="card-badge position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-dark">Coming Soon</span>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="price">
-                                <span class="h5 text-gold mb-0">₹10,000</span>
-                                <small class="text-champagne">/day</small>
-                            </div>
-                            <a href="#" class="btn btn-outline-gold btn-sm">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Audi A6 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card h-100 fleet-card">
-                    <div class="card-img-top position-relative luxury-car-placeholder">
-                        <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                             alt="Audi A6" 
-                             class="img-fluid" 
-                             style="height: 200px; object-fit: cover; width: 100%;">
-                        <div class="card-badge position-absolute top-0 end-0 m-3">
-                            <span class="badge bg-dark">Executive Sedan</span>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title text-platinum">2024 Audi A6</h5>
-                        <p class="card-text text-champagne">Sophisticated luxury with Quattro all-wheel drive performance and premium features.</p>
-                        <div class="car-features mb-3">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-users me-1"></i>5 Seats
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-gas-pump me-1"></i>Petrol
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-car me-1"></i>Automatic
-                                    </small>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-champagne">
-                                        <i class="fas fa-shield-alt me-1"></i>AWD
-                                    </small>
+                        <div class="card-body">
+                            <h5 class="card-title text-platinum">Premium Fleet Coming Soon</h5>
+                            <p class="card-text text-champagne">We're preparing our premium fleet for you. Check back soon for luxury vehicles!</p>
+                            <div class="car-features mb-3">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-users me-1"></i>5-7 Seats
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-gas-pump me-1"></i>Multiple Options
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-car me-1"></i>Automatic
+                                        </small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-champagne">
+                                            <i class="fas fa-star me-1"></i>Premium
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="price">
-                                <span class="h5 text-gold mb-0">₹8,500</span>
-                                <small class="text-champagne">/day</small>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="price">
+                                    <span class="h5 text-gold mb-0">₹---</span>
+                                    <small class="text-champagne">/day</small>
+                                </div>
+                                <span class="btn btn-outline-gold btn-sm disabled">
+                                    Coming Soon
+                                </span>
                             </div>
-                            <a href="#" class="btn btn-outline-gold btn-sm">
-                                View Details
-                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
         
+        {% if cars %}
         <div class="text-center mt-5">
             <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-gold btn-lg">
                 View Complete Collection <i class="fas fa-arrow-right ms-2"></i>
             </a>
         </div>
+        {% endif %}
     </div>
 </section>
 
