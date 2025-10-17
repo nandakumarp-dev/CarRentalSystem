@@ -7,9 +7,29 @@ from django.shortcuts import redirect
 from django.db import transaction
 from .forms import SignUpForm, CustomLoginForm, UserUpdateForm, CustomerProfileForm, CarOwnerProfileForm
 from .models import Customer, CarOwner
+from django.views.generic import TemplateView
+from rentals.models import Car
 
 class HomeView(TemplateView):
     template_name = 'users/home.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get available cars (limit to 6 for the homepage)
+        available_cars = Car.objects.filter(
+            is_available=True, 
+            is_active=True
+        ).select_related('owner')[:6]
+        
+        # Add cars and statistics to context
+        context.update({
+            'cars': available_cars,
+            'total_cars': Car.objects.filter(is_available=True, is_active=True).count(),
+            'total_rentals': 2500,  # You can replace this with actual count if you have rental data
+        })
+        
+        return context
 
 class SignUpView(CreateView):
     form_class = SignUpForm
