@@ -3,4 +3,4 @@ Django==5.2.6
 pillow==11.3.0
 python-decouple==3.8
 sqlparse==0.5.3
-django-humanize==0.4.1
+# django-humanize==0.4.1
