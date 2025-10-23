@@ -47,7 +47,6 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-            
                     {% if user.is_authenticated %}
                         {% if user.account_type == 'customer' %}
                             <li class="nav-item">
@@ -97,14 +96,10 @@
                             </ul>
                         </li>
                     {% else %}
+                        <!-- Single Login Button for both desktop and mobile -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'users:login' %}">
                                 <i class="fas fa-sign-in-alt me-1"></i>Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-gold ms-2" href="{% url 'users:signup' %}">
-                                <i class="fas fa-user-plus me-1"></i>Sign Up
                             </a>
                         </li>
                     {% endif %}
