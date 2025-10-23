@@ -1,58 +1,55 @@
 {% extends 'users/base.html' %}
 {% load static %}
 
-{% block title %}DriveRental | Ultra-Premium Car Rental Experience{% endblock %}
+{% block title %}DriveRental | Premium Car Rental{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section bg-dark-gradient">
+<section class="hero-section">
     <div class="container">
-        <div class="row align-items-center min-vh-100 py-5">
+        <div class="row align-items-center min-vh-100">
             <div class="col-lg-6">
                 <div class="hero-content">
-                    <div class="premium-badge mb-4">
-                        <span class="badge bg-gold text-dark">
-                            <i class="fas fa-crown me-2"></i>ULTIMATE LUXURY EXPERIENCE
+                    <div class="corporate-badge mb-4">
+                        <span class="badge corporate-tag">
+                            <i class="fas fa-crown me-2"></i>ESTABLISHED 2015
                         </span>
                     </div>
-                    <h1 class="hero-title display-4 fw-bold mb-4">
-                        Elevate Your Journey With 
-                        <span class="text-gradient-gold">Ultimate Luxury</span>
+                    <h1 class="hero-title display-3 fw-bold mb-4">
+                        The Standard in 
+                        <span class="text-gradient-premium">Premium Mobility</span>
                     </h1>
-                    <p class="hero-subtitle lead mb-5 text-champagne">
-                        Experience Kerala's finest collection of luxury vehicles with unparalleled service. 
-                        From premium SUVs to elite sedans, discover driving perfection across God's Own Country.
+                    <p class="hero-subtitle corporate-text mb-5">
+                        Serving discerning clients across 12 countries with an unparalleled fleet of luxury vehicles. 
+                        Where excellence meets innovation.
                     </p>
-                    <div class="hero-actions d-flex flex-wrap gap-3">
-                        <a href="{% url 'rentals:browse_cars' %}" class="btn btn-gold btn-lg">
-                            <i class="fas fa-search me-2"></i>Explore Our Fleet
-                        </a>
+                    <div class="hero-actions">
                         {% if not user.is_authenticated %}
-                        <a href="{% url 'users:signup' %}" class="btn btn-outline-gold btn-lg">
-                            <i class="fas fa-crown me-2"></i>Join Elite
+                        <a href="{% url 'users:signup' %}" class="btn btn-corporate-primary btn-lg">
+                            <i class="fas fa-user-shield me-2"></i>Join The Elite
                         </a>
                         {% endif %}
                     </div>
                     
-                    <!-- Trust Indicators -->
-                    <div class="trust-indicators mt-5 pt-4">
+                    <!-- Corporate Metrics -->
+                    <div class="corporate-metrics mt-5 pt-5">
                         <div class="row g-4">
                             <div class="col-4">
-                                <div class="text-center">
-                                    <div class="h2 fw-bold text-gold">{{ total_cars|default:"75" }}+</div>
-                                    <div class="text-champagne small">Premium Vehicles</div>
+                                <div class="metric-item">
+                                    <div class="h3 fw-bold corporate-gold mb-1">$120M+</div>
+                                    <div class="corporate-text small">Company Valuation</div>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="text-center">
-                                    <div class="h2 fw-bold text-gold">{{ total_rentals|default:"2500" }}+</div>
-                                    <div class="text-champagne small">Satisfied Clients</div>
+                                <div class="metric-item">
+                                    <div class="h3 fw-bold corporate-gold mb-1">12</div>
+                                    <div class="corporate-text small">Countries</div>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <div class="text-center">
-                                    <div class="h2 fw-bold text-gold">24/7</div>
-                                    <div class="text-champagne small">Concierge</div>
+                                <div class="metric-item">
+                                    <div class="h3 fw-bold corporate-gold mb-1">24/7</div>
+                                    <div class="corporate-text small">Global Support</div>
                                 </div>
                             </div>
                         </div>
@@ -60,304 +57,129 @@
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="hero-image text-center">
-                    <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
-                         alt="Luxury Car" 
-                         class="img-fluid rounded-3 shadow-lg">
+                <div class="hero-image corporate-image">
+                    <img src="https://images.unsplash.com/photo-1535732820275-9ffd998cac22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+                         alt="Luxury Mercedes in Black" 
+                         class="img-fluid">
+                    <div class="image-overlay"></div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Fleet Showcase -->
-<section class="section-padding">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h6 class="text-gold text-uppercase letter-spacing">CURATED COLLECTION</h6>
-            <h2 class="display-5 fw-bold mb-3">Kerala's <span class="text-gradient-gold">Premium Fleet</span></h2>
-            <p class="lead text-champagne">
-                Hand-picked luxury vehicles perfect for Kerala's diverse terrain - from city elegance to hill station adventures
-            </p>
-        </div>
-        
-        <div class="row g-4">
-            {% if cars %}
-                {% for car in cars %}
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 fleet-card">
-                        <div class="card-img-top position-relative luxury-car-placeholder">
-                            {% if car.image %}
-                                <img src="{{ car.image.url }}" 
-                                     alt="{{ car.make }} {{ car.model }}" 
-                                     class="img-fluid" 
-                                     style="height: 200px; object-fit: cover; width: 100%;">
-                            {% else %}
-                                <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                                     alt="{{ car.make }} {{ car.model }}" 
-                                     class="img-fluid" 
-                                     style="height: 200px; object-fit: cover; width: 100%;">
-                            {% endif %}
-                            <div class="card-badge position-absolute top-0 end-0 m-3">
-                                <span class="badge bg-dark">{{ car.get_car_type_display }}</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title text-platinum">{{ car.year }} {{ car.make }} {{ car.model }}</h5>
-                            <p class="card-text text-champagne">{{ car.description|truncatewords:20 }}</p>
-                            <div class="car-features mb-3">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-users me-1"></i>{{ car.seats }} Seats
-                                        </small>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-gas-pump me-1"></i>{{ car.get_fuel_type_display }}
-                                        </small>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-car me-1"></i>{{ car.get_transmission_display }}
-                                        </small>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-map-marker-alt me-1"></i>{{ car.city }}
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="price">
-                                    <span class="h5 text-gold mb-0">₹{{ car.daily_rate }}</span>
-                                    <small class="text-champagne">/day</small>
-                                </div>
-                                <a href="{% url 'rentals:car_detail' car.pk %}" class="btn btn-outline-gold btn-sm">
-                                    View Details
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <!-- Single placeholder card when no cars are available -->
-                <div class="col-12 col-md-6 col-lg-4 mx-auto">
-                    <div class="card h-100 fleet-card">
-                        <div class="card-img-top position-relative luxury-car-placeholder">
-                            <img src="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                                 alt="No Cars Available" 
-                                 class="img-fluid" 
-                                 style="height: 200px; object-fit: cover; width: 100%;">
-                            <div class="card-badge position-absolute top-0 end-0 m-3">
-                                <span class="badge bg-dark">Coming Soon</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title text-platinum">Premium Fleet Coming Soon</h5>
-                            <p class="card-text text-champagne">We're preparing our premium fleet for you. Check back soon for luxury vehicles!</p>
-                            <div class="car-features mb-3">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-users me-1"></i>5-7 Seats
-                                        </small>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-gas-pump me-1"></i>Multiple Options
-                                        </small>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-car me-1"></i>Automatic
-                                        </small>
-                                    </div>
-                                    <div class="col-6">
-                                        <small class="text-champagne">
-                                            <i class="fas fa-star me-1"></i>Premium
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="price">
-                                    <span class="h5 text-gold mb-0">₹---</span>
-                                    <small class="text-champagne">/day</small>
-                                </div>
-                                <span class="btn btn-outline-gold btn-sm disabled">
-                                    Coming Soon
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-        
-        {% if cars %}
-        <div class="text-center mt-5">
-            <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-gold btn-lg">
-                View Complete Collection <i class="fas fa-arrow-right ms-2"></i>
-            </a>
-        </div>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Vehicle Categories -->
-<section class="section-padding bg-dark-gradient">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h6 class="text-gold text-uppercase letter-spacing">CATEGORIES</h6>
-            <h2 class="display-5 fw-bold mb-3">Explore By <span class="text-gradient-gold">Vehicle Type</span></h2>
-            <p class="lead text-champagne">
-                Choose from our diverse fleet tailored for every occasion in Kerala
-            </p>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="category-card text-center p-4">
-                    <div class="category-icon mb-3">
-                        <i class="fas fa-shield-alt fa-3x text-gold"></i>
-                    </div>
-                    <h5 class="mb-3 text-platinum">Premium SUVs</h5>
-                    <p class="text-champagne small">
-                        Perfect for family trips and Kerala's diverse terrain
-                    </p>
-                    <div class="category-vehicles">
-                        <span class="badge bg-gold text-dark me-1 mb-1">Fortuner</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">Endeavour</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">GLS</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="category-card text-center p-4">
-                    <div class="category-icon mb-3">
-                        <i class="fas fa-gem fa-3x text-gold"></i>
-                    </div>
-                    <h5 class="mb-3 text-platinum">Luxury Sedans</h5>
-                    <p class="text-champagne small">
-                        Executive comfort for business and special occasions
-                    </p>
-                    <div class="category-vehicles">
-                        <span class="badge bg-gold text-dark me-1 mb-1">S-Class</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">7 Series</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">A6</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="category-card text-center p-4">
-                    <div class="category-icon mb-3">
-                        <i class="fas fa-tachometer-alt fa-3x text-gold"></i>
-                    </div>
-                    <h5 class="mb-3 text-platinum">Performance Cars</h5>
-                    <p class="text-champagne small">
-                        Sports and performance vehicles for the driving enthusiast
-                    </p>
-                    <div class="category-vehicles">
-                        <span class="badge bg-gold text-dark me-1 mb-1">Porsche</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">BMW M</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">Audi RS</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="category-card text-center p-4">
-                    <div class="category-icon mb-3">
-                        <i class="fas fa-users fa-3x text-gold"></i>
-                    </div>
-                    <h5 class="mb-3 text-platinum">Premium MPVs</h5>
-                    <p class="text-champagne small">
-                        Spacious vehicles perfect for large families and groups
-                    </p>
-                    <div class="category-vehicles">
-                        <span class="badge bg-gold text-dark me-1 mb-1">Innova</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">V-Class</span>
-                        <span class="badge bg-gold text-dark me-1 mb-1">Carnival</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="section-padding">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h6 class="text-gold text-uppercase letter-spacing">WHY DRIVERENTAL</h6>
-            <h2 class="display-5 fw-bold mb-3">The <span class="text-gradient-gold">Elite Experience</span></h2>
-            <p class="lead text-champagne">
-                We redefine luxury car rental with unparalleled service across Kerala
-            </p>
-        </div>
-        
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="text-center p-4">
-                    <div class="feature-icon mb-4">
-                        <i class="fas fa-gem fa-3x text-gold"></i>
-                    </div>
-                    <h4 class="h5 mb-3 text-platinum">Kerala's Premium Fleet</h4>
-                    <p class="text-champagne">
-                        Curated selection of luxury vehicles perfect for Kerala's diverse terrain and climate.
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="text-center p-4">
-                    <div class="feature-icon mb-4">
-                        <i class="fas fa-concierge-bell fa-3x text-gold"></i>
-                    </div>
-                    <h4 class="h5 mb-3 text-platinum">24/7 Kerala Concierge</h4>
-                    <p class="text-champagne">
-                        Dedicated local concierge service available across all districts of Kerala.
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="text-center p-4">
-                    <div class="feature-icon mb-4">
-                        <i class="fas fa-shield-alt fa-3x text-gold"></i>
-                    </div>
-                    <h4 class="h5 mb-3 text-platinum">Complete Protection</h4>
-                    <p class="text-champagne">
-                        Comprehensive insurance and safety protocols for Kerala's roads and conditions.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA Section -->
-<section class="section-padding bg-dark-gradient">
+<!-- Global Presence -->
+<section class="corporate-section">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h2 class="display-6 fw-bold mb-3 text-platinum">Ready to Experience Kerala in Ultimate Luxury?</h2>
-                <p class="lead text-champagne mb-4">
-                    Join our exclusive community of discerning clients exploring God's Own Country in style.
-                </p>
-                <div class="d-flex flex-wrap gap-3">
-                    {% if not user.is_authenticated %}
-                    <a href="{% url 'users:signup' %}" class="btn btn-gold btn-lg">
-                        <i class="fas fa-crown me-2"></i>Become a Member
-                    </a>
-                    {% endif %}
-                    <a href="{% url 'rentals:browse_cars' %}" class="btn btn-outline-gold btn-lg">
-                        <i class="fas fa-car me-2"></i>Browse Collection
-                    </a>
+            <div class="col-lg-6">
+                <div class="corporate-image">
+                    <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+                         alt="Luxury Car Interior" 
+                         class="img-fluid">
                 </div>
             </div>
-            <div class="col-lg-4 text-center">
-                <i class="fas fa-car-side fa-6x text-gold opacity-25"></i>
+            <div class="col-lg-6">
+                <div class="corporate-content ps-lg-5">
+                    <h6 class="section-label">GLOBAL STANDARDS</h6>
+                    <h2 class="display-5 fw-bold mb-4">Uncompromising <span class="corporate-gold">Excellence</span></h2>
+                    <p class="corporate-text lead mb-4">
+                        With operations spanning three continents, we maintain the highest standards of service, 
+                        security, and sophistication in the luxury mobility sector.
+                    </p>
+                    <div class="corporate-features">
+                        <div class="feature-item d-flex mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="fas fa-shield-alt corporate-gold"></i>
+                            </div>
+                            <div>
+                                <h5 class="corporate-gold mb-1">Enterprise-Grade Security</h5>
+                                <p class="corporate-text mb-0">Bank-level encryption and privacy protection</p>
+                            </div>
+                        </div>
+                        <div class="feature-item d-flex mb-3">
+                            <div class="feature-icon me-3">
+                                <i class="fas fa-globe corporate-gold"></i>
+                            </div>
+                            <div>
+                                <h5 class="corporate-gold mb-1">Global Concierge</h5>
+                                <p class="corporate-text mb-0">24/7 multilingual support across all timezones</p>
+                            </div>
+                        </div>
+                        <div class="feature-item d-flex">
+                            <div class="feature-icon me-3">
+                                <i class="fas fa-award corporate-gold"></i>
+                            </div>
+                            <div>
+                                <h5 class="corporate-gold mb-1">Award-Winning Service</h5>
+                                <p class="corporate-text mb-0">Recognized industry leader since 2015</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fleet Access -->
+<section class="cta-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-4">Access Our <span class="corporate-gold">Global Fleet</span></h2>
+                <p class="corporate-text lead mb-5">
+                    Experience the DriveRental standard. Browse our curated collection of the world's finest luxury vehicles.
+                </p>
+                <a href="{% url 'rentals:browse_cars' %}" class="btn btn-corporate-secondary btn-lg">
+                    <i class="fas fa-arrow-right me-2"></i>Explore The Fleet
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Corporate Values -->
+<section class="values-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="section-label">OUR COMMITMENT</h6>
+            <h2 class="display-5 fw-bold mb-3">The DriveRental <span class="corporate-gold">Standard</span></h2>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="value-card text-center">
+                    <div class="value-icon mb-4">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h4 class="h5 mb-3 corporate-gold">Excellence</h4>
+                    <p class="corporate-text">
+                        Every vehicle in our fleet undergoes rigorous 200-point inspection and maintenance protocols.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="value-card text-center">
+                    <div class="value-icon mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 class="h5 mb-3 corporate-gold">Security</h4>
+                    <p class="corporate-text">
+                        Enterprise-grade protection for your data and transactions, trusted by Fortune 500 executives.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="value-card text-center">
+                    <div class="value-icon mb-4">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h4 class="h5 mb-3 corporate-gold">Global Reach</h4>
+                    <p class="corporate-text">
+                        Seamless service across 12 countries with localized support and international standards.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -365,68 +187,197 @@
 
 <style>
 .hero-section {
-    background: linear-gradient(135deg, var(--midnight) 0%, var(--carbon) 100%);
+    background: #000;
+    position: relative;
+    overflow: hidden;
 }
 
-.premium-badge .badge {
-    padding: 0.75rem 1.5rem;
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, #000 100%);
+    z-index: 1;
+}
+
+.corporate-badge .badge {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #D4AF37;
+    padding: 0.8rem 1.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    border-radius: 2px;
+}
+
+.hero-title {
+    color: #fff;
+    font-weight: 300;
+    line-height: 1.1;
+}
+
+.hero-title span {
+    font-weight: 400;
+}
+
+.corporate-text {
+    color: #B0B0B0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.corporate-gold {
+    color: #D4AF37 !important;
+}
+
+.text-gradient-premium {
+    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.btn-corporate-primary {
+    background: #D4AF37;
+    color: #000;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-corporate-primary:hover {
+    background: #FFD700;
+    color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+.btn-corporate-secondary {
+    background: transparent;
+    color: #D4AF37;
+    border: 2px solid #D4AF37;
+    padding: 1rem 2.5rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.btn-corporate-secondary:hover {
+    background: #D4AF37;
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.corporate-image {
+    position: relative;
+}
+
+.corporate-image img {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #000 0%, transparent 50%, #000 100%);
+}
+
+.corporate-section {
+    padding: 100px 0;
+    background: #0A0A0A;
+}
+
+.section-label {
+    color: #D4AF37;
     font-size: 0.8rem;
-    letter-spacing: 1px;
-}
-
-.letter-spacing {
     letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
 }
 
-.fleet-card {
-    transition: transform 0.3s ease;
+.cta-section {
+    padding: 100px 0;
+    background: #000;
 }
 
-.fleet-card:hover {
-    transform: translateY(-10px);
+.values-section {
+    padding: 100px 0;
+    background: #0A0A0A;
 }
 
-.feature-icon {
-    transition: transform 0.3s ease;
-}
-
-.feature-icon:hover {
-    transform: scale(1.1);
-}
-
-.category-card {
-    background: rgba(26, 26, 26, 0.6);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 12px;
+.value-card {
+    padding: 3rem 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    border-radius: 2px;
     transition: all 0.3s ease;
     height: 100%;
 }
 
-.category-card:hover {
-    border-color: rgba(212, 175, 55, 0.4);
+.value-card:hover {
+    border-color: rgba(212, 175, 55, 0.3);
     transform: translateY(-5px);
 }
 
-.category-icon {
-    transition: transform 0.3s ease;
+.value-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s ease;
 }
 
-.category-card:hover .category-icon {
-    transform: scale(1.1);
+.value-card:hover .value-icon {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: rgba(212, 175, 55, 0.4);
 }
 
-.category-vehicles {
-    margin-top: 1rem;
+.value-icon i {
+    font-size: 2rem;
+    color: #D4AF37;
 }
 
-.luxury-car-placeholder {
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+.corporate-metrics {
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-/* Ensure car titles are visible */
-.card-title {
-    color: var(--platinum) !important;
-    font-weight: 600;
+.metric-item {
+    text-align: center;
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.feature-icon i {
+    color: #D4AF37;
+    font-size: 1rem;
 }
 
 @media (max-width: 768px) {
@@ -434,23 +385,13 @@
         font-size: 2.5rem;
     }
     
-    .trust-indicators .h2 {
-        font-size: 1.5rem;
+    .corporate-image img {
+        height: 400px;
+        margin-top: 2rem;
     }
     
-    .category-card {
-        margin-bottom: 1rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-    
-    .hero-actions .btn {
-        width: 100%;
-        justify-content: center;
+    .hero-section::before {
+        display: none;
     }
 }
 </style>
