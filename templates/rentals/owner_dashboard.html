@@ -4,236 +4,440 @@
 {% block title %}Owner Dashboard - DriveRental{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h3 fw-bold mb-2">Dashboard</h1>
-                    <p class="text-muted mb-0">Welcome back, {{ user.first_name|default:user.username }}! Here's your business overview.</p>
-                </div>
-                <div class="text-end">
-                    <div class="text-muted">
-                        <i class="fas fa-calendar me-2"></i>
-                        <span id="current-date"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
+:root {
+    --color-black: #000000;
+    --color-dark-charcoal: #0A0A0A;
+    --color-gold: #D4AF37;
+    --color-gold-light: #FFD700;
+    --color-platinum: #B0B0B0;
+    --color-white: #FFFFFF;
+}
 
-    <!-- Stats -->
-    <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 bg-primary text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h3 class="card-title h2 fw-bold">${{ monthly_earnings|default:"2,850" }}</h3>
-                            <p class="card-text opacity-75">Monthly Earnings</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 bg-success text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h3 class="card-title h2 fw-bold">{{ total_cars|default:"5" }}</h3>
-                            <p class="card-text opacity-75">Total Cars</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-car fa-2x opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 bg-warning text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h3 class="card-title h2 fw-bold">{{ active_rentals|default:"3" }}</h3>
-                            <p class="card-text opacity-75">Active Rentals</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-calendar-check fa-2x opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 bg-info text-white">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <h3 class="card-title h2 fw-bold">{{ pending_requests|default:"2" }}</h3>
-                            <p class="card-text opacity-75">Pending Requests</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-clock fa-2x opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+.dashboard-container {
+    background-color: var(--color-black);
+    color: var(--color-platinum);
+    min-height: 100vh;
+}
 
-    <div class="row g-4">
-        <!-- Quick Actions -->
-        <div class="col-lg-8">
-            <div class="card border-0">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title fw-bold mb-0">Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-sm-6 col-lg-3">
-                            <a href="{% url 'rentals:add_car' %}" class="btn btn-outline-primary w-100 h-100 py-4 text-center">
-                                <i class="fas fa-plus-circle fa-2x mb-2 d-block"></i>
-                                <span class="fw-semibold">Add Car</span>
-                            </a>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <a href="{% url 'rentals:my_cars' %}" class="btn btn-outline-success w-100 h-100 py-4 text-center">
-                                <i class="fas fa-edit fa-2x mb-2 d-block"></i>
-                                <span class="fw-semibold">Manage Cars</span>
-                            </a>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <a href="{% url 'rentals:rentals' %}" class="btn btn-outline-warning w-100 h-100 py-4 text-center">
-                                <i class="fas fa-list fa-2x mb-2 d-block"></i>
-                                <span class="fw-semibold">Bookings</span>
-                            </a>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <a href="{% url 'rentals:analytics' %}" class="btn btn-outline-info w-100 h-100 py-4 text-center">
-                                <i class="fas fa-chart-bar fa-2x mb-2 d-block"></i>
-                                <span class="fw-semibold">Analytics</span>
-                            </a>
+.card {
+    background-color: var(--color-dark-charcoal);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    color: var(--color-platinum);
+}
+
+.card-header {
+    background-color: rgba(212, 175, 55, 0.05);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.text-primary { color: var(--color-gold) !important; }
+.text-success { color: var(--color-gold) !important; }
+.text-warning { color: var(--color-gold-light) !important; }
+.text-info { color: var(--color-gold) !important; }
+
+.bg-primary { background-color: var(--color-gold) !important; }
+.bg-success { background-color: var(--color-gold) !important; }
+.bg-warning { background-color: var(--color-gold-light) !important; }
+.bg-info { background-color: var(--color-gold) !important; }
+
+.btn-primary {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-gold-light);
+    border-color: var(--color-gold-light);
+    color: var(--color-black);
+}
+
+.btn-outline-primary {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+}
+
+.badge.bg-primary,
+.badge.bg-success,
+.badge.bg-info {
+    background-color: rgba(212, 175, 55, 0.1) !important;
+    color: var(--color-gold) !important;
+}
+
+.badge.bg-warning {
+    background-color: rgba(255, 215, 0, 0.1) !important;
+    color: var(--color-gold-light) !important;
+}
+
+.progress {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    background-color: var(--color-gold);
+}
+
+.gold-gradient {
+    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.list-group-item {
+    background-color: transparent;
+    border-color: rgba(212, 175, 55, 0.1);
+    color: var(--color-platinum);
+}
+
+.border {
+    border-color: rgba(212, 175, 55, 0.1) !important;
+}
+
+.text-muted {
+    color: var(--color-platinum) !important;
+    opacity: 0.8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-white);
+}
+
+.card-title {
+    color: var(--color-white);
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(212, 175, 55, 0.1) !important;
+}
+</style>
+
+<div class="dashboard-container">
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h3 fw-bold mb-2">Dashboard</h1>
+                        <p class="text-muted mb-0">Welcome back, {{ user.first_name|default:user.username }}! Here's your business overview.</p>
+                    </div>
+                    <div class="text-end">
+                        <div class="text-muted">
+                            <i class="fas fa-calendar me-2"></i>
+                            <span id="current-date"></span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Recent Activity -->
-            <div class="card border-0 mt-4">
-                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title fw-bold mb-0">Recent Activity</h5>
-                    <a href="{% url 'rentals:rentals' %}" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        {% for activity in recent_activities %}
-                        <div class="list-group-item d-flex align-items-center px-0 border-0">
-                            <div class="bg-{{ activity.status_color }} rounded-circle p-2 me-3">
-                                {% if activity.type == 'booking' %}
-                                <i class="fas fa-check text-white"></i>
-                                {% elif activity.type == 'confirmation' %}
-                                <i class="fas fa-check-circle text-white"></i>
-                                {% elif activity.type == 'rental' %}
-                                <i class="fas fa-play text-white"></i>
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h3 class="card-title h2 fw-bold gold-gradient">${{ monthly_earnings|default:"0" }}</h3>
+                                <p class="card-text text-muted">Monthly Earnings</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="rounded p-3" style="background: rgba(212, 175, 55, 0.1);">
+                                    <i class="fas fa-dollar-sign fa-lg gold-gradient"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                {% if monthly_earnings > 0 %}
+                                    <i class="fas fa-arrow-up text-success me-1"></i>
+                                    Active revenue stream
                                 {% else %}
-                                <i class="fas fa-info text-white"></i>
+                                    <i class="fas fa-info-circle text-warning me-1"></i>
+                                    No earnings this month
                                 {% endif %}
-                            </div>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-semibold">{{ activity.title }}</h6>
-                                <p class="mb-0 text-muted small">{{ activity.description }}</p>
-                                <small class="text-muted">{{ activity.time }}</small>
+                                <h3 class="card-title h2 fw-bold gold-gradient">{{ total_cars|default:"0" }}</h3>
+                                <p class="card-text text-muted">Total Cars</p>
                             </div>
-                            <span class="badge bg-{{ activity.status_color }}">{{ activity.status_text }}</span>
+                            <div class="flex-shrink-0">
+                                <div class="rounded p-3" style="background: rgba(212, 175, 55, 0.1);">
+                                    <i class="fas fa-car fa-lg gold-gradient"></i>
+                                </div>
+                            </div>
                         </div>
-                        {% empty %}
-                        <div class="text-center py-3">
-                            <i class="fas fa-history fa-2x text-muted mb-2"></i>
-                            <p class="text-muted mb-0">No recent activity</p>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-check-circle text-success me-1"></i>
+                                {{ available_cars|default:"0" }} available
+                            </small>
                         </div>
-                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h3 class="card-title h2 fw-bold gold-gradient">{{ active_rentals|default:"0" }}</h3>
+                                <p class="card-text text-muted">Active Rentals</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="rounded p-3" style="background: rgba(212, 175, 55, 0.1);">
+                                    <i class="fas fa-calendar-check fa-lg gold-gradient"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-clock text-warning me-1"></i>
+                                {{ pending_requests|default:"0" }} pending requests
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h3 class="card-title h2 fw-bold gold-gradient">{{ monthly_bookings|default:"0" }}</h3>
+                                <p class="card-text text-muted">Monthly Bookings</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <div class="rounded p-3" style="background: rgba(212, 175, 55, 0.1);">
+                                    <i class="fas fa-chart-line fa-lg gold-gradient"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                {% if monthly_bookings > 0 %}
+                                    <i class="fas fa-arrow-up text-success me-1"></i>
+                                    {{ monthly_bookings }} this month
+                                {% else %}
+                                    <i class="fas fa-minus text-secondary me-1"></i>
+                                    No bookings yet
+                                {% endif %}
+                            </small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-            <div class="card border-0">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title fw-bold mb-0">Your Cars</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        {% for car in owner_cars %}
-                        <div class="list-group-item d-flex align-items-center px-0 border-0">
-                            {% if car.image %}
-                            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
-                            {% else %}
-                            <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                <i class="fas fa-car text-muted"></i>
+        <div class="row g-4">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Quick Actions -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h5 class="card-title fw-bold mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6 col-lg-3">
+                                <a href="{% url 'rentals:add_car' %}" class="btn btn-outline-primary w-100 h-100 py-3 text-center border">
+                                    <i class="fas fa-plus-circle fa-lg mb-2 d-block gold-gradient"></i>
+                                    <span class="fw-semibold">Add Car</span>
+                                </a>
                             </div>
-                            {% endif %}
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1 fw-semibold">{{ car.make }} {{ car.model }}</h6>
-                                <p class="mb-0 text-muted small">{{ car.year }} • ${{ car.daily_rate }}/day</p>
+                            <div class="col-sm-6 col-lg-3">
+                                <a href="{% url 'rentals:my_cars' %}" class="btn btn-outline-primary w-100 h-100 py-3 text-center border">
+                                    <i class="fas fa-edit fa-lg mb-2 d-block gold-gradient"></i>
+                                    <span class="fw-semibold">Manage Cars</span>
+                                </a>
                             </div>
-                            <span class="badge {% if car.is_available %}bg-success{% else %}bg-warning{% endif %}">
-                                {{ car.is_available|yesno:"Available,Rented" }}
-                            </span>
+                            <div class="col-sm-6 col-lg-3">
+                                <a href="{% url 'rentals:rentals' %}" class="btn btn-outline-primary w-100 h-100 py-3 text-center border">
+                                    <i class="fas fa-list fa-lg mb-2 d-block gold-gradient"></i>
+                                    <span class="fw-semibold">Bookings</span>
+                                </a>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <a href="{% url 'rentals:owner_settings' %}" class="btn btn-outline-primary w-100 h-100 py-3 text-center border">
+                                    <i class="fas fa-cog fa-lg mb-2 d-block gold-gradient"></i>
+                                    <span class="fw-semibold">Settings</span>
+                                </a>
+                            </div>
                         </div>
-                        {% empty %}
-                        <div class="text-center py-3">
-                            <i class="fas fa-car fa-2x text-muted mb-2"></i>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-3">
+                        <h5 class="card-title fw-bold mb-0">Recent Activity</h5>
+                        <a href="{% url 'rentals:rentals' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if recent_activities %}
+                        <div class="list-group list-group-flush">
+                            {% for activity in recent_activities %}
+                            <div class="list-group-item d-flex align-items-center px-4 py-3 border-0">
+                                <div class="rounded-circle p-2 me-3" style="background: rgba(212, 175, 55, 0.1);">
+                                    {% if activity.type == 'booking' %}
+                                    <i class="fas fa-clock gold-gradient"></i>
+                                    {% elif activity.type == 'confirmation' %}
+                                    <i class="fas fa-check-circle gold-gradient"></i>
+                                    {% elif activity.type == 'rental' %}
+                                    <i class="fas fa-play gold-gradient"></i>
+                                    {% else %}
+                                    <i class="fas fa-info gold-gradient"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-semibold text-white">{{ activity.title }}</h6>
+                                    <p class="mb-0 text-muted small">{{ activity.description }}</p>
+                                    <small class="text-muted">{{ activity.time }}</small>
+                                </div>
+                                <span class="badge" style="background: rgba(212, 175, 55, 0.1); color: var(--color-gold);">{{ activity.status_text }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-history fa-2x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">No recent activity</p>
+                            <small class="text-muted">New bookings and updates will appear here</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Your Cars -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h5 class="card-title fw-bold mb-0">Your Cars</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if owner_cars %}
+                        <div class="list-group list-group-flush">
+                            {% for car in owner_cars %}
+                            <div class="list-group-item d-flex align-items-center px-4 py-3 border-0">
+                                {% if car.image %}
+                                <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-car text-muted"></i>
+                                </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-semibold text-white">{{ car.make }} {{ car.model }}</h6>
+                                    <p class="mb-0 text-muted small">{{ car.year }} • ${{ car.daily_rate }}/day</p>
+                                </div>
+                                <span class="badge {% if car.is_available %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ car.is_available|yesno:"Available,Rented" }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="p-3 pt-0">
+                            <a href="{% url 'rentals:my_cars' %}" class="btn btn-outline-primary w-100">Manage All Cars</a>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-car fa-2x text-muted mb-3"></i>
                             <p class="text-muted mb-0">No cars added yet</p>
                             <a href="{% url 'rentals:add_car' %}" class="btn btn-primary btn-sm mt-2">Add First Car</a>
                         </div>
-                        {% endfor %}
-                    </div>
-                    <div class="d-grid mt-3">
-                        <a href="{% url 'rentals:my_cars' %}" class="btn btn-outline-primary">Manage All Cars</a>
+                        {% endif %}
                     </div>
                 </div>
-            </div>
 
-            <!-- Quick Stats -->
-            <div class="card border-0 mt-4">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title fw-bold mb-0">Quick Stats</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-6 mb-3">
-                            <div class="border rounded p-3">
-                                <h4 class="text-primary mb-1">{{ available_cars|default:"3" }}</h4>
-                                <small class="text-muted">Available</small>
+                <!-- Performance Summary -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h5 class="card-title fw-bold mb-0">Performance Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted">Total Earnings</span>
+                                <strong class="gold-gradient">${{ total_earnings|default:"0" }}</strong>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {% widthratio total_earnings 20000 100 %}%"
+                                     aria-valuenow="{% widthratio total_earnings 20000 100 %}" 
+                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
-                        <div class="col-6 mb-3">
-                            <div class="border rounded p-3">
-                                <h4 class="text-warning mb-1">{{ monthly_bookings|default:"8" }}</h4>
-                                <small class="text-muted">This Month</small>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted">Utilization Rate</span>
+                                <strong class="gold-gradient">
+                                    {% if total_cars > 0 %}
+                                        {% widthratio active_rentals total_cars 100 %}%
+                                    {% else %}
+                                        0%
+                                    {% endif %}
+                                </strong>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {% if total_cars > 0 %}{% widthratio active_rentals total_cars 100 %}%{% else %}0%{% endif %}"
+                                     aria-valuenow="{% if total_cars > 0 %}{% widthratio active_rentals total_cars 100 %}{% else %}0{% endif %}" 
+                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="border rounded p-3">
-                                <h4 class="text-success mb-1">4.8</h4>
-                                <small class="text-muted">Avg Rating</small>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted">Approval Rate</span>
+                                <strong class="gold-gradient">
+                                    {% if pending_requests > 0 %}
+                                        {% widthratio active_rentals pending_requests 100 %}%
+                                    {% else %}
+                                        100%
+                                    {% endif %}
+                                </strong>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {% if pending_requests > 0 %}{% widthratio active_rentals pending_requests 100 %}%{% else %}100%{% endif %}"
+                                     aria-valuenow="{% if pending_requests > 0 %}{% widthratio active_rentals pending_requests 100 %}{% else %}100{% endif %}" 
+                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="border rounded p-3">
-                                <h4 class="text-info mb-1">${{ total_earnings|default:"12,450" }}</h4>
-                                <small class="text-muted">Total Earned</small>
+                        
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <h5 class="gold-gradient mb-1">{{ available_cars|default:"0" }}</h5>
+                                    <small class="text-muted">Available Cars</small>
+                                </div>
+                                <div class="col-6">
+                                    <h5 class="gold-gradient mb-1">{{ pending_requests|default:"0" }}</h5>
+                                    <small class="text-muted">Pending Requests</small>
+                                </div>
                             </div>
                         </div>
                     </div>
