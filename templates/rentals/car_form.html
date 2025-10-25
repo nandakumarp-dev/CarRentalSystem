@@ -16,66 +16,30 @@
 
 .form-container {
     background-color: var(--color-black);
-    color: var(--color-platinum);
+    color: var(--color-white);
     min-height: 100vh;
+    padding: 1rem 0;
 }
 
 .card {
     background-color: var(--color-dark-charcoal);
     border: 1px solid rgba(212, 175, 55, 0.1);
-    color: var(--color-platinum);
-}
-
-/* Form Control Styling */
-.form-control, .form-select {
-    background-color: var(--color-dark-charcoal) !important;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    color: var(--color-white) !important;
-    border-radius: 6px;
-    padding: 0.75rem 1rem;
-}
-
-.form-control:focus, .form-select:focus {
-    background-color: var(--color-dark-charcoal) !important;
-    border-color: var(--color-gold) !important;
-    color: var(--color-white) !important;
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
-}
-
-/* Dropdown Options Styling */
-.form-select option {
-    background-color: var(--color-dark-charcoal) !important;
-    color: var(--color-white) !important;
-    padding: 10px;
-}
-
-.form-select option:hover,
-.form-select option:focus,
-.form-select option:checked {
-    background-color: var(--color-gold) !important;
-    color: var(--color-black) !important;
-}
-
-/* Remove default browser styling */
-.form-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23D4AF37' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 16px 12px;
-}
-
-.form-label {
     color: var(--color-white);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
-.form-text {
-    color: var(--color-platinum) !important;
-    opacity: 0.7;
+.card-header {
+    background-color: rgba(212, 175, 55, 0.05);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    padding: 1rem 1.25rem;
+}
+
+.text-primary { color: var(--color-gold) !important; }
+.text-success { color: var(--color-gold) !important; }
+.text-warning { color: var(--color-gold-light) !important; }
+.text-muted { 
+    color: var(--color-platinum) !important; 
+    opacity: 0.9;
 }
 
 .btn-primary {
@@ -83,7 +47,7 @@
     border-color: var(--color-gold);
     color: var(--color-black);
     font-weight: 600;
-    padding: 0.75rem 2rem;
+    padding: 0.5rem 1rem;
 }
 
 .btn-primary:hover {
@@ -92,25 +56,58 @@
     color: var(--color-black);
 }
 
+.btn-outline-primary {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    padding: 0.5rem 1rem;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+}
+
 .btn-outline-secondary {
-    border-color: rgba(212, 175, 55, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
     color: var(--color-platinum);
+    padding: 0.5rem 1rem;
 }
 
 .btn-outline-secondary:hover {
-    background-color: rgba(212, 175, 55, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     border-color: var(--color-gold);
     color: var(--color-gold);
 }
 
-.text-primary { color: var(--color-gold) !important; }
-.gold-gradient {
-    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+/* Form Controls */
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-white);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
 }
 
+.form-control:focus, .form-select:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--color-gold);
+    color: var(--color-white);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.1);
+}
+
+.form-label {
+    color: var(--color-white);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-text {
+    color: var(--color-platinum) !important;
+    opacity: 0.8;
+}
+
+/* Step Indicator */
 .step-indicator {
     display: flex;
     justify-content: space-between;
@@ -182,6 +179,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Feature Grid */
 .feature-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -211,6 +209,24 @@
     background: rgba(212, 175, 55, 0.1);
 }
 
+/* Form Check Styling */
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-check-input:checked {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+}
+
+.form-check-label {
+    color: var(--color-white);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Image Upload */
 .image-preview-container {
     border: 2px dashed rgba(212, 175, 55, 0.3);
     border-radius: 8px;
@@ -229,6 +245,7 @@
     background: rgba(212, 175, 55, 0.05);
 }
 
+/* Pricing Suggestion */
 .pricing-suggestion {
     background: rgba(212, 175, 55, 0.1);
     border: 1px solid rgba(212, 175, 55, 0.3);
@@ -243,22 +260,6 @@
     text-align: right;
     margin-top: 0.25rem;
     opacity: 0.7;
-}
-
-/* Form Check Styling */
-.form-check-input {
-    background-color: var(--color-dark-charcoal);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-}
-
-.form-check-input:checked {
-    background-color: var(--color-gold);
-    border-color: var(--color-gold);
-}
-
-.form-check-label {
-    color: var(--color-platinum);
-    cursor: pointer;
 }
 
 /* Textarea specific styling */
@@ -294,16 +295,40 @@ input[type="file"]::file-selector-button:hover {
 .text-danger {
     color: #dc3545 !important;
 }
+
+.gold-gradient {
+    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .step-indicator {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .step {
+        padding: 0 0.5rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 
 <div class="form-container">
-    <div class="container py-4">
+    <div class="container-fluid">
         <!-- Header -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h1 class="h2 fw-bold gold-gradient mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-column flex-md-row gap-3">
+                    <div class="text-center text-md-start">
+                        <h1 class="h2 fw-bold text-white mb-2">
                             {% if object %}Edit Car{% else %}Add New Car{% endif %}
                         </h1>
                         <p class="text-muted mb-0">
@@ -350,7 +375,11 @@ input[type="file"]::file-selector-button:hover {
                             
                             <!-- Step 1: Basic Information -->
                             <div class="form-section active" id="step-1">
-                                <h4 class="fw-bold mb-4 gold-gradient">Basic Information</h4>
+                                <div class="card-header bg-transparent border-0 px-0 pt-0">
+                                    <h5 class="card-title fw-bold text-white mb-0">
+                                        <i class="fas fa-info-circle me-2 text-primary"></i>Basic Information
+                                    </h5>
+                                </div>
                                 
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -398,7 +427,11 @@ input[type="file"]::file-selector-button:hover {
 
                             <!-- Step 2: Specifications -->
                             <div class="form-section" id="step-2">
-                                <h4 class="fw-bold mb-4 gold-gradient">Specifications & Pricing</h4>
+                                <div class="card-header bg-transparent border-0 px-0 pt-0">
+                                    <h5 class="card-title fw-bold text-white mb-0">
+                                        <i class="fas fa-cogs me-2 text-primary"></i>Specifications & Pricing
+                                    </h5>
+                                </div>
                                 
                                 <div class="row g-3">
                                     <div class="col-md-4">
@@ -456,7 +489,11 @@ input[type="file"]::file-selector-button:hover {
 
                             <!-- Step 3: Features & Description -->
                             <div class="form-section" id="step-3">
-                                <h4 class="fw-bold mb-4 gold-gradient">Features & Description</h4>
+                                <div class="card-header bg-transparent border-0 px-0 pt-0">
+                                    <h5 class="card-title fw-bold text-white mb-0">
+                                        <i class="fas fa-list-check me-2 text-primary"></i>Features & Description
+                                    </h5>
+                                </div>
                                 
                                 <div class="mb-4">
                                     <label class="form-label mb-3">Car Features</label>
@@ -548,7 +585,11 @@ input[type="file"]::file-selector-button:hover {
 
                             <!-- Step 4: Media & Finalize -->
                             <div class="form-section" id="step-4">
-                                <h4 class="fw-bold mb-4 gold-gradient">Media & Final Details</h4>
+                                <div class="card-header bg-transparent border-0 px-0 pt-0">
+                                    <h5 class="card-title fw-bold text-white mb-0">
+                                        <i class="fas fa-images me-2 text-primary"></i>Media & Final Details
+                                    </h5>
+                                </div>
                                 
                                 <div class="mb-4">
                                     <label class="form-label">Car Image *</label>
@@ -589,7 +630,7 @@ input[type="file"]::file-selector-button:hover {
                                     <button type="button" class="btn btn-outline-secondary prev-step" data-prev="3">
                                         <i class="fas fa-arrow-left me-2"></i>Back
                                     </button>
-                                    <button type="submit" class="btn btn-primary btn-lg">
+                                    <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-{% if object %}save{% else %}plus-circle{% endif %} me-2"></i>
                                         {% if object %}Update Car{% else %}Add Car to Fleet{% endif %}
                                     </button>
