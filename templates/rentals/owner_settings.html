@@ -4,264 +4,313 @@
 {% block title %}Settings - DriveRental{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h2 fw-bold">
-                        <i class="fas fa-cog me-2"></i>Account Settings
-                    </h1>
-                    <p class="text-muted">Manage your profile and business preferences</p>
+<div class="settings-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1>
+                    <i class="fas fa-cog"></i>
+                    Account Settings
+                </h1>
+                <p class="subtitle">Manage your profile and business preferences</p>
+            </div>
+            <div class="header-actions">
+                <span class="user-badge">
+                    <i class="fas fa-user-tie"></i>
+                    {{ user.get_account_type_display }}
+                </span>
+                <div class="dropdown">
+                    <button class="dropdown-btn" type="button" id="settingsDropdown">
+                        <i class="fas fa-bolt"></i>
+                        Quick Actions
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'users:user_update' %}" class="dropdown-item">
+                            <i class="fas fa-user-edit"></i>Edit Personal Info
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file-invoice-dollar"></i>Billing & Payments
+                        </a>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-shield-alt"></i>Privacy & Security
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-question-circle"></i>Help & Support
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-md-4">
-            <!-- Owner Sidebar -->
-            <div class="card border-0 mb-4">
+    <!-- Profile Summary -->
+    <div class="profile-card">
+        <div class="profile-content">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+            </div>
+            <div class="profile-info">
+                <h2>{{ user.get_full_name }}</h2>
+                <p class="profile-email">{{ user.email }}</p>
+                <div class="profile-badges">
+                    <span class="badge primary">{{ user.get_account_type_display }}</span>
+                    <span class="badge secondary">
+                        <i class="fas fa-calendar"></i>
+                        Member since {{ user.date_joined|date:"M d, Y" }}
+                    </span>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <a href="{% url 'users:user_update' %}" class="btn primary">
+                    <i class="fas fa-edit"></i>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="settings-grid">
+        <!-- Left Column -->
+        <div class="settings-column">
+            <!-- Business Profile -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-building"></i>
+                        Business Profile
+                    </h3>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title text-primary mb-3">Owner Menu</h5>
-                    <div class="list-group list-group-flush">
-                        <a href="{% url 'rentals:owner_dashboard' %}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-tachometer-alt me-3"></i>
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="{% url 'rentals:add_car' %}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-plus-circle me-3"></i>
-                            <span>Add Car</span>
-                        </a>
-                        <a href="{% url 'rentals:my_cars' %}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-car me-3"></i>
-                            <span>My Cars</span>
-                        </a>
-                        <a href="{% url 'rentals:rentals' %}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-list me-3"></i>
-                            <span>Rentals</span>
-                        </a>
-                        <a href="{% url 'rentals:analytics' %}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <i class="fas fa-chart-bar me-3"></i>
-                            <span>Analytics</span>
-                        </a>
-                        <a href="{% url 'rentals:owner_settings' %}" class="list-group-item list-group-item-action d-flex align-items-center active">
-                            <i class="fas fa-cog me-3"></i>
-                            <span>Settings</span>
-                        </a>
-                    </div>
+                    <form method="post" id="businessProfileForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Company Name <span class="required">*</span>
+                                </label>
+                                <input type="text" 
+                                       name="company_name" 
+                                       class="form-control" 
+                                       value="{{ form.company_name.value|default:object.company_name|default:'' }}"
+                                       placeholder="Your company name" 
+                                       required>
+                                <div class="form-help">
+                                    This will be displayed to customers
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Verification Status</label>
+                                <div class="status-container">
+                                    <span class="status-badge {% if object.verified %}verified{% else %}pending{% endif %}">
+                                        <i class="fas {% if object.verified %}fa-check-circle{% else %}fa-clock{% endif %}"></i>
+                                        {% if object.verified %}Verified{% else %}Pending Verification{% endif %}
+                                    </span>
+                                    {% if not object.verified %}
+                                    <div class="status-help">
+                                        <a href="#" class="help-link">Submit verification documents</a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Company Address</label>
+                            <textarea name="company_address" 
+                                      class="form-control" 
+                                      rows="3" 
+                                      placeholder="Your business address">{{ form.company_address.value|default:object.company_address|default:'' }}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tax ID</label>
+                            <input type="text" 
+                                   name="tax_id" 
+                                   class="form-control" 
+                                   value="{{ form.tax_id.value|default:object.tax_id|default:'' }}"
+                                   placeholder="Business tax identification number">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                            <button type="reset" class="btn secondary">
+                                <i class="fas fa-undo"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <!-- Profile Summary -->
-            <div class="card border-0">
-                <div class="card-body text-center">
-                    <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" 
-                         style="width: 80px; height: 80px;">
-                        <i class="fas fa-user-tie fa-2x text-white"></i>
-                    </div>
-                    <h6 class="mb-1">{{ user.get_full_name }}</h6>
-                    <p class="text-muted small mb-2">{{ user.email }}</p>
-                    <span class="badge bg-primary">{{ user.get_account_type_display }}</span>
-                    <div class="mt-3">
-                        <small class="text-muted">Member since {{ user.date_joined|date:"M d, Y" }}</small>
+            <!-- Notification Settings -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-bell"></i>
+                        Notification Preferences
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="notification-settings">
+                        <div class="notification-item">
+                            <label class="switch">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <div class="notification-info">
+                                <label for="emailNotifications" class="notification-label">
+                                    Email Notifications
+                                </label>
+                                <p class="notification-description">
+                                    Receive email alerts for new bookings and updates
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <label class="switch">
+                                <input type="checkbox" id="smsAlerts">
+                                <span class="slider"></span>
+                            </label>
+                            <div class="notification-info">
+                                <label for="smsAlerts" class="notification-label">
+                                    SMS Alerts
+                                </label>
+                                <p class="notification-description">
+                                    Get text messages for urgent rental updates
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <label class="switch">
+                                <input type="checkbox" id="bookingReminders" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <div class="notification-info">
+                                <label for="bookingReminders" class="notification-label">
+                                    Booking Reminders
+                                </label>
+                                <p class="notification-description">
+                                    Reminders for upcoming rental start dates
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-9 col-md-8">
-            <div class="row">
-                <!-- Business Profile -->
-                <div class="col-lg-8 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header bg-transparent">
-                            <h5 class="card-title fw-bold mb-0">
-                                <i class="fas fa-user-edit me-2"></i>Business Profile
-                            </h5>
+        <!-- Right Column -->
+        <div class="settings-column">
+            <!-- Account Overview -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-user-circle"></i>
+                        Account Overview
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="account-info">
+                        <div class="info-item">
+                            <span class="info-label">Full Name</span>
+                            <span class="info-value">{{ user.get_full_name }}</span>
                         </div>
-                        <div class="card-body">
-                            <form method="post">
-                                {% csrf_token %}
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">Company Name</label>
-                                        <input type="text" name="company_name" class="form-control" 
-                                               value="{{ form.company_name.value|default:object.company_name|default:'' }}"
-                                               placeholder="Your company name">
-                                        <div class="form-text">This will be displayed to customers</div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">Verification Status</label>
-                                        <div>
-                                            <span class="badge {% if object.verified %}bg-success{% else %}bg-warning{% endif %}">
-                                                {% if object.verified %}
-                                                <i class="fas fa-check-circle me-1"></i>Verified
-                                                {% else %}
-                                                <i class="fas fa-clock me-1"></i>Pending Verification
-                                                {% endif %}
-                                            </span>
-                                            {% if not object.verified %}
-                                            <div class="form-text">
-                                                <a href="#" class="text-primary text-decoration-none">Submit verification documents</a>
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold">Company Address</label>
-                                    <textarea name="company_address" class="form-control" rows="3" 
-                                              placeholder="Your business address">{{ form.company_address.value|default:object.company_address|default:'' }}</textarea>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="form-label fw-semibold">Tax ID</label>
-                                    <input type="text" name="tax_id" class="form-control" 
-                                           value="{{ form.tax_id.value|default:object.tax_id|default:'' }}"
-                                           placeholder="Business tax identification number">
-                                </div>
-
-                                <div class="border-top pt-3">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-2"></i>Save Changes
-                                    </button>
-                                    <button type="reset" class="btn btn-outline-secondary">
-                                        <i class="fas fa-undo me-2"></i>Reset
-                                    </button>
-                                </div>
-                            </form>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">{{ user.email }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone</span>
+                            <span class="info-value">{{ user.phone_number|default:"Not set" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Member Since</span>
+                            <span class="info-value">{{ user.date_joined|date:"M d, Y" }}</span>
                         </div>
                     </div>
+                    <a href="{% url 'users:user_update' %}" class="btn outline primary full-width">
+                        <i class="fas fa-edit"></i>
+                        Edit Personal Info
+                    </a>
+                </div>
+            </div>
 
-                    <!-- Notification Settings -->
-                    <div class="card border-0 mt-4">
-                        <div class="card-header bg-transparent">
-                            <h5 class="card-title fw-bold mb-0">
-                                <i class="fas fa-bell me-2"></i>Notification Preferences
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                                    <label class="form-check-label fw-semibold" for="emailNotifications">
-                                        Email Notifications
-                                    </label>
-                                    <div class="form-text">Receive email alerts for new bookings and updates</div>
-                                </div>
-                                
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="smsAlerts">
-                                    <label class="form-check-label fw-semibold" for="smsAlerts">
-                                        SMS Alerts
-                                    </label>
-                                    <div class="form-text">Get text messages for urgent rental updates</div>
-                                </div>
-                                
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="bookingReminders" checked>
-                                    <label class="form-check-label fw-semibold" for="bookingReminders">
-                                        Booking Reminders
-                                    </label>
-                                    <div class="form-text">Reminders for upcoming rental start dates</div>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Quick Actions -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-rocket"></i>
+                        Quick Actions
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="quick-actions">
+                        <a href="{% url 'users:user_update' %}" class="action-btn">
+                            <i class="fas fa-key"></i>
+                            <span>Change Password</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Billing & Payments</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Privacy & Security</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-headset"></i>
+                            <span>Help & Support</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
                     </div>
                 </div>
+            </div>
 
-                <!-- Account Info & Quick Actions -->
-                <div class="col-lg-4 mb-4">
-                    <!-- Account Overview -->
-                    <div class="card border-0">
-                        <div class="card-header bg-transparent">
-                            <h5 class="card-title fw-bold mb-0">
-                                <i class="fas fa-id-card me-2"></i>Account Overview
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <div class="mb-2">
-                                    <div class="small text-muted">Full Name</div>
-                                    <div class="fw-semibold">{{ user.get_full_name }}</div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="small text-muted">Email</div>
-                                    <div class="fw-semibold">{{ user.email }}</div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="small text-muted">Phone</div>
-                                    <div class="fw-semibold">{{ user.phone_number|default:"Not set" }}</div>
-                                </div>
-                                <div class="mb-2">
-                                    <div class="small text-muted">Member Since</div>
-                                    <div class="fw-semibold">{{ user.date_joined|date:"M d, Y" }}</div>
-                                </div>
-                            </div>
-                            <a href="{% url 'users:user_update' %}" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-edit me-2"></i>Edit Personal Info
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="card border-0 mt-4">
-                        <div class="card-header bg-transparent">
-                            <h5 class="card-title fw-bold mb-0">
-                                <i class="fas fa-bolt me-2"></i>Quick Actions
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-grid gap-2">
-                                <a href="{% url 'users:user_update' %}" class="btn btn-outline-primary text-start">
-                                    <i class="fas fa-key me-2"></i>Change Password
-                                </a>
-                                <a href="#" class="btn btn-outline-warning text-start">
-                                    <i class="fas fa-file-invoice-dollar me-2"></i>Billing & Payments
-                                </a>
-                                <a href="#" class="btn btn-outline-info text-start">
-                                    <i class="fas fa-shield-alt me-2"></i>Privacy & Security
-                                </a>
-                                <a href="#" class="btn btn-outline-danger text-start">
-                                    <i class="fas fa-question-circle me-2"></i>Help & Support
-                                </a>
+            <!-- System Status -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-chart-line"></i>
+                        System Status
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="system-status">
+                        <div class="status-item">
+                            <div class="status-indicator online"></div>
+                            <div class="status-info">
+                                <span class="status-name">API Services</span>
+                                <span class="status-desc">All systems operational</span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- System Status -->
-                    <div class="card border-0 mt-4">
-                        <div class="card-header bg-transparent">
-                            <h5 class="card-title fw-bold mb-0">
-                                <i class="fas fa-heartbeat me-2"></i>System Status
-                            </h5>
+                        <div class="status-item">
+                            <div class="status-indicator online"></div>
+                            <div class="status-info">
+                                <span class="status-name">Payment Gateway</span>
+                                <span class="status-desc">Processing normally</span>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></div>
-                                    <div>
-                                        <div class="small fw-semibold">API Services</div>
-                                        <div class="small text-muted">All systems operational</div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></div>
-                                    <div>
-                                        <div class="small fw-semibold">Payment Gateway</div>
-                                        <div class="small text-muted">Processing normally</div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-success rounded-circle me-2" style="width: 8px; height: 8px;"></div>
-                                    <div>
-                                        <div class="small fw-semibold">Database</div>
-                                        <div class="small text-muted">Healthy and responsive</div>
-                                    </div>
-                                </div>
+                        <div class="status-item">
+                            <div class="status-indicator online"></div>
+                            <div class="status-info">
+                                <span class="status-name">Database</span>
+                                <span class="status-desc">Healthy and responsive</span>
                             </div>
                         </div>
                     </div>
@@ -272,60 +321,795 @@
 </div>
 
 <style>
-.form-check-input:checked {
-    background-color: var(--primary);
-    border-color: var(--primary);
+/* DriveRental Color Theme */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #3b82f6;
+    --primary-bg: #eff6ff;
+    --secondary: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.form-check-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+/* Base Styles */
+.settings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    background: var(--background);
+    min-height: 100vh;
 }
 
-.btn {
+/* Header Styles */
+.page-header {
+    margin-bottom: 32px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.header-text h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-text h1 i {
+    color: var(--primary);
+    background: var(--primary-bg);
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 400;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.user-badge {
+    background: var(--primary-bg);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.dropdown-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-bg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+    min-width: 200px;
+    z-index: 10;
+    display: none;
+    margin-top: 8px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.2s;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background: var(--primary-bg);
+    color: var(--primary);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+}
+
+/* Profile Card */
+.profile-card {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+    border: 1px solid var(--border-light);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--primary-bg) 100%);
+}
+
+.profile-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+}
+
+.profile-avatar {
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 88px;
+    height: 88px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+}
+
+.profile-email {
+    color: var(--text-secondary);
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+}
+
+.profile-badges {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 8px 16px;
     border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.badge.secondary {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+}
+
+/* Settings Grid */
+.settings-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 32px;
+}
+
+.settings-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Card Styles */
+.settings-card {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-light);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.settings-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    padding: 24px 24px 20px 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-header h3 i {
+    color: var(--primary);
+    background: var(--primary-bg);
+    padding: 10px;
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* Form Styles */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.required {
+    color: var(--error);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+.form-help {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+/* Status Styles */
+.status-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-badge {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    font-size: 0.9rem;
+}
+
+.status-badge.verified {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.status-badge.pending {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.help-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.help-link:hover {
+    text-decoration: underline;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-light);
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.btn.primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn.primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn.secondary {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn.secondary:hover {
+    background: var(--border-light);
+    transform: translateY(-1px);
+}
+
+.btn.outline {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn.outline:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn.full-width {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Notification Styles */
+.notification-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.notification-info {
+    flex: 1;
+}
+
+.notification-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+}
+
+.notification-description {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Account Info */
+.account-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.info-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.2s;
+    background: var(--surface);
+}
+
+.action-btn:hover {
+    background: var(--primary-bg);
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.action-btn i:first-child {
+    width: 20px;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.action-btn i:last-child {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* System Status */
+.system-status {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-indicator.online {
+    background: var(--success);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.status-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.status-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.status-desc {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 16px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .header-text h1 {
+        font-size: 1.75rem;
+    }
+    
+    .header-actions {
+        justify-content: space-between;
+    }
+    
+    .profile-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 24px;
+    }
+    
+    .profile-badges {
+        justify-content: center;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-text h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .dropdown-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .profile-content {
+        padding: 20px;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .action-btn {
+        padding: 14px;
+    }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Form validation
-    const form = document.querySelector('form');
-    const companyNameInput = form.querySelector('input[name="company_name"]');
+    const form = document.getElementById('businessProfileForm');
+    if (form) {
+        const companyNameInput = form.querySelector('input[name="company_name"]');
+        
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Basic validation
+            if (companyNameInput.value.trim().length < 2) {
+                isValid = false;
+                companyNameInput.style.borderColor = 'var(--error)';
+            } else {
+                companyNameInput.style.borderColor = 'var(--success)';
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                // Show error message
+                alert('Please fill in all required fields correctly.');
+            }
+        });
+        
+        // Real-time validation
+        companyNameInput.addEventListener('input', function() {
+            if (this.value.trim().length >= 2) {
+                this.style.borderColor = 'var(--success)';
+            } else {
+                this.style.borderColor = 'var(--border)';
+            }
+        });
+        
+        // Add loading state to save button
+        const saveButton = form.querySelector('button[type="submit"]');
+        form.addEventListener('submit', function() {
+            saveButton.disabled = true;
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        });
+    }
     
-    form.addEventListener('submit', function(e) {
-        let isValid = true;
-        
-        // Basic validation
-        if (companyNameInput.value.trim().length < 2) {
-            isValid = false;
-            companyNameInput.classList.add('is-invalid');
-        } else {
-            companyNameInput.classList.remove('is-invalid');
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-            // Show error message
-            alert('Please fill in all required fields correctly.');
-        }
+    // Dropdown functionality for mobile
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                const menu = this.querySelector('.dropdown-menu');
+                menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                e.stopPropagation();
+            }
+        });
     });
     
-    // Real-time validation
-    companyNameInput.addEventListener('input', function() {
-        if (this.value.trim().length >= 2) {
-            this.classList.remove('is-invalid');
-            this.classList.add('is-valid');
-        } else {
-            this.classList.remove('is-valid');
-        }
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
     });
     
-    // Add loading state to save button
-    const saveButton = form.querySelector('button[type="submit"]');
-    form.addEventListener('submit', function() {
-        saveButton.disabled = true;
-        saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+    // Add hover effects for cards
+    const cards = document.querySelectorAll('.settings-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = 'var(--shadow-md)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'var(--shadow)';
+        });
     });
 });
 </script>

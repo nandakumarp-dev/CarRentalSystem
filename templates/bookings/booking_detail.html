@@ -1,121 +1,581 @@
-{% comment %} source booking/booking_detail.html  {% endcomment %}
-
 {% extends 'users/base.html' %}
+{% load humanize %}
 
-{% block title %}Booking #{{ booking.id }} Details{% endblock %}
+{% block title %}Bookings - DriveRental{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        {% include 'bookings/partials/customer_menu.html' %}
-    </div>
+<style>
+:root {
+    --color-black: #000000;
+    --color-dark-charcoal: #0A0A0A;
+    --color-gold: #D4AF37;
+    --color-gold-light: #FFD700;
+    --color-platinum: #B0B0B0;
+    --color-white: #FFFFFF;
+}
+
+.bookings-container {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    min-height: 100vh;
+}
+
+.card {
+    background-color: var(--color-dark-charcoal);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    color: var(--color-white);
+}
+
+.card-header {
+    background-color: rgba(212, 175, 55, 0.05);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.text-primary { color: var(--color-gold) !important; }
+.text-success { color: var(--color-gold) !important; }
+.text-warning { color: var(--color-gold-light) !important; }
+.text-muted { 
+    color: var(--color-platinum) !important; 
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-gold-light);
+    border-color: var(--color-gold-light);
+    color: var(--color-black);
+}
+
+.btn-outline-primary {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+}
+
+.btn-outline-danger {
+    border-color: rgba(220, 53, 69, 0.5);
+    color: rgba(220, 53, 69, 0.8);
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: var(--color-white);
+}
+
+/* Status Badges */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge.bg-pending {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    color: var(--color-gold-light) !important;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.badge.bg-confirmed {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+    color: #28a745 !important;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.badge.bg-active {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+    color: #007bff !important;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+.badge.bg-completed {
+    background-color: rgba(108, 117, 125, 0.1) !important;
+    color: #6c757d !important;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.badge.bg-cancelled {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    color: #dc3545 !important;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.badge.bg-paid {
+    background-color: rgba(40, 167, 69, 0.1) !important;
+    color: #28a745 !important;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.badge.bg-pending-payment {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    color: var(--color-gold-light) !important;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--color-platinum);
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+/* Booking Cards */
+.booking-card {
+    background: var(--color-dark-charcoal);
+    border: 1px solid rgba(212, 175, 55, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.booking-card:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.1);
+}
+
+.booking-header {
+    display: flex;
+    justify-content: between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.booking-id {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-white);
+}
+
+.booking-date {
+    color: var(--color-platinum);
+    font-size: 0.875rem;
+}
+
+.booking-status {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.booking-content {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.car-image {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.car-image-placeholder {
+    width: 80px;
+    height: 60px;
+    background: rgba(212, 175, 55, 0.05);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold);
+}
+
+.car-info h5 {
+    color: var(--color-white);
+    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+}
+
+.car-details {
+    color: var(--color-platinum);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.booking-dates {
+    text-align: center;
+}
+
+.date-range {
+    color: var(--color-white);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.days-count {
+    color: var(--color-gold);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.booking-amount {
+    text-align: right;
+}
+
+.amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+/* Filter Section */
+.filter-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.filter-select {
+    background-color: var(--color-dark-charcoal) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    color: var(--color-white) !important;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+}
+
+.filter-select:focus {
+    border-color: var(--color-gold) !important;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: var(--color-gold);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+}
+
+.page-link {
+    background-color: var(--color-dark-charcoal);
+    border-color: rgba(212, 175, 55, 0.2);
+    color: var(--color-platinum);
+}
+
+.page-link:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.page-item.active .page-link {
+    background-color: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-black);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .booking-content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+    }
     
-    <div class="col-md-9">
-        <div class="card card-3d">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">Booking #{{ booking.id }}</h4>
-                    <span class="badge bg-{% if booking.status == 'confirmed' %}success{% elif booking.status == 'active' %}primary{% elif booking.status == 'pending' %}warning{% elif booking.status == 'completed' %}secondary{% else %}danger{% endif %}">
-                        {{ booking.get_status_display }}
-                    </span>
+    .booking-actions {
+        justify-content: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="bookings-container">
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h2 fw-bold text-white mb-2">Bookings</h1>
+                        <p class="text-muted mb-0">Manage your rental bookings and reservations</p>
+                    </div>
+                    <div class="filter-section">
+                        <select class="filter-select" onchange="location = this.value;">
+                            <option value="?status=all" {% if not status_filter or status_filter == 'all' %}selected{% endif %}>All Bookings</option>
+                            <option value="?status=pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="?status=confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                            <option value="?status=active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                            <option value="?status=completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ bookings|length }}</div>
+                        <div class="stat-label">Total Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">
+                            {{ bookings|length|default:0 }}
+                        </div>
+                        <div class="stat-label">Current Filter</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">
+                            {% with active_bookings=bookings|length|default:0 %}
+                                {{ active_bookings }}
+                            {% endwith %}
+                        </div>
+                        <div class="stat-label">Showing</div>
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Car Details</h5>
-                        <div class="d-flex align-items-center mb-3">
-                            {% if booking.car.image %}
-                            <img src="{{ booking.car.image.url }}" alt="{{ booking.car }}" class="rounded me-3" style="width: 80px; height: 60px; object-fit: cover;">
+        </div>
+
+        <!-- Bookings List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-3">
+                        <h5 class="card-title fw-bold text-white mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            {% if status_filter != 'all' %}
+                                {{ status_filter|title }} Bookings
+                            {% else %}
+                                All Bookings
                             {% endif %}
-                            <div>
-                                <h6 class="mb-1">{{ booking.car.make }} {{ booking.car.model }}</h6>
-                                <small class="text-muted">{{ booking.car.year }} • {{ booking.car.get_car_type_display }}</small>
+                            <span class="text-primary">({{ bookings|length }})</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if bookings %}
+                            {% for booking in bookings %}
+                            <div class="booking-card">
+                                <!-- Header -->
+                                <div class="booking-header">
+                                    <div>
+                                        <div class="booking-id">Booking #{{ booking.id }}</div>
+                                        <div class="booking-date">{{ booking.created_at|date:"M d, Y" }}</div>
+                                    </div>
+                                    <div class="booking-status">
+                                        <span class="badge bg-{{ booking.status }}">
+                                            {{ booking.get_status_display }}
+                                        </span>
+                                        <span class="badge {% if booking.payment_status %}bg-paid{% else %}bg-pending-payment{% endif %}">
+                                            {{ booking.get_payment_status_display }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="booking-content">
+                                    <!-- Car Image -->
+                                    <div>
+                                        {% if booking.car.image %}
+                                        <img src="{{ booking.car.image.url }}" 
+                                             alt="{{ booking.car.make }} {{ booking.car.model }}" 
+                                             class="car-image">
+                                        {% else %}
+                                        <div class="car-image-placeholder">
+                                            <i class="fas fa-car"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Car Info -->
+                                    <div class="car-info">
+                                        <h5>{{ booking.car.make }} {{ booking.car.model }}</h5>
+                                        <div class="car-details">
+                                            {{ booking.car.year }} • {{ booking.car.get_car_type_display }}
+                                        </div>
+                                        <div class="car-details text-muted">
+                                            <i class="fas fa-map-marker-alt me-1"></i>
+                                            {{ booking.pickup_location }}
+                                        </div>
+                                    </div>
+
+                                    <!-- Dates -->
+                                    <div class="booking-dates">
+                                        <div class="date-range">
+                                            {{ booking.start_date|date:"M d" }} - {{ booking.end_date|date:"M d" }}
+                                        </div>
+                                        <div class="days-count">
+                                            {{ booking.total_days }} days
+                                        </div>
+                                    </div>
+
+                                    <!-- Amount -->
+                                    <div class="booking-amount">
+                                        <div class="amount">${{ booking.total_amount }}</div>
+                                        <div class="text-muted small">Total</div>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="booking-actions">
+                                    <a href="{% url 'bookings:booking_detail' booking.id %}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                    {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                                    <a href="{% url 'bookings:cancel_booking' booking.id %}" 
+                                       class="btn btn-outline-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                        <i class="fas fa-times me-1"></i>Cancel
+                                    </a>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-                        
-                        <h5>Rental Period</h5>
-                        <p class="mb-1"><strong>Start Date:</strong> {{ booking.start_date|date:"M d, Y" }}</p>
-                        <p class="mb-1"><strong>End Date:</strong> {{ booking.end_date|date:"M d, Y" }}</p>
-                        <p><strong>Total Days:</strong> {{ booking.total_days }}</p>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <h5>Payment Information</h5>
-                        <p class="mb-1"><strong>Total Amount:</strong> ${{ booking.total_amount }}</p>
-                        <p class="mb-1">
-                            <strong>Payment Status:</strong> 
-                            <span class="badge bg-{% if booking.payment_status == 'paid' %}success{% elif booking.payment_status == 'pending' %}warning{% else %}danger{% endif %}">
-                                {{ booking.get_payment_status_display }}
-                            </span>
-                        </p>
-                        
-                        {% if booking.payment %}
-                        <p class="mb-1"><strong>Payment Method:</strong> {{ booking.payment.payment_method|title }}</p>
-                        <p class="mb-1"><strong>Paid At:</strong> {{ booking.payment.paid_at|date:"M d, Y H:i" }}</p>
-                        {% endif %}
-                        
-                        <h5 class="mt-4">Location</h5>
-                        <p class="mb-1"><strong>Pickup:</strong> {{ booking.pickup_location }}</p>
-                        {% if booking.dropoff_location %}
-                        <p class="mb-1"><strong>Dropoff:</strong> {{ booking.dropoff_location }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                {% if booking.special_requests %}
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Special Requests</h5>
-                        <p class="text-muted">{{ booking.special_requests }}</p>
-                    </div>
-                </div>
-                {% endif %}
-                
-                {% if booking.review %}
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <h5>Your Review</h5>
-                        <div class="review-card">
-                            <div class="rating">
-                                {% for i in "12345" %}
-                                <i class="fas fa-star{% if forloop.counter > booking.review.rating %} text-muted{% else %} text-warning{% endif %}"></i>
-                                {% endfor %}
+                            {% endfor %}
+
+                            <!-- Pagination -->
+                            {% if is_paginated %}
+                            <nav aria-label="Booking pagination" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                            <i class="fas fa-chevron-left me-2"></i>Previous
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                                            Next <i class="fas fa-chevron-right ms-2"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+                            
+                        {% else %}
+                            <!-- Empty State -->
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <h4 class="text-white mb-3">No Bookings Found</h4>
+                                <p class="text-muted mb-4">
+                                    {% if status_filter %}
+                                        No {{ status_filter }} bookings at the moment.
+                                    {% else %}
+                                        You don't have any bookings yet.
+                                    {% endif %}
+                                </p>
+                                <a href="{% url 'rentals:browse_cars' %}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-search me-2"></i>Browse Available Cars
+                                </a>
                             </div>
-                            <p class="mt-2">{{ booking.review.comment }}</p>
-                            <small class="text-muted">Reviewed on {{ booking.review.created_at|date:"M d, Y" }}</small>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="d-flex gap-2">
-                            <a href="{% url 'bookings:my_bookings' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Back to Bookings
-                            </a>
-                            
-                            {% if can_cancel %}
-                            <form method="post" action="{% url 'bookings:cancel_booking' booking.id %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-danger" 
-                                        onclick="return confirm('Are you sure you want to cancel this booking?')">
-                                    <i class="fas fa-times me-2"></i>Cancel Booking
-                                </button>
-                            </form>
-                            {% endif %}
-                            
-                            {% if can_review %}
-                            <a href="{% url 'bookings:create_review' booking.id %}" class="btn btn-primary">
-                                <i class="fas fa-star me-2"></i>Write Review
-                            </a>
-                            {% endif %}
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading state to action buttons
+    document.querySelectorAll('.booking-actions a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.href.includes('cancel_booking')) {
+                if (!confirm('Are you sure you want to cancel this booking?')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+            
+            // Add loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Loading...';
+            this.style.pointerEvents = 'none';
+            
+            // Reset after 3 seconds if still on same page
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.pointerEvents = 'auto';
+            }, 3000);
+        });
+    });
+});
+</script>
 {% endblock %}
